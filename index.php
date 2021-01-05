@@ -1,44 +1,45 @@
 <?php
-	// Variables here
-	$month = Date("M").' '.Date("Y");
-	$division = ucwords('Africa');
-	$projectcount = number_format(145);
-	$totalactivities = number_format(178);
-	$fundedactivities = number_format(0);
-	$notfundedactivities = number_format(178);
-	$overallbudget_currentyr = number_format(13814609, 0, '.', ',');
-	$healthrating = 0.3;
-	$colorcode = array(	'name' => ['red','yellow','green'], 
-						'color' => ['dc3545', 'ffc107', '28a745'],
-						'scale' => ['poor', 'fair', 'good']);
+// Variables here
+$month = Date("M") . ' ' . Date("Y");
+$division = ucwords('Africa');
+$projectcount = number_format(145);
+$totalactivities = number_format(178);
+$fundedactivities = number_format(0);
+$notfundedactivities = number_format(178);
+$overallbudget_currentyr = number_format(13814609, 0, '.', ',');
+$healthrating = 0.3;
+$colorcode = array('name' => ['red', 'yellow', 'green'],
+    'color' => ['dc3545', 'ffc107', '28a745'],
+    'scale' => ['poor', 'fair', 'good']);
 
-	function getHealthRating($a, $b) {
-		if ($a > 0 && $a <= 0.3) {
-			$color = '#'.$b['color'][0].' !important';
-		} else if ($a > 0.3 && $a <= 0.7) {
-			$color = '#'.$b['color'][1].' !important';
-		} else if ($a > 0.7) {
-			$color = '#'.$b['color'][2].' !important';
-		}
-		return $color;
-	}
-	function getHealthName($a, $b) {
-		if ($a > 0 && $a <= 0.3) {
-			$name = ucwords($b['scale'][0]);
-		} else if ($a > 0.3 && $a <= 0.7) {
-			$name = ucwords($b['scale'][1]);
-		} else if ($a > 0.7) {
-			$name = ucwords($b['scale'][2]);
-		}
-		return $name;
-	}
+function getHealthRating($a, $b)
+{
+    if ($a > 0 && $a <= 0.3) {
+        $color = '#' . $b['color'][0] . ' !important';
+    } else if ($a > 0.3 && $a <= 0.7) {
+        $color = '#' . $b['color'][1] . ' !important';
+    } else if ($a > 0.7) {
+        $color = '#' . $b['color'][2] . ' !important';
+    }
+    return $color;
+}
+function getHealthName($a, $b)
+{
+    if ($a > 0 && $a <= 0.3) {
+        $name = ucwords($b['scale'][0]);
+    } else if ($a > 0.3 && $a <= 0.7) {
+        $name = ucwords($b['scale'][1]);
+    } else if ($a > 0.7) {
+        $name = ucwords($b['scale'][2]);
+    }
+    return $name;
+}
 
-	$healthrating_color = getHealthRating($healthrating, $colorcode);
-	$healthrating_name = getHealthName($healthrating, $colorcode);
+$healthrating_color = getHealthRating($healthrating, $colorcode);
+$healthrating_name = getHealthName($healthrating, $colorcode);
 
-
-	$projects = strval($projectcount).' '.($projectcount == 1 ? 'project':'projects');
-	$keystoneprojects = strval($fundedactivities).' '.($fundedactivities == 1 ? 'was a keystone project':'were keystone projects');
+$projects = strval($projectcount) . ' ' . ($projectcount == 1 ? 'project' : 'projects');
+$keystoneprojects = strval($fundedactivities) . ' ' . ($fundedactivities == 1 ? 'was a keystone project' : 'were keystone projects');
 ?>
 <!DOCTYPE html>
 <html>
@@ -46,7 +47,7 @@
 	<title>A4 Report</title>
 	<link rel="stylesheet" href="assets/css/highcharts.css">
 	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 	<style type="text/css">
 		body {
 			background: rgb(204,204,204);
@@ -60,13 +61,13 @@
 			margin-bottom: 0.5cm;
 			box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
 		}
-		page[size="A4"] {  
+		page[size="A4"] {
 			width: 21cm;
-			height: 29.7cm; 
+			height: 29.7cm;
 		}
 		page[size="A4"][layout="landscape"] {
 			width: 29.7cm;
-			height: 21cm;  
+			height: 21cm;
 		}
 		page[size="A3"] {
 			width: 29.7cm;
@@ -74,7 +75,7 @@
 		}
 		page[size="A3"][layout="landscape"] {
 			width: 42cm;
-			height: 29.7cm;  
+			height: 29.7cm;
 		}
 		page[size="A5"] {
 			width: 14.8cm;
@@ -82,7 +83,7 @@
 		}
 		page[size="A5"][layout="landscape"] {
 			width: 21cm;
-			height: 14.8cm;  
+			height: 14.8cm;
 		}
 		.highcharts-container {
 		  	margin: 0 auto;
@@ -94,73 +95,370 @@
 			}
 		}
 	</style>
-	
+
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
 	<script src="assets/vendor/jquery/jquery.min.js"></script>
 </head>
 <body>
 	<?php
+$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
+
+function getdaysbetween($start, $end)
+{
+    $startDate = strtotime($start);
+    $endDate = strtotime($end);
+    $datediff = $endDate - $startDate;
+    $project_days_duration = round($datediff / (60 * 60 * 24));
+    return $project_days_duration;
+}
+function gethealthcolor($health)
+{
+    $color = 'red';
+
+    if ($health >= 2.5) {
+        $color = 'green';
+
+    } elseif ($health >= 1.5) {
+        $color = 'yellow';
+    }
+
+    return $color;
+
+}
+
+// CURL GET DATA FROM URL
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+$data = curl_exec($ch);
+curl_close($ch);
+
+// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
+$division_data = json_decode($data);
+
+// CALCULATE THE TOTAL METRICS
+$total_projects = 0;
+$total_consumable_budget = 0;
+$total_consumed_budget = 0;
+$total_percentage_budget_utilized = 0;
+$total_percentage_activities_completed = 0;
+$total_reported_projects = 0;
+$total_project_days = 0;
+$total_project_health = 0;
+
+$total_count_projects_budget_between0_1 = 0;
+$total_count_projects_budget_between1_2 = 0;
+$total_count_projects_budget_between2_5 = 0;
+$total_count_projects_budget_between5_10 = 0;
+$total_count_projects_budget_more10 = 0;
+
+$total_amount_projects_budget_between0_1 = 0;
+$total_amount_projects_budget_between1_2 = 0;
+$total_amount_projects_budget_between2_5 = 0;
+$total_amount_projects_budget_between5_10 = 0;
+$total_amount_projects_budget_more10 = 0;
+
+$total_past_due_projects = 0;
+$total_projects_expiringin6 = 0;
+
+$total_system_rating = 0;
+$total_manager_rating = 0;
+$total_final_rating = 0;
+
+// average_mangement_rating
+// average_system_rating
+
+foreach ($division_data as $key => $value) {
+    $startDate = strtotime($value->StartDate);
+    $endDate = strtotime($value->EndDate);
+    $datediff = $endDate - $startDate;
+    $project_days_duration = round($datediff / (60 * 60 * 24));
+    $total_project_days += $project_days_duration;
+
+    $total_projects += 1;
+    $total_consumable_budget += $value->consumable_budget;
+    $total_consumed_budget += $value->consumed_budget;
+    $total_percentage_budget_utilized += $value->percentage_budget_utilized;
+    $total_percentage_activities_completed += $value->percentage_activities_completed;
+
+    if ($value->consumable_budget > 10000000) {
+        $total_count_projects_budget_more10 += 1;
+        $total_amount_projects_budget_more10 += $value->consumable_budget;
+
+    } elseif ($value->consumable_budget > 5000000) {
+        $total_count_projects_budget_between5_10 += 1;
+        $total_amount_projects_budget_between5_10 += $value->consumable_budget;
+
+    } elseif ($value->consumable_budget > 2000000) {
+        $total_count_projects_budget_between2_5 += 1;
+        $total_amount_projects_budget_between2_5 += $value->consumable_budget;
+
+    } elseif ($value->consumable_budget > 1000000) {
+        $total_count_projects_budget_between1_2 += 1;
+        $total_amount_projects_budget_between1_2 += $value->consumable_budget;
+
+    } else {
+        $total_count_projects_budget_between0_1 += 1;
+        $total_amount_projects_budget_between0_1 += $value->consumable_budget;
+
+    }
+
+    if ($value->final_rating) {
+        $total_reported_projects += 1;
+        $total_project_health += $value->final_rating;
+    } else {
+        $total_project_health += 0;
+    }
+
+    if ($value->days_past_due > 0) {
+        $total_past_due_projects += 1;
+    } else {
+        if ($value->days_past_due > -174) {
+            $total_projects_expiringin6 += 1;
+        }
+    }
+
+    if ($value->manager_rating) {
+        $total_manager_rating += $value->manager_rating;
+    } else {}
+
+    if ($value->system_rating) {
+        $total_system_rating += $value->system_rating;
+    } else {}
+
+    if ($value->final_rating) {
+        $total_final_rating += $value->final_rating;
+    } else {}
+
+}
+$total_percentage_projects_budget_between0_1 = round($total_count_projects_budget_between0_1 / $total_projects, 2) * 100;
+$total_percentage_projects_budget_between1_2 = round($total_count_projects_budget_between1_2 / $total_projects, 2) * 100;
+$total_percentage_projects_budget_between2_5 = round($total_count_projects_budget_between2_5 / $total_projects, 2) * 100;
+$total_percentage_projects_budget_between5_10 = round($total_count_projects_budget_between5_10 / $total_projects, 2) * 100;
+$total_percentage_projects_budget_more10 = round($total_count_projects_budget_more10 / $total_projects, 2) * 100;
+
+$total_reporting_percentage = round(($total_reported_projects / $total_projects), 1);
+$overall_average_consumable = round($total_consumable_budget / $total_projects, 2);
+$overall_average_project_days_duration = round($total_project_days / $total_projects);
+$overall_average_project_years_duration = round($overall_average_project_days_duration / 365.25, 1);
+
+$overall_average_project_health = round($total_project_health / $total_projects, 1);
+
+$total_average_percentage_budget_utilized = round($total_percentage_budget_utilized / $total_projects, 1) * 100;
+
+$total_average_system_rating = round($total_system_rating / $total_projects, 1);
+$total_average_manager_rating = round($total_manager_rating / $total_projects, 1);
+$total_average_final_rating = round($total_final_rating / $total_projects, 1);
+
+//DECLARE THE DIVISIONS ARRAY TO STORE UNIQUES DIVISIONS
+$unique_divisions = [];
+
+//USE DATA FROM API TO FEED THE UNIQUE DIVISIONS ARRAY
+foreach ($division_data as $key => $value) {
+    if (!in_array($value->managing_division, $unique_divisions)) {
+        $unique_divisions[] = $value->managing_division;
+    }
+}
+
+//REMOVE ANY NULL ITEMS FROM DIVISIONS ARRAY
+array_filter($unique_divisions, 'strlen');
+foreach ($unique_divisions as $i => $row) {
+    if ($row === null) {
+        unset($unique_divisions[$i]);
+    }
+}
+
+// FOR EACH UNIQUE DIVISION CREATE THE REPORT AND MAIL TO THE RELEVANT FOCAL POINTS
+
+foreach ($unique_divisions as $dkey => $dvalue) {
+//CALCULATE DIVISIONAL METRICS
+
+//calculate number of projects under this division
+    $d_projects = 0;
+    $d_consumable_budget = 0;
+    $d_consumed_budget = 0;
+    $d_percentage_budget_utilized = 0;
+    $d_percentage_activities = 0;
+    $d_percentage_activities_completed = 0;
+    $d_reported_projects = 0;
+    $d_project_days = 0;
+    $d_project_health = 0;
+
+    $d_count_projects_budget_between0_1 = 0;
+    $d_count_projects_budget_between1_2 = 0;
+    $d_count_projects_budget_between2_5 = 0;
+    $d_count_projects_budget_between5_10 = 0;
+    $d_count_projects_budget_more10 = 0;
+
+    $d_amount_projects_budget_between0_1 = 0;
+    $d_amount_projects_budget_between1_2 = 0;
+    $d_amount_projects_budget_between2_5 = 0;
+    $d_amount_projects_budget_between5_10 = 0;
+    $d_amount_projects_budget_more10 = 0;
+
+    $d_past_due_projects = 0;
+    $d_projects_expiringin6 = 0;
+
+    $d_total_system_rating = 0;
+    $d_total_manager_rating = 0;
+    $d_total_final_rating = 0;
+
+    foreach ($division_data as $key => $value) {
+        if ($value->managing_division == $dvalue) {
+
+            $startDate = strtotime($value->StartDate);
+            $endDate = strtotime($value->EndDate);
+            $datediff = $endDate - $startDate;
+            $project_days_duration = round($datediff / (60 * 60 * 24));
+            $d_project_days += $project_days_duration;
+
+            $d_projects += 1;
+            $d_consumable_budget += $value->consumable_budget;
+            $d_consumed_budget += $value->consumed_budget;
+            $d_percentage_budget_utilized += round($value->percentage_budget_utilized, 2);
+            $d_percentage_activities_completed += $value->percentage_activities_completed;
+
+            if ($value->consumable_budget > 10000000) {
+                $d_count_projects_budget_more10 += 1;
+                $d_amount_projects_budget_more10 += $value->consumable_budget;
+
+            } elseif ($value->consumable_budget > 5000000) {
+                $d_count_projects_budget_between5_10 += 1;
+                $d_amount_projects_budget_between5_10 += $value->consumable_budget;
+
+            } elseif ($value->consumable_budget > 2000000) {
+                $d_count_projects_budget_between2_5 += 1;
+                $d_amount_projects_budget_between2_5 += $value->consumable_budget;
+
+            } elseif ($value->consumable_budget > 1000000) {
+                $d_count_projects_budget_between1_2 += 1;
+                $d_amount_projects_budget_between1_2 += $value->consumable_budget;
+
+            } else {
+                $d_count_projects_budget_between0_1 += 1;
+                $d_amount_projects_budget_between0_1 += $value->consumable_budget;
+            }
+
+            if ($value->final_rating) {
+                $d_reported_projects += 1;
+                $d_project_health += $value->final_rating;
+            } else {
+                $d_project_health += 0;
+            }
+
+            if ($value->days_past_due > 0) {
+                $d_past_due_projects += 1;
+            } else {
+                if ($value->days_past_due > -174) {
+                    $d_projects_expiringin6 += 1;
+                }
+            }
+
+            if ($value->manager_rating) {
+                $d_total_manager_rating += $value->manager_rating;
+            } else {}
+
+            if ($value->system_rating) {
+                $d_total_system_rating += $value->system_rating;
+            } else {}
+
+            if ($value->final_rating) {
+                $d_total_final_rating += $value->final_rating;
+            } else {}
+
+        }
+    }
+    $d_percentage_projects_budget_between0_1 = round($d_count_projects_budget_between0_1 / $d_projects, 2) * 100;
+    $d_percentage_projects_budget_between1_2 = round($d_count_projects_budget_between1_2 / $d_projects, 2) * 100;
+    $d_percentage_projects_budget_between2_5 = round($d_count_projects_budget_between2_5 / $d_projects, 2) * 100;
+    $d_percentage_projects_budget_between5_10 = round($d_count_projects_budget_between5_10 / $d_projects, 2) * 100;
+    $d_percentage_projects_budget_more10 = round($d_count_projects_budget_more10 / $d_projects, 2) * 100;
+
+    $d_percentage_consumable_budget = round($d_consumable_budget / $total_consumable_budget, 2) * 100;
+    $d_percentage_consumed_budget = round($d_consumed_budget / $total_consumed_budget, 2) * 100;
+    $d_reporting_percentage = round(($d_reported_projects / $d_projects) * 100, 1);
+    $d_average_consumable = round($d_consumable_budget / $d_projects, 2);
+    $d_average_project_days_duration = round($d_project_days / $d_projects);
+    $d_average_project_years_duration = round($d_average_project_days_duration / 365.25, 1);
+
+    $d_average_project_health = round($d_project_health / $d_projects, 1);
+
+    $d_average_percentage_budget_utilized = round($d_percentage_budget_utilized / $d_projects, 1);
+
+    $d_total_average_system_rating = round($d_total_system_rating / $total_projects, 1);
+    $d_total_average_manager_rating = round($d_total_manager_rating / $total_projects, 1);
+    $d_total_average_final_rating = round($d_total_final_rating / $total_projects, 1);
+
+    // display the division name its and number of projects
+    echo '<br />_____________' . $dvalue . ' Division/Office ______________<br />';
+    echo $d_projects . ' projects<br />' . $d_consumable_budget . ' consumable budget <br />';
+    echo $d_past_due_projects . ' projects past due <br />';
+    echo $d_projects_expiringin6 . ' projects expiring in 6 months<br />';
+    echo $d_percentage_consumable_budget . '% of total UNEP consumable budget<br />';
+    echo $d_average_consumable . ' Project Size (average of consumable budget)<br />';
+
+    echo $d_percentage_projects_budget_more10 . '% (' . $d_count_projects_budget_more10 . ') Projects above 10M (sum ' . $d_amount_projects_budget_more10 . ') <br />';
+    echo $d_percentage_projects_budget_between5_10 . '% (' . $d_count_projects_budget_between5_10 . ') Projects between 5&10M (sum ' . $d_amount_projects_budget_between5_10 . ')  <br />';
+    echo $d_percentage_projects_budget_between2_5 . '% (' . $d_count_projects_budget_between2_5 . ') Projects between 2&5M (sum ' . $d_amount_projects_budget_between2_5 . ')  <br />';
+    echo $d_percentage_projects_budget_between1_2 . '% (' . $d_count_projects_budget_between1_2 . ') Projects between 1&2M (sum ' . $d_amount_projects_budget_between1_2 . ')  <br />';
+    echo $d_percentage_projects_budget_between0_1 . '% (' . $d_count_projects_budget_between0_1 . ') Projects under 1M (sum ' . $d_amount_projects_budget_between0_1 . ')  <br />';
+
+    echo $d_consumed_budget . ' total consumed budget <br />';
+    echo $d_percentage_consumed_budget . '% of total UNEP consumed budget<br />';
+
+    echo $d_average_percentage_budget_utilized . ' average percentage utilized budget <br />';
+    echo $d_percentage_activities_completed . ' activities completed<br />';
+    echo $d_average_project_days_duration . 'days/ ' . $d_average_project_years_duration . ' year(s) average project duration<br />';
+
+    echo $d_average_project_health . '(' . gethealthcolor($d_average_project_health) . ') Average Project health <br />';
+
+    echo $d_total_average_system_rating . ' Average system rating<br />';
+    echo $d_total_average_manager_rating . ' Average manager rating<br />';
+    echo $d_total_average_final_rating . ' Average final rating<br />';
+
+    echo $d_reported_projects . ' projects reported<br />';
+
+    echo $d_reporting_percentage . '% projects reported<br />';
+
+    ?>
 
 
 
-		//BASE URL TO GET DATA FROM
+	<?php
 
-		$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
+//THE REPORT CREATION AND MAILING FUNCTIONS COME HERE
+}
 
-		// CURL GET DATA FROM URL
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		$data = curl_exec($ch);
-		curl_close($ch);
+echo '<br /><br />_______________TOTAL VALUES______________<br />';
+echo $total_projects . ' total projects<br />';
+echo $total_past_due_projects . ' total projects past due <br />';
+echo $total_projects_expiringin6 . ' total projects expiring in 6 months<br />';
+echo $total_consumable_budget . ' total consumable budget <br />';
+echo $overall_average_consumable . ' Overall Project Size (average of consumable budget)<br />';
 
-		// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
-		$division_data = json_decode($data);
+echo $total_percentage_projects_budget_more10 . '% (' . $total_count_projects_budget_more10 . ') Projects above 10M (' . $total_amount_projects_budget_more10 . ')  <br />';
+echo $total_percentage_projects_budget_between5_10 . '% (' . $total_count_projects_budget_between5_10 . ') Projects between 5&10M ( sum ' . $total_amount_projects_budget_between5_10 . ')  <br />';
+echo $total_percentage_projects_budget_between2_5 . '% (' . $total_count_projects_budget_between2_5 . ') Projects between 2&5M ( sum ' . $total_amount_projects_budget_between2_5 . ')  <br />';
+echo $total_percentage_projects_budget_between1_2 . '% (' . $total_count_projects_budget_between1_2 . ') Projects between 1&2M (sum ' . $total_amount_projects_budget_between1_2 . ')  <br />';
+echo $total_percentage_projects_budget_between0_1 . '% (' . $total_count_projects_budget_between0_1 . ') Projects under 1M (sum ' . $total_amount_projects_budget_between0_1 . ')  <br />';
 
-		//DECLARE THE DIVISIONS ARRAY TO STORE UNIQUES DIVISIONS
-		$unique_divisions = [];
+echo $total_consumed_budget . ' total consumed budget <br />';
+echo $total_average_percentage_budget_utilized . ' Overall average percentage utilized budget <br />';
+echo $total_percentage_activities_completed . ' activities completed<br />';
+echo $overall_average_project_days_duration . 'days / ' . $overall_average_project_years_duration . ' year(s) overall average project duration<br />';
 
-		//USE DATA FROM API TO FEED THE UNIQUE DIVISIONS ARRAY
+echo $overall_average_project_health . '(' . gethealthcolor($overall_average_project_health) . ') Overall Average Project health <br />';
 
-		foreach ($division_data as $key => $value) {
-		    if (!in_array($value->managing_division, $unique_divisions)) {
-		        $unique_divisions[] = $value->managing_division;
-		    }
-		}
+echo $total_average_system_rating . ' Average system rating<br />';
+echo $total_average_manager_rating . ' Average manager rating<br />';
+echo $total_average_final_rating . ' Average final rating<br />';
 
-		// FOR EACH UNIQUE DIVISION CREATE THE REPORT AND MAIL TO THE RELEVANT FOCAL POINTS
+echo $total_reported_projects . ' total projects reported<br />';
 
-		foreach ($unique_divisions as $dkey => $dvalue) {
-		//CALCULATE DIVISIONAL METRICS
+echo $total_reporting_percentage . '% projects reported<br />';
 
-		//calculate number of projects under this division
-		    $d_projects = 0;
-		    $d_nullprojects = 0;
-
-		    foreach ($division_data as $key => $value) {
-		        if ($value->managing_division == $dvalue) {
-		            $d_projects += 1;
-		        }
-
-		        if ($value->managing_division == $dvalue && $value->final_rating == null) {
-		            $d_nullprojects += 1;
-		        }
-		    }
-
-		    if ($dvalue == $division) {
-		    	$avgreporting = round(((1-($d_nullprojects/$d_projects))*100),1).'%';
-		    	$projectcount = number_format($d_projects);
-		    }
-
-		    // display the division name its and number of projects
-		    //echo '<br />' . $dvalue . ' - ' . $d_nullprojects.' / '.$d_projects;
-
-		//THE REPORT CREATION AND MAILING FUNCTIONS COME HERE
-		}
-
-		//var_dump($division_data);
-	?>
+?>
 	<page size="A4">
 		<div class="page-margin" style="padding: 2.54cm 1.32cm 3.67cm 1.9cm;">
 			<div class="page-content" style="height: 23.49cm; width: 17.78cm; max-height: 23.49cm; max-width: 17.78cm;">
@@ -187,38 +485,35 @@
 								<p>Average Reporting %</p>
 							</div>
 						</div>
-						
-						
+
+
 
 
 						<?php
 
-							/*$url_finaldata = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
-							$json_finaldata = file_get_contents($url_finaldata);
-							$json_data_finaldata = json_decode($json_finaldata, true);
-							
+/*$url_finaldata = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
+$json_finaldata = file_get_contents($url_finaldata);
+$json_data_finaldata = json_decode($json_finaldata, true);
 
-							//print_r($json_data);
+//print_r($json_data);
 
-							//echo "My token: ". $json_data["access_token"];
+//echo "My token: ". $json_data["access_token"];
 
-							echo '<pre>'.print_r($json_data_finaldata).'</pre>';
+echo '<pre>'.print_r($json_data_finaldata).'</pre>';
 
-							$i = 0;
-							$reported0 = 0;
-							$reported1 = 0;
+$i = 0;
+$reported0 = 0;
+$reported1 = 0;
 
-							for ($i = 0; $i <= count($json_data_finaldata); $i++) {
+for ($i = 0; $i <= count($json_data_finaldata); $i++) {
 
-							}
+}
 
-							//echo $json_data_finaldata = count($json_data_finaldata);*/
+//echo $json_data_finaldata = count($json_data_finaldata);*/
+
+?>
 
 
-
-						?>
-
-						
 					</div>
 				</div>
 				<div class="body" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; border-bottom: 0.1cm solid #707070; margin-bottom: 0.5cm; padding: 0.2cm 0 0.2cm">
@@ -452,7 +747,7 @@
 
 
 
-						
+
 						<script type="text/javascript">
 							$(function() {
 							    var chart = new Highcharts.Chart({
@@ -498,7 +793,7 @@
 							            return arr;
 							        }())}]
 							    },
-							                                     
+
 							    function(chart) { // on complete
 							        var textX = chart.plotLeft + (chart.plotWidth  * 0.5);
 							        var textY = chart.plotTop  + (chart.plotHeight * 0.5);
@@ -576,7 +871,7 @@
 							        showInLegend: true
 							    }]
 							},
-                                     
+
 						    function(chart) { // on complete
 						        var textX = chart.plotLeft + (chart.plotWidth  * 0.5);
 						        var textY = chart.plotTop  + (chart.plotHeight * 0.5);
@@ -686,17 +981,17 @@
 								<tbody>
 									<tr>
 										<td>System Rating</td>
-										<td style="text-align: right;padding-right: 5px;"><?php echo $healthrating*100; ?>%</td>
+										<td style="text-align: right;padding-right: 5px;"><?php echo $healthrating * 100; ?>%</td>
 										<td><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:<?php echo $healthrating_color; ?>"></span></td>
 									</tr>
 									<tr>
 										<td>Management Rating</td>
-										<td style="text-align: right;padding-right: 5px;"><?php echo $healthrating*100; ?>%</td>
+										<td style="text-align: right;padding-right: 5px;"><?php echo $healthrating * 100; ?>%</td>
 										<td><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:<?php echo $healthrating_color; ?>"></span></td>
 									</tr>
 									<tr style="border-top: 1px dotted rgba(0,0,0,.5) !important;">
 										<td><strong><i>Average Rating</i></strong></td>
-										<td style="text-align: right;padding-right: 5px;"><strong><i><?php echo $healthrating*100; ?>%</i></strong></td>
+										<td style="text-align: right;padding-right: 5px;"><strong><i><?php echo $healthrating * 100; ?>%</i></strong></td>
 										<td><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:<?php echo $healthrating_color; ?>"></span></td>
 									</tr>
 								</tbody>
@@ -733,6 +1028,6 @@
 				<div class="footer">Footer</div>
 			</div>
 		</div>
-	</page>	
+	</page>
 </body>
 </html>
