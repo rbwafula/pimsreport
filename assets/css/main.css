@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,400&display=swap');
+
+html {
+	direction: ltr;
+	box-shadow: none !important;
+	font-size: 100%;
+	margin: 0 !important;
+}
+
+body {
+	background-color: #FFF;
+	color: #707070;
+	font-family: "Roboto","Open Sans", sans-serif;
+	font-size: 14px;
+	line-height: 22px;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	text-align: left;
+	font-weight: 300;
+}
+
+body a {
+	outline: none !important;
+}
+
+strong {
+	line-height: 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family:"Roboto", "Open Sans", sans-serif;
+}
+
+li {
+	line-height: 24px;
+}
+div.logo {
+	padding: 30px 0 10px;
+}
+div.logo img {
+	max-height: 45px;
+}
+div.logo h1 {
+	font-weight: 900;
+	letter-spacing: -0.5px;
+	text-transform: uppercase;
+	color: #1d3051;
+}
+div.logo h6 {
+	font-weight: 400;
+	letter-spacing: -0.5px;
+}
+
+hr.solid {
+	/*border-top: 3px solid rgba(0,0,0,.1) !important;*/
+	margin: 5px 0 40px 0;
+	border: 0;
+	height: 1px;
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+div.summary p,
+div.portfoliohealth p {
+	text-align: justify;
+}
+p.reportdate {
+	text-align: right;
+}
+div.healthrating_box {
+	border-radius: 50%;
+	width: 45px;
+	height: 45px;
+	background-color: #ccc;
+	content: " ";
+	float: right;
+}
+.summary > div.row {
+	background: #eee;
+	border-radius: 3px;
+	padding-top: 20px;
+	margin-bottom: 10px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.summary .statistics.header {
+    font-weight: 500;
+    text-align: center !important;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+.summary .statistics.footer {
+    font-weight: 300;
+    text-align: center !important;
+    font-size: 13px;
+}
+.summary > .row > div:first-child .statistics.header,
+.summary > .row > div:first-child .statistics.footer {
+	color: #0077b6 !important;
+}
+
+.summary > .row > div:last-child .statistics.header,
+.summary > .row > div:last-child .statistics.footer {
+	color: #17a2b8 !important;
+}
+
+
+div.calculations,
+div.key {
+	width: 200px;
+	margin: 0 auto;
+}
+div.calculations table,
+div.key table,
+div.indicators table {
+	width: 100%;
+}
+div.calculations thead,
+div.calculations tbody {
+	font-size: 12px;
+}
+div.calculations thead {
+	border-bottom: 1px solid rgba(0,0,0,.5) !important
+}
+div.calculations thead th:nth-child(2),
+div.calculations tbody td:nth-child(2) {
+	text-align: right;
+	padding-right: 5px;
+}
+div.calculations tbody tr:last-child {
+	border-top: 1px dotted rgba(0,0,0,.5) !important;
+}
+div.calculations tbody tr span.rating {
+	width: 12px;
+	display: inline-block;
+	height: 12px;
+	margin: 0;
+	border-radius: 50%;
+}
+
+div.key, div.indicators {
+	padding-top: 20px;
+	font-size: 12px;
+}
+div.key tr:first-child td,
+div.indicators tr:first-child td {
+	font-style: italic;
+}
+div.key tr:last-child td {
+	/*width: 16.67%*/
+}
+div.key tr:last-child td:nth-child(1),
+div.key tr:last-child td:nth-child(3),
+div.key tr:last-child td:nth-child(5) {
+	width: 12px;
+	text-align: right;
+}
+div.key tr:last-child td:nth-child(1) span,
+div.key tr:last-child td:nth-child(3) span,
+div.key tr:last-child td:nth-child(5) span {
+	width: 12px;
+	display: inline-block;
+	height: 12px;
+	margin: 0;
+	border-radius: 50%;
+}
+div.key tr:last-child td:nth-child(2),
+div.key tr:last-child td:nth-child(4),
+div.key tr:last-child td:nth-child(6) {
+	text-align: left;
+	padding-left: 5px;
+	padding-bottom: 4px;
+}
+
+div.indicators {
+	width: 100%;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+.col-lg-4.col-md-6 {
+    margin-bottom: 30px;
+}
+
+
+/* Responsive */
+@media (max-width: 991px) {
+	html.safari {
+		position: relative;
+		overflow-x: hidden;
+	}
+}
+
+@media (max-width: 479px) {
+	body {
+		font-size: 13px;
+	}
+}
+h1 {
+	text-align: center;
+	color: #333;
+}
+h5 {
+	color: #333;
+}
+h6 {
+	text-align: center;
+}
+.hidden {
+	display: none !important;
+}
