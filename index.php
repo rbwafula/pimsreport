@@ -96,7 +96,9 @@
 	</style>
 	
 	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/highcharts-more.js"></script>
 	<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+
 	<script src="assets/vendor/jquery/jquery.min.js"></script>
 </head>
 <body>
@@ -162,92 +164,75 @@
 		//var_dump($division_data);
 	?>
 	<page size="A4">
-		<div class="page-margin" style="padding: 2.54cm 1.32cm 3.67cm 1.9cm;">
-			<div class="page-content" style="height: 23.49cm; width: 17.78cm; max-height: 23.49cm; max-width: 17.78cm;">
+		<div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
+			<div class="page-content" style="height: 28.1cm; width: 18.36cm; max-height: 28.1cm; max-width: 18.36cm;">
 				<div class="header" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; border-bottom: 0.1cm solid #707070; margin-bottom: 0.2cm;">
-					<div class="logo" style="position: relative;width: 100%;-ms-flex: 0 0 30%;flex: 0 0 30%;max-width: 30%;margin-bottom: 0.5cm;">
+					<div class="logo" style="position: relative;width: 100%;-ms-flex: 0 0 30%;flex: 0 0 30%;max-width: 30%;margin-bottom: 0.2cm;">
 						<img src="assets/images/pimslogo.png" style="max-width: 100%">
 					</div>
-					<div class="title" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.5cm;text-align: center;">
-						<h1 style="margin: 0;font-weight: 500;font-size: 0.9cm;color: #333;letter-spacing: 0;">
+					<div class="title" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: center;">
+						<h1 style="margin: 0;font-weight: 500;font-size: 0.8cm;color: #333;letter-spacing: 0;">
 							<?php echo $division; ?>
 						</h1>
-						<h6 style="margin: 0;letter-spacing: 0;color: #707070;padding-top: 0.1cm;font-size: 0.35cm;font-weight: 400;">
+						<h6 style="margin: 0;letter-spacing: 0;color: #707070;padding-top: 0cm;font-size: 0.35cm;font-weight: 400;">
 							Programme Delivery Report
 						</h6>
 					</div>
-					<div class="stamp" style="position: relative;width: 100%;-ms-flex: 0 0 20%;flex: 0 0 20%;max-width: 20%;margin-bottom: 0.5cm;text-align: right;">
-						<p class="reportdate" style="margin: 0;font-size: 0.35cm;font-weight: 300;">
-							<strong><?php echo $month; ?></strong>
-						</p>
-						<div>
-							<div class="healthrating_box" style="border-radius: 50%;width: 1cm;height: 1cm;float: right;background-color:<? echo $healthrating_color; ?>; margin-top: 0.2cm">&nbsp;</div>
-							<div style="float: right">
-								<p><?php echo $avgreporting; ?></p>
-								<p>Average Reporting %</p>
-							</div>
-						</div>
-						
-						
-
-
-						<?php
-
-							/*$url_finaldata = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
-							$json_finaldata = file_get_contents($url_finaldata);
-							$json_data_finaldata = json_decode($json_finaldata, true);
-							
-
-							//print_r($json_data);
-
-							//echo "My token: ". $json_data["access_token"];
-
-							echo '<pre>'.print_r($json_data_finaldata).'</pre>';
-
-							$i = 0;
-							$reported0 = 0;
-							$reported1 = 0;
-
-							for ($i = 0; $i <= count($json_data_finaldata); $i++) {
-
-							}
-
-							//echo $json_data_finaldata = count($json_data_finaldata);*/
-
-
-
-						?>
-
-						
+					<div class="stamp" style="position: relative;width: 100%;-ms-flex: 0 0 20%;flex: 0 0 20%;max-width: 20%;margin-bottom: 0.2cm;text-align: right;">
+						<table style="border-collapse: collapse; float: right;">
+							<tr>
+								<td colspan="2">
+									<p style="margin: 0;font-size: 0.35cm;font-weight: 400;">
+										<?php echo $month; ?>
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<td style="vertical-align: bottom;">
+									<p style="font-size: 0.6cm;text-align: right;font-weight: 600;margin:0;">
+										<?php echo $avgreporting; ?>
+									</p>
+								</td>
+								<td width="1cm">
+									<div class="healthrating_box" style="border-radius: 50%;width: 0.6cm;height: 0.6cm;float: right;background-color:<? echo $healthrating_color; ?>; margin-top: 0cm">&nbsp;</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<p style="margin: 0;font-size: 0.3cm;color: #17a2b8;">Average Reporting %</p>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="body" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; border-bottom: 0.1cm solid #707070; margin-bottom: 0.5cm; padding: 0.2cm 0 0.2cm">
 					<div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: #f6f6f6;">
-						<h5 style="margin: 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Summary</h5>
+						<h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Summary</h5>
 						<p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The dashboard captured financial data of <strong><? echo $projectcount; ?> projects</strong> for the <?php echo $division; ?> Division. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <? echo $overallbudget_currentyr; ?>)</strong>, capturing a rolling total of the cash received over time.</p>
 						<p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">Out of the <? echo $projects; ?>, <strong><? echo $keystoneprojects; ?></strong>, these are projects with dollar value of $ 10 million and above, contributing to <strong>USD. <? echo $fundedactivities; ?></strong> of the overall budget. Keystone projects are projects of significant value to the organization as they attract a higher dollar value and require further scrutiny by management, in comparison to other projects.</p>
 					</div>
 					<div class="right" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: #f6f6f6;">
-						<h5 style="margin: 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>
+						<h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>
 						<div style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; margin:0 0.4cm">
-							<div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
+							<div style="position: relative;width: 100%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
 								<div style="text-align: center; color: #0077b6;">
 									<p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><? echo $projectcount; ?></p>
 									<p style="margin: 0;font-size: 0.3cm;font-weight: 400;">Total Projects</p>
 								</div>
 							</div>
-							<div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
+							<div style="position: relative;width: 100%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
+								<div style="text-align: center; color: #17a2b8;">
+									<p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><? echo '1234'; ?></p>
+									<p style="margin: 0;font-size: 0.3cm;font-weight: 400;">Total Outputs</p>
+								</div>
+							</div>
+							<div style="position: relative;width: 100%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
 								<div style="text-align: center; color: #688753;">
 									<p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><? echo $projectcount; ?></p>
-									<p style="margin: 0;font-size: 0.3cm;font-weight: 400;"><? echo ucwords(trim(str_replace($projectcount, "", $projects))); ?> </p>
+									<p style="margin: 0;font-size: 0.3cm;font-weight: 400;">Total Activities</p>
 								</div>
 							</div>
-							<div style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
-								<div style="text-align: center; color: #17a2b8;">
-									<p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><? echo '$ '.$overallbudget_currentyr; ?></p>
-									<p style="margin: 0;font-size: 0.3cm;font-weight: 400;">Overall Budget</p>
-								</div>
-							</div>
+							
 
 							<div style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
 								<div id="chart1"></div>
@@ -256,10 +241,9 @@
 								<div id="chart2"></div>
 								<script type="text/javascript">
 									Highcharts.chart('chart2', {
-									    colors: ['#6c757d', '#17a2b8'],
+									    colors: ['#17a2b8'],
 									    credits: {
-									        text: 'Source: PIMS+ Dev',
-									        href: 'https://staging1.unep.org/simon/pims-stg'
+									        text: ''
 									    },
 									    chart: {
 									        backgroundColor: '#F6F6F6',
@@ -328,10 +312,6 @@
 									        }
 									    },
 									    series: [{
-									        name: '2019',
-									        data: [5.5, 4.8, 0.7]
-
-									    }, {
 									        name: '2020',
 									        data: [6, 5, 1]
 
@@ -345,380 +325,303 @@
 
 					<div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;">
 						<h5 style="margin: 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Portfolio Statistics</h5>
-
 						<div class="container" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap;">
-							<div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;">
-								<!--<div id="riskschart" style="position:absolute; left:0px; top:0px;"></div>
-								<div id="addText" style="position:absolute; left:0px; top:0px;"></div>-->
-
-
-								<div id="container-speed" style="width: 300px; height: 200px; float: left"></div>
-
-
-								<div style="width: 600px; height: 400px; margin: 0 auto">
-    <div id="container-speed" style="width: 300px; height: 200px; float: left"></div>
-    <div id="container-rpm" style="width: 300px; height: 200px; float: left"></div>
-</div>
-
-
-
-
+							<div id="timetaken" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
+								<div id="timetaken_chart" style="height: 100px"></div>
+								<div id="addText" style="position:absolute; left:0px; top:0px;"></div>
 								<script type="text/javascript">
-									const gaugeOptions = {
+									Highcharts.chart('timetaken_chart', {
 									    chart: {
-									        type: 'solidgauge'
+									        plotBackgroundColor: null,
+									        plotBorderWidth: 0,
+									        plotShadow: false
 									    },
-									    title: null,
-									    pane: {
-									        center: ['50%', '85%'],
-									        size: '140%',
-									        startAngle: -90,
-									        endAngle: 90,
-									        background: {
-									            backgroundColor: '#EEE',
-									            innerRadius: '60%',
-									            outerRadius: '100%',
-									            shape: 'arc'
-									        }
-									    },
-									    tooltip: {
+									    credits: {
 									        enabled: false
 									    },
-									    // the value axis
-									    yAxis: {
-									        minColor: '#FFFFFF',
-									        maxColor: '#000000',
-									        lineWidth: 0,
-									        minorTickInterval: null,
-									        tickPixelInterval: 400,
-									        tickWidth: 0,
-									        title: {
-									            y: -70
-									        },
-									        labels: {
-									            y: 16
+									    title: {
+									        text: 'NN%',
+									        align: 'center',
+									        verticalAlign: 'middle',
+									        y: 20
+									    },
+									    tooltip: {
+									        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+									    },
+									    accessibility: {
+									        point: {
+									            valueSuffix: '%'
 									        }
 									    },
 									    plotOptions: {
-									        solidgauge: {
+									        pie: {
 									            dataLabels: {
-									                y: -30,
-									                borderWidth: 0,
-									                useHTML: true
-									            }
+									                enabled: false,
+									                distance: -50,
+									                style: {
+									                    fontWeight: 'bold',
+									                    color: 'white'
+									                }
+									            },
+									            startAngle: -90,
+									            endAngle: 90,
+									            center: ['50%', '75%'],
+									            size: '200%'
 									        }
-									    }
-									};
-
-									Highcharts.chart('container-speed', Highcharts.merge(gaugeOptions, {
+									    },
+									    series: [{
+									        type: 'pie',
+									        name: 'Avg. Time Taken',
+									        innerSize: '70%',
+									        data: [
+									            ['Time Taken', 58.9],
+									            {
+									                name: 'Other',
+									                y: 7.61,
+									                dataLabels: {
+									                    enabled: false
+									                }
+									            }
+									        ]
+									    }]
+									});
+								</script>
+							</div>
+							<div id="activitiescompleted" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
+								<div id="activitiescompleted_chart" style="height: 100px"></div>
+								<script type="text/javascript">
+									Highcharts.chart('activitiescompleted_chart', {
+									    chart: {
+									        plotBackgroundColor: null,
+									        plotBorderWidth: 0,
+									        plotShadow: false
+									    },
+									    credits: {
+									        enabled: false
+									    },
+									    title: {
+									        text: 'NN%',
+									        align: 'center',
+									        verticalAlign: 'middle',
+									        y: 20
+									    },
+									    tooltip: {
+									        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+									    },
+									    accessibility: {
+									        point: {
+									            valueSuffix: '%'
+									        }
+									    },
+									    plotOptions: {
+									        pie: {
+									            dataLabels: {
+									                enabled: false,
+									                distance: -50,
+									                style: {
+									                    fontWeight: 'bold',
+									                    color: 'white'
+									                }
+									            },
+									            startAngle: -90,
+									            endAngle: 90,
+									            center: ['50%', '75%'],
+									            size: '200%'
+									        }
+									    },
+									    series: [{
+									        type: 'pie',
+									        name: 'Avg. Time Taken',
+									        innerSize: '70%',
+									        data: [
+									            ['Time Taken', 58.9],
+									            {
+									                name: 'Other',
+									                y: 7.61,
+									                dataLabels: {
+									                    enabled: false
+									                }
+									            }
+									        ]
+									    }]
+									});
+								</script>
+							</div>
+							<div id="budgetutilized" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
+								<div id="budgetutilized_chart" style="height: 100px"></div>
+								<script type="text/javascript">
+									Highcharts.chart('budgetutilized_chart', {
+									    chart: {
+									        plotBackgroundColor: null,
+									        plotBorderWidth: 0,
+									        plotShadow: false
+									    },
+									    credits: {
+									        enabled: false
+									    },
+									    title: {
+									        text: 'NN%',
+									        align: 'center',
+									        verticalAlign: 'middle',
+									        y: 20
+									    },
+									    tooltip: {
+									        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+									    },
+									    accessibility: {
+									        point: {
+									            valueSuffix: '%'
+									        }
+									    },
+									    plotOptions: {
+									        pie: {
+									            dataLabels: {
+									                enabled: false,
+									                distance: -50,
+									                style: {
+									                    fontWeight: 'bold',
+									                    color: 'white'
+									                }
+									            },
+									            startAngle: -90,
+									            endAngle: 90,
+									            center: ['50%', '75%'],
+									            size: '200%'
+									        }
+									    },
+									    series: [{
+									        type: 'pie',
+									        name: 'Avg. Time Taken',
+									        innerSize: '70%',
+									        data: [
+									            ['Time Taken', 58.9],
+									            {
+									                name: 'Other',
+									                y: 7.61,
+									                dataLabels: {
+									                    enabled: false
+									                }
+									            }
+									        ]
+									    }]
+									});
+								</script>
+							</div>
+						</div>
+						<div class="container" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap;">
+							<div id="projectdis" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
+								<div id="budgetsize_chart"></div>
+								<script type="text/javascript">
+									Highcharts.chart('budgetsize_chart', {
+									    chart: {
+									        type: 'bar',
+									        height: 240
+									    },
+									    title: {
+									        text: 'Grouping by Budget Size'
+									    },
+									    subtitle: {
+									        text: ''
+									    },
+									    xAxis: {
+									        categories: ['0-1 M', '1-2 M', '2-5 M', '5-10 M', '10+ M'],
+									        title: {
+									            text: null
+									        }
+									    },
 									    yAxis: {
 									        min: 0,
-									        max: 200,
 									        title: {
-									            text: 'Speed'
+									            text: 'US Millions',
+									            align: 'high'
+									        },
+									        labels: {
+									            overflow: 'justify'
+									        }
+									    },
+									    tooltip: {
+									        valueSuffix: ' millions'
+									    },
+									    plotOptions: {
+									        bar: {
+									            dataLabels: {
+									                enabled: true
+									            },
+									            pointPadding: 0,
+									            groupPadding: 0.1
 									        }
 									    },
 									    credits: {
 									        enabled: false
 									    },
 									    series: [{
-									        name: 'Speed',
-									        data: [30],
-									        dataLabels: {
-									            format:
-									                '<div style="text-align:center">' +
-									                '<span style="font-size:25px;color:black">{y}</span><br/>' +
-									                '<span style="font-size:12px;color:silver">km/h</span>' +
-									                '</div>'
-									        },
-									        tooltip: {
-									            valueSuffix: ' km/h'
-									        }
+									        name: 'Grant Funding',
+									        data: [26197640, 75917439, 216143282, 196345716, 89225351],
+									        color: '#4e90e0'
 									    }]
-									}));
-
+									});
 								</script>
-								<div id="timetaken"></div>
-								<div id="activitiescompleted"></div>
-
-
-
 							</div>
-							<div class="right" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;">
-								<div id="activitieschart" style="display:none;margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;"></div>
+
+							<div id="budgetsize" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
+								<div id="budgetsize_chart"></div>
+								<script type="text/javascript">
+									Highcharts.chart('budgetsize_chart', {
+									    chart: {
+									        type: 'bar',
+									        height: 240
+									    },
+									    title: {
+									        text: 'Grouping by Budget Size'
+									    },
+									    subtitle: {
+									        text: ''
+									    },
+									    xAxis: {
+									        categories: ['0-1 M', '1-2 M', '2-5 M', '5-10 M', '10+ M'],
+									        title: {
+									            text: null
+									        }
+									    },
+									    yAxis: {
+									        min: 0,
+									        title: {
+									            text: 'US Millions',
+									            align: 'high'
+									        },
+									        labels: {
+									            overflow: 'justify'
+									        }
+									    },
+									    tooltip: {
+									        valueSuffix: ' millions'
+									    },
+									    plotOptions: {
+									        bar: {
+									            dataLabels: {
+									                enabled: true
+									            },
+									            pointPadding: 0,
+									            groupPadding: 0.1
+									        }
+									    },
+									    credits: {
+									        enabled: false
+									    },
+									    series: [{
+									        name: 'Grant Funding',
+									        data: [26197640, 75917439, 216143282, 196345716, 89225351],
+									        color: '#4e90e0'
+									    }]
+									});
+								</script>
 							</div>
 						</div>
-
-
-
-
-						
-						<script type="text/javascript">
-							$(function() {
-							    var chart = new Highcharts.Chart({
-							        chart: {
-							            renderTo: 'riskschart',
-							            type: 'pie',
-							            margin: [0, 0, 0, 0],
-								        spacingTop: 0,
-								        spacingBottom: 0,
-								        spacingLeft: 0,
-								        spacingRight: 0,
-								        width: 120,
-								        height: 200
-							        },
-							        title: {
-								        text: ''
-								    },
-								    credits: {
-								        enabled: false
-								    },
-							        plotOptions: {
-							            pie: {
-							            	size: '100%',
-							                innerSize: '80%',
-							                center: ['50%', '20%'],
-							                dataLabels: {
-								                enabled: false,
-								            }
-							            }
-							        },
-							        series: [{
-							        	data: (function() {
-							            var names = 'Covid-19,Insufficient Funding,Delayed Funding',
-							                arr = [];
-
-							            Highcharts.each(names.split(','), function(name) {
-							                arr.push({
-							                    name: name,
-							                    y: Math.round(Math.random() * 100)
-							                });
-							            });
-
-							            return arr;
-							        }())}]
-							    },
-							                                     
-							    function(chart) { // on complete
-							        var textX = chart.plotLeft + (chart.plotWidth  * 0.5);
-							        var textY = chart.plotTop  + (chart.plotHeight * 0.5);
-
-							        var span = '<span id="pieChartInfoText" style="position:absolute; text-align:center;color:#0077b6;">';
-							        span += '<span style="font-size: 0.8cm; font-weight: 500;">92</span><br>';
-							        span += '<span style="font-size: 0.4cm">Risks</span>';
-							        span += '</span>';
-
-							        $("#addText").append(span);
-							        span = $('#pieChartInfoText');
-							        span.css('left', textX + (span.width() * -0.5));
-							        span.css('top', textY + (span.height() * -1.3));
-							    });
-							});
-
-
-							/*Highcharts.chart('riskschart', {
-							    chart: {
-							        type: 'pie',
-							        margin: [0, 0, 0, 0],
-							        spacingTop: 0,
-							        spacingBottom: 0,
-							        spacingLeft: 0,
-							        spacingRight: 0,
-							        width: 120,
-							        height: 200
-							    },
-							    plotOptions: {
-							        pie: {
-							        	size: 80,
-							            shadow: false,
-							            center: ['50%', '20%'],
-							            innerSize: 60,
-							            dataLabels: {
-							                enabled: false,
-							            }
-							        }
-							    },
-							    title: {
-							        text: ''
-							    },
-							    credits: {
-							        enabled: false
-							    },
-							    legend: {
-							        layout: 'horizontal',
-							        align: 'right',
-							        verticalAlign: 'bottom',
-							        y: 0,
-							        title: {
-							            text: 'Risk'
-							        },
-							        enabled: false
-							    },
-							    tooltip: {
-					                formatter: function() {
-					                    return '<b>'+ this.point.name +'</b>: '+ this.y +' projects ('+ Highcharts.numberFormat(this.point.percentage,1) +'%)';
-					                }
-					            },
-							    series: [{
-							        data: (function() {
-							            var names = 'Covid-19,Insufficient Funding,Delayed Funding',
-							                arr = [];
-
-							            Highcharts.each(names.split(','), function(name) {
-							                arr.push({
-							                    name: name,
-							                    y: Math.round(Math.random() * 100)
-							                });
-							            });
-
-							            return arr;
-							        }()),
-							        showInLegend: true
-							    }]
-							},
-                                     
-						    function(chart) { // on complete
-						        var textX = chart.plotLeft + (chart.plotWidth  * 0.5);
-						        var textY = chart.plotTop  + (chart.plotHeight * 0.5);
-
-						        var span = '<span id="pieChartInfoText" style="position:absolute; text-align:center;">';
-						        span += '<span style="font-size: 32px">Upper</span><br>';
-						        span += '<span style="font-size: 16px">Lower</span>';
-						        span += '</span>';
-
-						        $("#addText").append(span);
-						        span = $('#pieChartInfoText');
-						        span.css('left', textX + (span.width() * -0.5));
-						        span.css('top', textY + (span.height() * -0.5));
-						    });*/
-						</script>
-
-
-						<script type="text/javascript">
-							Highcharts.chart('activitieschart', {
-							    chart: {
-							        type: 'pie',
-							        margin: [0, 0, 0, 0],
-							        spacingTop: 0,
-							        spacingBottom: 0,
-							        spacingLeft: 0,
-							        spacingRight: 0,
-							        width: 120,
-							        height: 200
-							    },
-							    plotOptions: {
-							        pie: {
-							        	size: 80,
-							            shadow: false,
-							            center: ['50%', '20%'],
-							            innerSize: 60,
-							            dataLabels: {
-							                enabled: false,
-							            }
-							        }
-							    },
-							    title: {
-							        text: '72 Activities',
-							        verticalAlign: 'middle',
-    								floating: true
-							    },
-							    credits: {
-							        enabled: false
-							    },
-							    legend: {
-							        layout: 'horizontal',
-							        align: 'right',
-							        verticalAlign: 'bottom',
-							        y: 0,
-							        title: {
-							            text: 'Risk'
-							        },
-							        enabled: false
-							    },
-							    tooltip: {
-					                formatter: function() {
-					                    return '<b>'+ this.point.name +'</b>: '+ this.y +' projects ('+ Highcharts.numberFormat(this.point.percentage,1) +'%)';
-					                }
-					            },
-							    series: [{
-							        data: (function() {
-							            var names = 'Covid-19,Insufficient Funding,Delayed Funding',
-							                arr = [];
-
-							            Highcharts.each(names.split(','), function(name) {
-							                arr.push({
-							                    name: name,
-							                    y: Math.round(Math.random() * 100)
-							                });
-							            });
-
-							            return arr;
-							        }()),
-							        showInLegend: true
-							    }]
-							});
-						</script>
 					</div>
 
-					<!--<div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.2cm;text-align: left;">
-						<h5 style="margin: 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>
-						<p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The dashboard captured financial data of <strong><? echo $projects; ?></strong> for the <?php echo $division; ?> Division. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <? echo $overallbudget_currentyr; ?>)</strong>, capturing a rolling total of the cash received over time.</p>
-						<p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">Out of the <? echo $projects; ?>, <strong><? echo $keystoneprojects; ?></strong>, these are projects with dollar value of $ 10 million and above, contributing to <strong>USD. <? echo $fundedactivities; ?></strong> of the overall budget. Keystone projects are projects of significant value to the organization as they attract a higher dollar value and require further scrutiny by management, in comparison to other projects.</p>
-					</div>-->
-
-
-
-
-					<div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;">
-						<h5 style="margin: 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Portfolio Health</h5>
-						<p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The overall portfolio health as calculated by the systems algorithm was <strong style="color:<? echo $healthrating_color; ?>; font-weight: 700;"><? echo $healthrating_name.' ('.($healthrating*100).'%)'; ?></strong>, indicating that all the projects need close monitoring by the respective Project Managers.</p>
-
-						<p style="margin: 0.2cm 0.4cm 0.2cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">A breakdown of the caclulated portfolio health score is as follows:</p>
-						<div class="calculations" style="width: 200px;margin: 0 auto;">
-							<table style="width: 100%;margin: 0cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;border-collapse: collapse;">
-								<thead style="border-bottom: 1px solid rgba(0,0,0,.5) !important">
-									<tr>
-										<th>Element</th>
-										<th>Score</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>System Rating</td>
-										<td style="text-align: right;padding-right: 5px;"><?php echo $healthrating*100; ?>%</td>
-										<td><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:<?php echo $healthrating_color; ?>"></span></td>
-									</tr>
-									<tr>
-										<td>Management Rating</td>
-										<td style="text-align: right;padding-right: 5px;"><?php echo $healthrating*100; ?>%</td>
-										<td><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:<?php echo $healthrating_color; ?>"></span></td>
-									</tr>
-									<tr style="border-top: 1px dotted rgba(0,0,0,.5) !important;">
-										<td><strong><i>Average Rating</i></strong></td>
-										<td style="text-align: right;padding-right: 5px;"><strong><i><?php echo $healthrating*100; ?>%</i></strong></td>
-										<td><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:<?php echo $healthrating_color; ?>"></span></td>
-									</tr>
-								</tbody>
-							</table>
-							<table style="width: 100%;margin: 0cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;border-collapse: collapse;">
-								<thead>
-									<tr>
-										<th style="font-style: italic;">Key</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td style="text-align: right;padding-right: 5px;"><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:#cd4f4f"></span></td>
-										<td style="text-align: left;padding-right: 5px;">Poor</td>
-										<td style="text-align: right;padding-right: 5px;"><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:#f9c034"></span></td>
-										<td style="text-align: left;padding-right: 5px;">Fair</td>
-										<td style="text-align: right;padding-right: 5px;"><span class="rating" style="width: 0.33cm;display: inline-block;height: 0.33cm;margin: 0;border-radius: 50%;background-color:#539e46"></span></td>
-										<td style="text-align: left;padding-right: 5px;">Good</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+					<div class="right" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;">
+						<h5 style="margin: 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Comparative Analysis</h5>
+						
 					</div>
 				</div>
 				<div class="footer">Footer</div>
