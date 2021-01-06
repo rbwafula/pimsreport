@@ -2,28 +2,6 @@
 // Variables here
 $month = Date("M") . ' ' . Date("Y");
 $division = ucwords('Africa');
-if( isset($_GET['office']) ) {
-     $division = ucwords($_GET['office']);
-}
-include_once('dynamic_algo.php');
-
-
-/*echo '<pre>';
-print_r($processed_divisiondata[$division]["projectsubprogramme"]);
-echo '</pre>';
-echo '<hr/>';
-exit;
-*/
-$d_subprogramme_projects_distribution_name = array();
-$d_subprogramme_projects_distribution_number = array();
-$d_subprogramme_projects_distribution_projects = array();
-$i;
-
-for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); $i++) {
-    array_push($d_subprogramme_projects_distribution_name, $processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme']);
-    array_push($d_subprogramme_projects_distribution_number, "SP ".$processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme_number']);
-    array_push($d_subprogramme_projects_distribution_projects, $processed_divisiondata[$division]["projectsubprogramme"][$i]['projects']);
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -32,15 +10,6 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
 	<link rel="stylesheet" href="assets/css/highcharts.css">
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-	
-    <!-- Vendor CSS -->
-    <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
-    <!--<link rel="stylesheet" href="assets/css/main.css">-->
-    <link rel="stylesheet" href="assets/css/highcharts.css">
-
-    <!-- Vendor JS -->
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/highcharts-more.js"></script>
 	<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
@@ -177,25 +146,6 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                         </table>
 						
 					</div>
-					<div class="title" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: center;">
-                        <table style="border-collapse: collapse; width: 100%;">
-                            <tr>
-                                <td>
-                                    <h1 style="margin: 0;font-weight: 500;font-size: 1.2cm;color: #333;letter-spacing: 0;">
-                                        <?php echo $processed_divisiondata[$division]["entity"]; ?>
-                                    </h1>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h6 style="margin: 0;letter-spacing: 0;color: #707070;padding-top: 0cm;font-size: 0.4cm;font-weight: 400; margin-top:0.15cm">
-                                        Programme Delivery Report
-                                    </h6>
-                                </td>
-                            </tr>
-                        </table>
-						
-						
 					</div>
                     <div class="stamp" style="position: relative;width: 100%;-ms-flex: 0 0 20%;flex: 0 0 20%;max-width: 20%;margin-bottom: 0.2cm;text-align: right;">
                         <table style="border-collapse: collapse; float: right; width: 5cm">
@@ -899,169 +849,6 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
 							</div>
 						</div>
 
-					</div>
-
-
-                    <div class="right" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: transparent;">
-                        <h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Human Resource</h5>
-                        <div id="humanresource">
-                            <div id="humanresource_chart"></div>
-                            <script type="text/javascript">
-                                Highcharts.chart('humanresource_chart', {
-                                    colors: ['#ccc','#17a2b8'],
-                                    credits: { 
-                                        text: 'Figure n'
-                                    },
-                                    chart: {
-                                        type: 'bar',
-                                        height: 230,
-                                        backgroundColor: 'transparent'
-                                    },
-                                    title: {
-                                        text: ''
-                                    },
-                                    xAxis: {
-                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
-                                        labels: {
-                                            style: {
-                                                fontSize: '0.2cm'
-                                            }
-                                        }
-                                    },
-                                    yAxis: {
-                                        min: 0,
-                                        title: {
-                                            text: ''
-                                        }
-                                    },
-                                    legend: {
-                                        reversed: true,
-                                        style: {
-                                            fontSize: '10px'
-                                        }
-                                    },
-                                    plotOptions: {
-                                        bar: {
-                                            pointPadding: 0.2,
-                                            borderWidth: 0,
-                                            dataLabels: {
-                                                enabled: false,
-                                                formatter: function() {
-                                                    return '' + Highcharts.numberFormat(this.y,0) + '';
-                                                }
-                                            }
-                                        },
-                                        series: {
-                                            stacking: 'normal',
-                                            pointWidth: 10,
-                                            groupPadding: 0,
-                                            pointPadding: 0.1,
-                                            borderWidth: 0
-                                        }
-                                    },
-                                    series: [{
-                                        name: 'Vacant',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsvacant"]); ?>,
-                                        showInLegend: true
-                                    }, {
-                                        name: 'Filled',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilled"]); ?>,
-                                        showInLegend: true
-                                    }]
-                                });
-                            </script>
-                        </div>
-
-
-                        <div id="hrgender">
-                            <div id="hrgender_chart"></div>
-                            <script type="text/javascript">
-                                Highcharts.chart('hrgender_chart', {
-                                    chart: {
-                                        type: 'bar',
-                                        height: 230,
-                                        backgroundColor: 'transparent'
-                                    },
-                                    credits: {
-                                        text: 'Figure n'
-                                    },
-                                    title: {
-                                        text: ''
-                                    },
-                                    subtitle: {
-                                        text: ''
-                                    },
-                                    tooltip: {
-                                        enabled: false
-                                    },
-                                    accessibility: {
-                                        point: {
-                                            valueDescriptionFormat: '{index}. Age {xDescription}, {value}%.'
-                                        },
-                                        enabled: false
-                                    },
-                                    xAxis: [{
-                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
-                                        reversed: true,
-                                        labels: {
-                                            style: {
-                                                fontSize: '0.2cm'
-                                            },
-                                            step: 1
-                                        }
-                                    }, { // mirror axis on right side
-                                        opposite: true,
-                                        reversed: true,
-                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
-                                        linkedTo: 0,
-                                        labels: {
-                                            style: {
-                                                fontSize: '0.2cm'
-                                            },
-                                            step: 1
-                                        }
-                                    }],
-                                    yAxis: {
-                                        max:100,
-                                        min:-100,
-                                        title: {
-                                            text: null
-                                        },
-                                        labels: {
-                                            formatter: function () {
-                                                return Math.abs(this.value) + '%';
-                                            }
-                                        },
-                                        accessibility: {
-                                            description: 'Percentage population',
-                                            rangeDescription: 'Range: 0 to 5%'
-                                        }
-                                    },
-
-                                    plotOptions: {
-                                        series: {
-                                            stacking: 'normal'
-                                        }
-                                    },
-
-                                    tooltip: {
-                                        formatter: function () {
-                                            return '<b>' + this.series.name + ', age ' + this.point.category + '</b><br/>' +
-                                                'Population: ' + Highcharts.numberFormat(Math.abs(this.point.y), 1) + '%';
-                                        },
-                                        enabled: false
-                                    },
-                                    series: [{
-                                        name: 'Male',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledmale"]); ?>
-                                    }, {
-                                        name: 'Female',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledfemale"]); ?>
-                                    }]
-                                });
-                            </script>
-                        </div>
-                    </div>
 				</div>
 				<div class="footer">Footer</div>
 			</div>
@@ -1110,75 +897,5 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
 			</div>
 		</div>
 	</page>
-
-    <?php 
-        $staffcount = count($processed_divisiondata[$division]["stafflisting"]);
-        $recordsperpage = 13;
-        $pages = ceil($staffcount / $recordsperpage);
-
-        //echo 'Records: '.$staffcount.'<hr/>';
-        $i;
-        $upperlimit;
-        for ($i=0; $i<$pages; $i++) {
-            if ($i != ($pages-1)) {
-                $upperlimit = (($i*$recordsperpage)+$recordsperpage-1);
-            } else {
-                $upperlimit = $staffcount-1;
-            }
-            //echo 'Page '.$i.' will have records: '.($i*$recordsperpage).' to '.$upperlimit.'</br>';
-
-            ?>
-            <page size="A4" layout="landscape">
-                <div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
-                    <div class="page-content" style="height: 18.36cm; width: 27.1cm; max-height: 18.36cm; max-width: 28.1cm;">
-                        <?php
-                            if ($i == 0) {
-                                echo '<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Annex 2: Staff Table</h5>';
-                            } else {
-                                echo '<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>';
-                            }
-                        ?>
-                        <div id="annex2" class="tablelisting" style="width: 100%; max-width: 100%; box-sizing: border-box; margin: 0 auto 1em; -moz-box-sizing: border-box;">
-                            <table style="width:100%; table-layout: auto !important; border-collapse: collapse;">
-                                <thead>
-                                    <th>RecordID</th>
-                                    <th>Grade</th>
-                                    <th>Position Title</th>
-                                    <th>Position Number</th>
-                                    <th>Duty Station</th>
-                                    <th>Filled</th>
-                                    <th>Staff Name</th>
-                                    <th>Org Code</th>
-                                    <th>Org Unit</th>
-                                </thead>
-                                <tbody>
-                                    <?php 
-                                        $j;
-                                        for($j=($i*$recordsperpage); $j <= $upperlimit; $j++ ) {
-                                            echo '<tr>';
-                                            echo '<td>'.$j.'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['grade'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_title'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_number'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['duty_station'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['filled'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['staff_name'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['org_code'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['org_unit_description'].'</td>';
-                                            echo '</tr>';
-                                        }
-                                    ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </page>
-
-            <?
-        }
-    ?>
-
-    
 </body>
 </html>
