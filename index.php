@@ -2,17 +2,47 @@
 // Variables here
 $month = Date("M") . ' ' . Date("Y");
 $division = ucwords('Africa');
+if( isset($_GET['office']) ) {
+     $division = ucwords($_GET['office']);
+}
+include_once('dynamic_algo.php');
+
+/*
+echo '<pre>';
+print_r($processed_divisiondata[$division]["projectsubprogramme"]);
+echo '</pre>';
+echo '<hr/>';
+*/
+
+$d_subprogramme_projects_distribution_name = array();
+$d_subprogramme_projects_distribution_number = array();
+$d_subprogramme_projects_distribution_projects = array();
+$i;
+for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); $i++) {
+    array_push($d_subprogramme_projects_distribution_name, $processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme']);
+    array_push($d_subprogramme_projects_distribution_number, "SP ".$processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme_number']);
+    array_push($d_subprogramme_projects_distribution_projects, $processed_divisiondata[$division]["projectsubprogramme"][$i]['projects']);
+}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>A4 Report</title>
-	<link rel="stylesheet" href="assets/css/highcharts.css">
-	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-	<script src="https://code.highcharts.com/highcharts-more.js"></script>
-	<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+    <title>A4 Report</title>
+    <link rel="stylesheet" href="assets/css/highcharts.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="assets/css/main.css">-->
+    <link rel="stylesheet" href="assets/css/highcharts.css">
+
+    <!-- Vendor JS -->
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
 
     <style type="text/css">
         body {
@@ -117,14 +147,14 @@ $division = ucwords('Africa');
             }
         }
     </style>
-	
+    
 </head>
 <body>
-	<page size="A4">
-		<div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
-			<div class="page-content" style="height: 28.1cm; width: 18.36cm; max-height: 28.1cm; max-width: 18.36cm;">
-				<div class="header" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; border-bottom: 0.1cm solid #707070; margin-bottom: 0.2cm;">
-					<div class="logo" style="position: relative;width: 100%;-ms-flex: 0 0 30%;flex: 0 0 30%;max-width: 30%;margin-bottom: 0.2cm;">
+    <page size="A4">
+        <div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
+            <div class="page-content" style="height: 28.1cm; width: 18.36cm; max-height: 28.1cm; max-width: 18.36cm;">
+                <div class="header" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; border-bottom: 0.1cm solid #707070; margin-bottom: 0.2cm;">
+                    <div class="logo" style="position: relative;width: 100%;-ms-flex: 0 0 30%;flex: 0 0 30%;max-width: 30%;margin-bottom: 0.2cm;">
                         <table style="border-collapse: collapse; float: left;">
                             <tr>
                                 <td>
@@ -144,9 +174,28 @@ $division = ucwords('Africa');
                                 </td>
                             </tr>
                         </table>
-						
-					</div>
-					</div>
+                        
+                    </div>
+                    <div class="title" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: center;">
+                        <table style="border-collapse: collapse; width: 100%;">
+                            <tr>
+                                <td>
+                                    <h1 style="margin: 0;font-weight: 500;font-size: 1.2cm;color: #333;letter-spacing: 0;">
+                                        <?php echo $processed_divisiondata[$division]["entity"]; ?>
+                                    </h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h6 style="margin: 0;letter-spacing: 0;color: #707070;padding-top: 0cm;font-size: 0.4cm;font-weight: 400; margin-top:0.15cm">
+                                        Programme Delivery Report
+                                    </h6>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        
+                    </div>
                     <div class="stamp" style="position: relative;width: 100%;-ms-flex: 0 0 20%;flex: 0 0 20%;max-width: 20%;margin-bottom: 0.2cm;text-align: right;">
                         <table style="border-collapse: collapse; float: right; width: 5cm">
                             <tr>
@@ -169,12 +218,12 @@ $division = ucwords('Africa');
                             </tr>
                         </table>
                     </div>
-				</div>
-				<div class="body" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; border-bottom: 0.1cm solid #707070; margin-bottom: 0.5cm; padding: 0.2cm 0 0.2cm">
-					<div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: #f6f6f6;">
-						<h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Summary</h5>
-						<p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"];?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',');?>)</strong>, capturing a rolling total of the cash received over time.</p>
-						<?php 
+                </div>
+                <div class="body" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; border-bottom: 0.1cm solid #707070; margin-bottom: 0.5cm; padding: 0.2cm 0 0.2cm">
+                    <div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: #f6f6f6;">
+                        <h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Summary</h5>
+                        <p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"];?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',');?>)</strong>, capturing a rolling total of the cash received over time.</p>
+                        <?php 
                            // echo '<p style="display:none;margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">Out of the '.$projects.', <strong>.'.$keystoneprojects.'.</strong>, these are projects with dollar value of $ 10 million and above, contributing to <strong>USD. '.$fundedactivities.'</strong> of the overall budget. Keystone projects are projects of significant value to the organization as they attract a higher dollar value and require further scrutiny by management, in comparison to other projects.</p>';
                         ?>
                         
@@ -277,56 +326,56 @@ $division = ucwords('Africa');
                                 });
                             </script>
                         </div>
-					</div>
-					<div class="right" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: #f6f6f6;">
-						<h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>
-						<div style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; margin:0 0.4cm">
-							<div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
-								<div style="text-align: center; color: #0077b6;">
-									<p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totalprojects"],0,'.',',');?></p>
-									<p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Projects</p>
-								</div>
-							</div>
-							<div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
-								<div style="text-align: center; color: #17a2b8;">
-									<p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totaloutputs"],0,'.',',');?></p>
-									<p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Outputs</p>
-								</div>
-							</div>
-							<div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
-								<div style="text-align: center; color: #688753;">
-									<p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totalactivities"],0,'.',',');?></p>
-									<p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Activities</p>
-								</div>
-							</div>
+                    </div>
+                    <div class="right" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: #f6f6f6;">
+                        <h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>
+                        <div style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; margin:0 0.4cm">
+                            <div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
+                                <div style="text-align: center; color: #0077b6;">
+                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totalprojects"],0,'.',',');?></p>
+                                    <p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Projects</p>
+                                </div>
+                            </div>
+                            <div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
+                                <div style="text-align: center; color: #17a2b8;">
+                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totaloutputs"],0,'.',',');?></p>
+                                    <p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Outputs</p>
+                                </div>
+                            </div>
+                            <div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
+                                <div style="text-align: center; color: #688753;">
+                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totalactivities"],0,'.',',');?></p>
+                                    <p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Activities</p>
+                                </div>
+                            </div>
                             <div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
                                 <div style="text-align: center; color: #dc3545;">
                                     <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["pastdueprojects"],0,'.',',');?></p>
                                     <p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Expired Projects</p>
                                 </div>
                             </div>
-							
+                            
 
-							<div style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
-								<div id="chart1"></div>
-							</div>
-							<div style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
-								<div id="chart2"></div>
-								<script type="text/javascript">
-									Highcharts.chart('chart2', {
-									    colors: ['#17a2b8'],
-									    credits: {
-									        text: ''
-									    },
-									    chart: {
-									        backgroundColor: '#F6F6F6',
-									        type: 'column',
-									        height: 200
-									    },
-									    title: {
-									        text: 'Budget Utilization',
-									        floating: true,
-									        align: 'center',
+                            <div style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
+                                <div id="chart1"></div>
+                            </div>
+                            <div style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
+                                <div id="chart2"></div>
+                                <script type="text/javascript">
+                                    Highcharts.chart('chart2', {
+                                        colors: ['#17a2b8'],
+                                        credits: {
+                                            text: ''
+                                        },
+                                        chart: {
+                                            backgroundColor: '#F6F6F6',
+                                            type: 'column',
+                                            height: 200
+                                        },
+                                        title: {
+                                            text: 'Budget Utilization',
+                                            floating: true,
+                                            align: 'center',
                                             verticalAlign: 'bottom',
                                             margin: 0,
                                             style: {
@@ -335,93 +384,93 @@ $division = ucwords('Africa');
                                                 fontWeight: '500',
                                                 textTransform: 'none'
                                             },
-        									x: 30,
-        									y: 30,
-        									/*style: {
-        										fontSize: '0.35cm',
-        										fontWeight: 'bold'
-        									}*/
-									    },
-									    xAxis: {
-									        categories: [
-									            'Consumable Budget',
-									            'Consumed Budget',
-									            'Budget Balance'
-									        ],
-									        labels: {
-									            style: {
-									                fontSize: '0.2cm'
-									            },
-									            formatter: function() {
-												    var ret = this.value,
-												        len = ret.length;
-												    //console.log(len);
-												    if (len > 10) {
-												    	ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
-												    }
-												    if (len > 25) {
-												        ret = ret.slice(0, 25) + '...';
-												    }
-												    return ret;
-												}
-									        },
-									        crosshair: true
-									    },
-									    yAxis: {
-									        min: 0,
-									        title: {
-									            text: 'USD (M)'
-									        },
-									        labels: {
-									            style: {
-									                fontSize: '0.2cm'
-									            }
-									        }
-									    },
-									    tooltip: {
-									        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-									        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-									            '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
-									        footerFormat: '</table>',
-									        shared: true,
-									        useHTML: true
-									    },
-									    plotOptions: {
-									        column: {
-									            pointPadding: 0.2,
-									            borderWidth: 0,
+                                            x: 30,
+                                            y: 30,
+                                            /*style: {
+                                                fontSize: '0.35cm',
+                                                fontWeight: 'bold'
+                                            }*/
+                                        },
+                                        xAxis: {
+                                            categories: [
+                                                'Consumable Budget',
+                                                'Consumed Budget',
+                                                'Budget Balance'
+                                            ],
+                                            labels: {
+                                                style: {
+                                                    fontSize: '0.2cm'
+                                                },
+                                                formatter: function() {
+                                                    var ret = this.value,
+                                                        len = ret.length;
+                                                    //console.log(len);
+                                                    if (len > 10) {
+                                                        ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                                    }
+                                                    if (len > 25) {
+                                                        ret = ret.slice(0, 25) + '...';
+                                                    }
+                                                    return ret;
+                                                }
+                                            },
+                                            crosshair: true
+                                        },
+                                        yAxis: {
+                                            min: 0,
+                                            title: {
+                                                text: 'USD (M)'
+                                            },
+                                            labels: {
+                                                style: {
+                                                    fontSize: '0.2cm'
+                                                }
+                                            }
+                                        },
+                                        tooltip: {
+                                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                                '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                            footerFormat: '</table>',
+                                            shared: true,
+                                            useHTML: true
+                                        },
+                                        plotOptions: {
+                                            column: {
+                                                pointPadding: 0.2,
+                                                borderWidth: 0,
                                                 dataLabels: {
                                                     enabled: true,
                                                     formatter: function() {
                                                         return '$ ' + Highcharts.numberFormat(this.y,2) + 'M';
                                                     }
                                                 }
-									        },
+                                            },
                                             series: {
                                                 groupPadding: 0,
                                                 pointPadding: 0.1,
                                                 borderWidth: 0
                                             }
-									    },
-									    series: [{
-									        name: '2020',
-									        data: [
+                                        },
+                                        series: [{
+                                            name: '2020',
+                                            data: [
                                                 <? echo $processed_divisiondata[$division]["consumablebudget"]/1000000; ?>, 
                                                 <? echo $processed_divisiondata[$division]["totalconsumedbudget"]/1000000; ?>, 
                                                 <?php echo ($processed_divisiondata[$division]["consumablebudget"] - $processed_divisiondata[$division]["totalconsumedbudget"])/1000000; ?>],
                                             showInLegend: false
 
-									    }]
-									});
-								</script>
-							</div>
-						</div>
-					</div>
+                                        }]
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
 
 
-					<div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;">
-						<h5 style="margin: 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Portfolio Statistics</h5>
-						<div class="container gauges" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap;">
+                    <div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;">
+                        <h5 style="margin: 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Portfolio Statistics</h5>
+                        <div class="container gauges" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap;">
                             <table style="border-collapse: collapse; width: 350px; height: 100px;">
                                 <tr>
                                     <td height="70px" width="33%" style="background-color: transparent; width: 33%; max-width: 33%; vertical-align: top;">
@@ -447,7 +496,7 @@ $division = ucwords('Africa');
                                     </td>
                                 </tr>
                             </table>
-							<div id="budgetutilized" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
+                            <div id="budgetutilized" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
 
                                 
 
@@ -602,10 +651,10 @@ $division = ucwords('Africa');
                                     });
                                 </script>
                                 
-							</div>
-							<div id="activitiescompleted" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
-								
-								<script type="text/javascript">
+                            </div>
+                            <div id="activitiescompleted" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
+                                
+                                <script type="text/javascript">
 
                                     Highcharts.chart('activitiescompleted_chart', {
                                         chart: {
@@ -673,16 +722,16 @@ $division = ucwords('Africa');
                                             ]
                                         }]
                                     });
-								</script>
+                                </script>
                                 
-							</div>
-							
-						</div>
-						<div class="container" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap;">
-							<div id="projectdis" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
-								<div id="budgetage_chart"></div>
-								<script type="text/javascript">
-									Highcharts.chart('budgetage_chart', {
+                            </div>
+                            
+                        </div>
+                        <div class="container" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap;">
+                            <div id="projectdis" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
+                                <div id="budgetage_chart"></div>
+                                <script type="text/javascript">
+                                    Highcharts.chart('budgetage_chart', {
                                         colors: ['#17a2b8'],
                                         credits: {
                                             text: 'Figure n'
@@ -755,13 +804,13 @@ $division = ucwords('Africa');
                                             color: '#4e90e0',
                                             showInLegend: false
                                         }]
-									});
-								</script>
-							</div>
+                                    });
+                                </script>
+                            </div>
 
-							<div id="budgetsize" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
-								<div id="budgetsize_chart"></div>
-								<script type="text/javascript">
+                            <div id="budgetsize" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
+                                <div id="budgetsize_chart"></div>
+                                <script type="text/javascript">
                                     $(function () {
                                         Highcharts.setOptions({
                                             lang: {
@@ -844,20 +893,183 @@ $division = ucwords('Africa');
                                     });
 
 
-									
-								</script>
-							</div>
-						</div>
+                                    
+                                </script>
+                            </div>
+                        </div>
 
-				</div>
-				<div class="footer">Footer</div>
-			</div>
-		</div>
-	</page>
-	<page size="A4" layout="landscape">
-		<div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
-			<div class="page-content" style="height: 18.36cm; width: 27.1cm; max-height: 18.36cm; max-width: 28.1cm;">
-				<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Annex 1: Projects Table</h5>
+                    </div>
+
+
+                    <div class="right" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: transparent;">
+                        <h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Human Resource</h5>
+                        <div id="humanresource">
+                            <div id="humanresource_chart"></div>
+                            <script type="text/javascript">
+                                Highcharts.chart('humanresource_chart', {
+                                    colors: ['#ccc','#17a2b8'],
+                                    credits: { 
+                                        text: 'Figure n'
+                                    },
+                                    chart: {
+                                        type: 'bar',
+                                        height: 230,
+                                        backgroundColor: 'transparent'
+                                    },
+                                    title: {
+                                        text: ''
+                                    },
+                                    xAxis: {
+                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
+                                        labels: {
+                                            style: {
+                                                fontSize: '0.2cm'
+                                            }
+                                        }
+                                    },
+                                    yAxis: {
+                                        min: 0,
+                                        title: {
+                                            text: ''
+                                        }
+                                    },
+                                    legend: {
+                                        reversed: true,
+                                        style: {
+                                            fontSize: '10px'
+                                        }
+                                    },
+                                    plotOptions: {
+                                        bar: {
+                                            pointPadding: 0.2,
+                                            borderWidth: 0,
+                                            dataLabels: {
+                                                enabled: false,
+                                                formatter: function() {
+                                                    return '' + Highcharts.numberFormat(this.y,0) + '';
+                                                }
+                                            }
+                                        },
+                                        series: {
+                                            stacking: 'normal',
+                                            pointWidth: 10,
+                                            groupPadding: 0,
+                                            pointPadding: 0.1,
+                                            borderWidth: 0
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'Vacant',
+                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsvacant"]); ?>,
+                                        showInLegend: true
+                                    }, {
+                                        name: 'Filled',
+                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilled"]); ?>,
+                                        showInLegend: true
+                                    }]
+                                });
+                            </script>
+                        </div>
+
+
+                        <div id="hrgender">
+                            <div id="hrgender_chart"></div>
+                            <script type="text/javascript">
+                                Highcharts.chart('hrgender_chart', {
+                                    chart: {
+                                        type: 'bar',
+                                        height: 230,
+                                        backgroundColor: 'transparent'
+                                    },
+                                    credits: {
+                                        text: 'Figure n'
+                                    },
+                                    title: {
+                                        text: ''
+                                    },
+                                    subtitle: {
+                                        text: ''
+                                    },
+                                    tooltip: {
+                                        enabled: false
+                                    },
+                                    accessibility: {
+                                        point: {
+                                            valueDescriptionFormat: '{index}. Age {xDescription}, {value}%.'
+                                        },
+                                        enabled: false
+                                    },
+                                    xAxis: [{
+                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
+                                        reversed: true,
+                                        labels: {
+                                            style: {
+                                                fontSize: '0.2cm'
+                                            },
+                                            step: 1
+                                        }
+                                    }, { // mirror axis on right side
+                                        opposite: true,
+                                        reversed: true,
+                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
+                                        linkedTo: 0,
+                                        labels: {
+                                            style: {
+                                                fontSize: '0.2cm'
+                                            },
+                                            step: 1
+                                        }
+                                    }],
+                                    yAxis: {
+                                        max:100,
+                                        min:-100,
+                                        title: {
+                                            text: null
+                                        },
+                                        labels: {
+                                            formatter: function () {
+                                                return Math.abs(this.value) + '%';
+                                            }
+                                        },
+                                        accessibility: {
+                                            description: 'Percentage population',
+                                            rangeDescription: 'Range: 0 to 5%'
+                                        }
+                                    },
+
+                                    plotOptions: {
+                                        series: {
+                                            stacking: 'normal'
+                                        }
+                                    },
+
+                                    tooltip: {
+                                        formatter: function () {
+                                            return '<b>' + this.series.name + ', age ' + this.point.category + '</b><br/>' +
+                                                'Population: ' + Highcharts.numberFormat(Math.abs(this.point.y), 1) + '%';
+                                        },
+                                        enabled: false
+                                    },
+                                    series: [{
+                                        name: 'Male',
+                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledmale"]); ?>
+                                    }, {
+                                        name: 'Female',
+                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledfemale"]); ?>
+                                    }]
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">Footer</div>
+            </div>
+        </div>
+    </page>
+    <page size="A4" layout="landscape">
+        <div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
+            <div class="page-content" style="height: 18.36cm; width: 27.1cm; max-height: 18.36cm; max-width: 28.1cm;">
+                <h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Annex 1: Projects Table</h5>
                 <div id="annex1" class="tablelisting" style="width: 100%; max-width: 100%; box-sizing: border-box; margin: 0 auto 1em; -moz-box-sizing: border-box;">
                     <table style="width:100%; table-layout: auto !important; border-collapse: collapse;">
                         <thead>
@@ -894,8 +1106,78 @@ $division = ucwords('Africa');
                         </tbody>
                     </table>
                 </div>
-			</div>
-		</div>
-	</page>
+            </div>
+        </div>
+    </page>
+
+    <?php 
+        $staffcount = count($processed_divisiondata[$division]["stafflisting"]);
+        $recordsperpage = 13;
+        $pages = ceil($staffcount / $recordsperpage);
+
+        //echo 'Records: '.$staffcount.'<hr/>';
+        $i;
+        $upperlimit;
+        for ($i=0; $i<$pages; $i++) {
+            if ($i != ($pages-1)) {
+                $upperlimit = (($i*$recordsperpage)+$recordsperpage-1);
+            } else {
+                $upperlimit = $staffcount-1;
+            }
+            //echo 'Page '.$i.' will have records: '.($i*$recordsperpage).' to '.$upperlimit.'</br>';
+
+            ?>
+            <page size="A4" layout="landscape">
+                <div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
+                    <div class="page-content" style="height: 18.36cm; width: 27.1cm; max-height: 18.36cm; max-width: 28.1cm;">
+                        <?php
+                            if ($i == 0) {
+                                echo '<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Annex 2: Staff Table</h5>';
+                            } else {
+                                echo '<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>';
+                            }
+                        ?>
+                        <div id="annex2" class="tablelisting" style="width: 100%; max-width: 100%; box-sizing: border-box; margin: 0 auto 1em; -moz-box-sizing: border-box;">
+                            <table style="width:100%; table-layout: auto !important; border-collapse: collapse;">
+                                <thead>
+                                    <th>RecordID</th>
+                                    <th>Grade</th>
+                                    <th>Position Title</th>
+                                    <th>Position Number</th>
+                                    <th>Duty Station</th>
+                                    <th>Filled</th>
+                                    <th>Staff Name</th>
+                                    <th>Org Code</th>
+                                    <th>Org Unit</th>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                        $j;
+                                        for($j=($i*$recordsperpage); $j <= $upperlimit; $j++ ) {
+                                            echo '<tr>';
+                                            echo '<td>'.$j.'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['grade'].'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_title'].'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_number'].'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['duty_station'].'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['filled'].'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['staff_name'].'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['org_code'].'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['org_unit_description'].'</td>';
+                                            echo '</tr>';
+                                        }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </page>
+
+            <?
+        }
+    ?>
+
+    
 </body>
 </html>
