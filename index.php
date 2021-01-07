@@ -7,14 +7,13 @@ if( isset($_GET['office']) ) {
 }
 include_once('dynamic_algo.php');
 
-/*
-echo '<pre>';
+
+/*echo '<pre>';
 print_r($processed_divisiondata[$division]["projectsubprogramme"]);
 echo '</pre>';
-echo '<hr/>';
-*/
+echo '<hr/>';*/
 
-$d_subprogramme_projects_distribution_name = array();
+/*$d_subprogramme_projects_distribution_name = array();
 $d_subprogramme_projects_distribution_number = array();
 $d_subprogramme_projects_distribution_projects = array();
 $i;
@@ -22,7 +21,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
     array_push($d_subprogramme_projects_distribution_name, $processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme']);
     array_push($d_subprogramme_projects_distribution_number, "SP ".$processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme_number']);
     array_push($d_subprogramme_projects_distribution_projects, $processed_divisiondata[$division]["projectsubprogramme"][$i]['projects']);
-}
+}*/
 ?>
 <!DOCTYPE html>
 <html>
@@ -193,8 +192,6 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                 </td>
                             </tr>
                         </table>
-                        
-                        
                     </div>
                     <div class="stamp" style="position: relative;width: 100%;-ms-flex: 0 0 20%;flex: 0 0 20%;max-width: 20%;margin-bottom: 0.2cm;text-align: right;">
                         <table style="border-collapse: collapse; float: right; width: 5cm">

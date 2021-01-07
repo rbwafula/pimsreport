@@ -11,6 +11,19 @@ $proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims
 
 $processed_divisiondata = array();
 
+function getdataobjectfromurl($url)
+{
+// CURL GET DATA FROM URL
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
+    return json_decode($data);
+}
+
 function getdaysbetween($start, $end)
 {
     $startDate = strtotime($start);
@@ -45,60 +58,25 @@ function sortByOrder($a, $b)
     return $a['order'] - $b['order'];
 }
 
-// CURL GET DATA FROM URL
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HEADER, 0);
-$data = curl_exec($ch);
-curl_close($ch);
+// GET PROJECTS DATA
+$division_data = getdataobjectfromurl($url);
 
-// CURL GET DATA FROM ACTIVITIES URL
-$ch = curl_init($activities_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HEADER, 0);
-$a_data = curl_exec($ch);
-curl_close($ch);
+// GET ACTIVITIES DATA
+$activities_data = getdataobjectfromurl($activities_url);
 
-// CURL GET DATA FROM OUTPUTS URL
-$ch = curl_init($outputs_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HEADER, 0);
-$o_data = curl_exec($ch);
-curl_close($ch);
+// GET OUTPUTS DATA
+$outputs_data = getdataobjectfromurl($outputs_url);
 
-// CURL GET DATA FROM HR URL
-$ch = curl_init($hr_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HEADER, 0);
-$h_data = curl_exec($ch);
-curl_close($ch);
+//GET HR DATA
+$hr_data = getdataobjectfromurl($hr_url);
 
-// CURL GET DATA FROM PROJ ACTIVITY URL
-$ch = curl_init($proj_activity_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HEADER, 0);
-$p_data = curl_exec($ch);
-curl_close($ch);
-
-// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
-$division_data = json_decode($data);
-
-// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
-$activities_data = json_decode($a_data);
-
-// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
-$outputs_data = json_decode($a_data);
-
-// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
-$hr_data = json_decode($h_data);
-
-// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
-$proj_data = json_decode($p_data);
+// GET PROJECT ACTIVITIES DATA
+$proj_data = getdataobjectfromurl($proj_activity_url);
 
 // var_dump($hr_data);
 
 // STAFF ORDER BY SENIORITY FOR REFERENCE
-$staff_order_array = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'G-S'];
+$staff_order_array = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'GS'];
 
 // CALCULATE THE TOTAL METRICS
 $total_projects = 0;
@@ -167,7 +145,7 @@ foreach ($division_data as $key => $value) {
     $sp_name = strtolower($value->subprogramme);
     if (array_search($sp_name, $unique_subprogrammes) < 1) {
         $unique_subprogrammes[$x] = $sp_name;
-        $unique_subprogramme_data[] = ["subprogramme" => $sp_name, "subprogramme_number" => $value->sp_number,  "projects" => 1, "divisions" => [$value->managing_division]];
+        $unique_subprogramme_data[] = ["subprogramme" => $sp_name, "subprogramme_number" => $value->sp_number, "projects" => 1, "divisions" => [$value->managing_division]];
     } else {
 
         foreach ($unique_subprogramme_data as $skey => $svalue) {
@@ -296,7 +274,7 @@ foreach ($unique_posts_data as $pkey => $pvalue) {
     }
 }
 
-$G_staff_distribution = ["post" => 'G-S', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
+$G_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
 
 foreach ($overall_post_status_distribution as $key => $value) {
     if ($value['filled'] == 0 && $value['vacant'] == 0) {
@@ -724,7 +702,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         }
     }
     $d_subprogramme_projects_distribution = [];
-    
+
     foreach ($unique_subprogramme_data as $key => $value) {
         $sp_projects_count = 0;
         foreach ($value['divisions'] as $udkey => $udvalue) {
@@ -732,14 +710,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 $sp_projects_count += 1;
             }
         }
-        $d_subprogramme_projects_distribution[] = ["subprogramme" => $value['subprogramme'], "subprogramme_number" => $value['subprogramme_number'],  "projects" => $sp_projects_count];
+        $d_subprogramme_projects_distribution[$value['subprogramme_number']] = ["order" => $value['subprogramme_number'], "subprogramme" => $value['subprogramme'], "subprogramme_number" => $value['subprogramme_number'], "projects" => $sp_projects_count];
     }
 
-    
-    /*echo '<pre>';
-    print_r($d_subprogramme_projects_distribution);
-    echo '</pre>';*/
-
+    usort($d_subprogramme_projects_distribution, 'sortByOrder');
 
     foreach ($activities_data as $key => $value) {
         if ($value->managing_division == $dvalue) {
@@ -764,6 +738,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             $datediffa = $endDatea - $startDatea;
             $project_days_age = round($datediffa / (60 * 60 * 24));
             // $project_days_age = getdaysbetween($startDate, null);
+
+            // echo 'From ' . $value->StartDate . ' to Now, age by days -' . $project_days_age . ' <br />';
 
             if ($value->percentage_time_taken != null) {
                 $d_project_pctgtimetaken += $value->percentage_time_taken;
@@ -892,7 +868,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_avg_project_pctgtimetaken_a = round($d_project_pctgtimetaken / $d_projects, 2) * 100;
     $d_average_percentage_activities_completed = round($d_percentage_activities_completed / $d_projects, 2) * 100;
 
-    $G_d_staff_distribution = ["post" => 'G-S', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
+    $G_d_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
 
     foreach ($d_post_status_distribution as $key => $value) {
         if ($value['filled'] == 0 && $value['vacant'] == 0) {
@@ -956,13 +932,22 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     }
 
     // display the division name its and number of projects
-    /*echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+    //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
 
-    var_dump($d_post_categories);
-    echo '<br />';
-    var_dump($d_post_filled);
-    echo '<br />';
-    var_dump($d_post_vacant);*/
+    $d_sp_array = [];
+    $d_sp_array['spnames'] = [];
+    $d_sp_array['spnumbers'] = [];
+    $d_sp_array['projectcount'] = [];
+
+    foreach ($d_subprogramme_projects_distribution as $key => $value) {
+        $d_sp_array['spnames'][] = $value['subprogramme'];
+        $d_sp_array['spnumbers'][] = $value['subprogramme_number'];
+        $d_sp_array['projectcount'][] = $value['projects'];
+
+        // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
+    }
+
+    //var_dump($d_sp_array);
 
     /*echo ' <br /> <br />';
     echo $d_filled_posts . ' Filled posts (' . $d_filled_male_count . ' male, ' . $d_filled_female_count . ' female) <br />';
@@ -1025,6 +1010,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "totalactivities" => $d_activities,
         "totaloutputs" => $d_outputs,
         "healthcolor" => gethealthcolor($d_average_project_health),
+        "healthrating" => $d_average_project_health,
         "consumablebudget" => $d_consumable_budget,
         "pastdueprojects" => $d_past_due_projects,
         "in6monthexpiry" => $d_projects_expiringin6,
@@ -1052,14 +1038,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
         "projectlisting" => $d_project_information,
         "stafflisting" => $d_staff_information,
-        "projectsubprogramme" => $d_subprogramme_projects_distribution
-        /*,
-        "projectsubprogrammename" => $d_subprogramme_projects_distribution_name,
-        "projectsubprogrammenumber" => $d_subprogramme_projects_distribution_number,
-        "projectsubprogrammeprojects" => $d_subprogramme_projects_distribution_projects*/
+        "projectsubprogramme" => $d_sp_array
     );
 
-    ?>  
+    ?>
 
 
 
