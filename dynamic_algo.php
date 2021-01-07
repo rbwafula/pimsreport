@@ -944,10 +944,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
     }
 
-    foreach ($d_staff_information as $key => $value) {
-        echo $value['grade'] . '<br />';
-    }
-
     /*echo ' <br /> <br />';
     echo $d_filled_posts . ' Filled posts (' . $d_filled_male_count . ' male, ' . $d_filled_female_count . ' female) <br />';
     echo $d_vacant_posts . ' Vacant posts <br />';
