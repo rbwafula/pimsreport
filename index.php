@@ -1,4 +1,8 @@
 <?php
+
+
+header('Location: landscape.php');
+die();
 // Variables here
 $month = Date("M") . ' ' . Date("Y");
 $division = ucwords('Africa');
@@ -7,12 +11,12 @@ if( isset($_GET['office']) ) {
 }
 include_once('dynamic_algo.php');
 
-
-/*echo '<pre>';
+/*
+echo '<pre>';
 print_r($processed_divisiondata[$division]["projectsubprogramme"]);
 echo '</pre>';
-echo '<hr/>';*/
-
+echo '<hr/>';
+*/
 /*$d_subprogramme_projects_distribution_name = array();
 $d_subprogramme_projects_distribution_number = array();
 $d_subprogramme_projects_distribution_projects = array();
@@ -101,6 +105,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
             margin-top: -55%;
         }
 
+        
         .tablelisting {
             border-collapse: collapse;
             margin: 0px 0;
@@ -134,15 +139,32 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
             color: #009879;
         }
 
-
-
-
-
-
         @media print {
             body, page {
                 margin: 0;
                 box-shadow: 0;
+                width: 100%;
+                background: rgb(255,255,255);
+            }
+            .pagebreak {
+                clear: both;
+                page-break-after: always;
+            }
+            page[size="A4"] {
+                width: 100%;
+                height: auto;
+            } 
+            .page-content {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto;
+                max-height: auto;
+            }
+            .bysubprogramme_chart {
+                max-width: 50%;
+            }
+            .budgetage_chart {
+                max-width: 50%;
             }
         }
     </style>
@@ -257,7 +279,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                         }*/
                                     },
                                     xAxis: {
-                                        categories: <?php echo json_encode($d_subprogramme_projects_distribution_number); ?>,
+                                        categories: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["spnames"]); ?>,
                                         labels: {
                                             style: {
                                                 fontSize: '0.2cm'
@@ -316,7 +338,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                     },
                                     series: [{
                                         name: 'Subprogramme',
-                                        data: <?php echo json_encode($d_subprogramme_projects_distribution_projects); ?>,
+                                        data: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["projectcount"]); ?>,
                                         showInLegend: false
 
                                     }]
@@ -450,7 +472,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                             }
                                         },
                                         series: [{
-                                            name: '2020',
+                                            name: 'Current Yr',
                                             data: [
                                                 <? echo $processed_divisiondata[$division]["consumablebudget"]/1000000; ?>, 
                                                 <? echo $processed_divisiondata[$division]["totalconsumedbudget"]/1000000; ?>, 
@@ -724,174 +746,183 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                             </div>
                             
                         </div>
+
+                        <div id="budgetage_chart"></div>
+                        <script type="text/javascript">
+                            Highcharts.chart('budgetage_chart', {
+                                colors: ['#17a2b8'],
+                                credits: {
+                                    text: 'Figure n'
+                                },
+                                chart: {
+                                    type: 'bar',
+                                    height: 180
+                                },
+                                title: {
+                                    text: 'Figure n: Grouping by Age',
+                                    floating: false,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 0,
+                                    style: {
+                                        color: '#333',
+                                        fontSize: '11px',
+                                        fontWeight: '600',
+                                        textTransform: 'none',
+                                    },
+                                    x: 30,
+                                    y: 0
+                                },
+                                xAxis: {
+                                    categories: ['0-2 Y', '2-5 Y', '5-10 Y', '10+ Y'],
+                                    title: {
+                                        text: 'Age Category',
+                                        style: {
+                                            fontSize: '0.3cm'
+                                        }
+                                    },
+                                    labels: {
+                                        style: {
+                                            fontSize: '0.2cm'
+                                        }
+                                    }
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: '',
+                                        style: {
+                                            fontSize: '0.3cm'
+                                        },
+                                        align: 'high'
+                                    },
+                                    labels: {
+                                        overflow: 'justify'
+                                    }
+                                },
+                                tooltip: {
+                                    valueSuffix: ' years'
+                                },
+                                plotOptions: {
+                                    bar: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'black',
+                                            formatter: function(){
+                                                return (this.y!=0)?this.y:"";
+                                            }
+                                        },
+                                        pointPadding: 0,
+                                        groupPadding: 0.1
+                                    }
+                                },
+                                series: [{
+                                    name: 'Project Age',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["projectage"]); ?>,
+                                    color: '#4e90e0',
+                                    showInLegend: false
+                                }]
+                            });
+                        </script>
+
+                        <div id="budgetsize_chart"></div>
+                        <script type="text/javascript">
+                            $(function () {
+                                Highcharts.setOptions({
+                                    lang: {
+                                        thousandsSep: ','
+                                    }
+                                });
+                                
+                                $('#budgetsize_chart').highcharts({
+                                    credits: {
+                                        text: 'Figure n'
+                                    },
+                                    chart: {
+                                        type: 'bar',
+                                        height: 180
+                                    },
+                                    title: {
+                                        text: 'Figure n: Grouping by Budget Size',
+                                        floating: false,
+                                        align: 'left',
+                                        verticalAlign: 'top',
+                                        margin: 0,
+                                        style: {
+                                            color: '#333',
+                                            fontSize: '11px',
+                                            fontWeight: '600',
+                                            textTransform: 'none',
+                                        },
+                                        x: 30,
+                                        y: 0
+                                    },
+                                    xAxis: {
+                                        categories: ['0-1 M','1-2 M', '2-5 M', '5-10 M', '10+ M'],
+                                        title: {
+                                            text: 'Budget Size',
+                                            style: {
+                                                fontSize: '0.3cm'
+                                            }
+                                        },
+                                        labels: {
+                                            style: {
+                                                fontSize: '0.2cm'
+                                            }
+                                        }
+                                    },
+                                    yAxis: {
+                                        min: 0,
+                                        title: {
+                                            text: '',
+                                            style: {
+                                                fontSize: '0.3cm'
+                                            },
+                                            align: 'high'
+                                        },
+                                        labels: {
+                                            overflow: 'justify'
+                                        }
+                                    },
+                                    tooltip: {
+                                        valueSuffix: ' millions'
+                                    },
+                                    plotOptions: {
+                                        bar: {
+                                            dataLabels: {
+                                                enabled: true,
+                                                formatter: function(){
+                                                    return (this.y!=0)? Highcharts.numberFormat(this.y,1):"";
+                                                }
+                                            },
+                                            pointPadding: 0,
+                                            groupPadding: 0.1
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'Grant Funding',
+                                        data: <?php echo json_encode($processed_divisiondata[$division]["grantfundingbygroup"]); ?>,
+                                        color: '#0077b6',
+                                        showInLegend: false
+                                    }]
+                                });
+                            });
+
+
+                            
+                        </script>
+
+
+
+
                         <div class="container" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap;">
                             <div id="projectdis" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
-                                <div id="budgetage_chart"></div>
-                                <script type="text/javascript">
-                                    Highcharts.chart('budgetage_chart', {
-                                        colors: ['#17a2b8'],
-                                        credits: {
-                                            text: 'Figure n'
-                                        },
-                                        chart: {
-                                            type: 'bar',
-                                            height: 180
-                                        },
-                                        title: {
-                                            text: 'Figure n: Grouping by Age',
-                                            floating: false,
-                                            align: 'left',
-                                            verticalAlign: 'top',
-                                            margin: 0,
-                                            style: {
-                                                color: '#333',
-                                                fontSize: '11px',
-                                                fontWeight: '600',
-                                                textTransform: 'none',
-                                            },
-                                            x: 30,
-                                            y: 0
-                                        },
-                                        xAxis: {
-                                            categories: ['0-2 Y', '2-5 Y', '5-10 Y', '10+ Y'],
-                                            title: {
-                                                text: 'Age Category',
-                                                style: {
-                                                    fontSize: '0.3cm'
-                                                }
-                                            },
-                                            labels: {
-                                                style: {
-                                                    fontSize: '0.2cm'
-                                                }
-                                            }
-                                        },
-                                        yAxis: {
-                                            min: 0,
-                                            title: {
-                                                text: '',
-                                                style: {
-                                                    fontSize: '0.3cm'
-                                                },
-                                                align: 'high'
-                                            },
-                                            labels: {
-                                                overflow: 'justify'
-                                            }
-                                        },
-                                        tooltip: {
-                                            valueSuffix: ' years'
-                                        },
-                                        plotOptions: {
-                                            bar: {
-                                                dataLabels: {
-                                                    enabled: true,
-                                                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'black',
-                                                    formatter: function(){
-                                                        return (this.y!=0)?this.y:"";
-                                                    }
-                                                },
-                                                pointPadding: 0,
-                                                groupPadding: 0.1
-                                            }
-                                        },
-                                        series: [{
-                                            name: 'Project Age',
-                                            data: <?php echo json_encode($processed_divisiondata[$division]["projectage"]); ?>,
-                                            color: '#4e90e0',
-                                            showInLegend: false
-                                        }]
-                                    });
-                                </script>
+                                
+                                
                             </div>
 
                             <div id="budgetsize" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
-                                <div id="budgetsize_chart"></div>
-                                <script type="text/javascript">
-                                    $(function () {
-                                        Highcharts.setOptions({
-                                            lang: {
-                                                thousandsSep: ','
-                                            }
-                                        });
-                                        
-                                        $('#budgetsize_chart').highcharts({
-                                            credits: {
-                                                text: 'Figure n'
-                                            },
-                                            chart: {
-                                                type: 'bar',
-                                                height: 180
-                                            },
-                                            title: {
-                                                text: 'Figure n: Grouping by Budget Size',
-                                                floating: false,
-                                                align: 'left',
-                                                verticalAlign: 'top',
-                                                margin: 0,
-                                                style: {
-                                                    color: '#333',
-                                                    fontSize: '11px',
-                                                    fontWeight: '600',
-                                                    textTransform: 'none',
-                                                },
-                                                x: 30,
-                                                y: 0
-                                            },
-                                            xAxis: {
-                                                categories: ['0-1 M','1-2 M', '2-5 M', '5-10 M', '10+ M'],
-                                                title: {
-                                                    text: 'Budget Size',
-                                                    style: {
-                                                        fontSize: '0.3cm'
-                                                    }
-                                                },
-                                                labels: {
-                                                    style: {
-                                                        fontSize: '0.2cm'
-                                                    }
-                                                }
-                                            },
-                                            yAxis: {
-                                                min: 0,
-                                                title: {
-                                                    text: '',
-                                                    style: {
-                                                        fontSize: '0.3cm'
-                                                    },
-                                                    align: 'high'
-                                                },
-                                                labels: {
-                                                    overflow: 'justify'
-                                                }
-                                            },
-                                            tooltip: {
-                                                valueSuffix: ' millions'
-                                            },
-                                            plotOptions: {
-                                                bar: {
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        formatter: function(){
-                                                            return (this.y!=0)? Highcharts.numberFormat(this.y,1):"";
-                                                        }
-                                                    },
-                                                    pointPadding: 0,
-                                                    groupPadding: 0.1
-                                                }
-                                            },
-                                            series: [{
-                                                name: 'Grant Funding',
-                                                data: <?php echo json_encode($processed_divisiondata[$division]["grantfundingbygroup"]); ?>,
-                                                color: '#0077b6',
-                                                showInLegend: false
-                                            }]
-                                        });
-                                    });
-
-
-                                    
-                                </script>
+                                
                             </div>
                         </div>
 
@@ -1063,6 +1094,9 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
             </div>
         </div>
     </page>
+
+    <div class="pagebreak"> </div>
+
     <page size="A4" layout="landscape">
         <div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
             <div class="page-content" style="height: 18.36cm; width: 27.1cm; max-height: 18.36cm; max-width: 28.1cm;">
@@ -1157,7 +1191,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                             echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_title'].'</td>';
                                             echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_number'].'</td>';
                                             echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['duty_station'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['filled'].'</td>';
+                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_status'].'</td>';
                                             echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['staff_name'].'</td>';
                                             echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['org_code'].'</td>';
                                             echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['org_unit_description'].'</td>';

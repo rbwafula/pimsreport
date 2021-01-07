@@ -6,7 +6,6 @@ html {
 	font-size: 100%;
 	margin: 0 !important;
 }
-
 body {
 	background-color: #FFF;
 	color: #707070;
@@ -20,170 +19,239 @@ body {
 	text-align: left;
 	font-weight: 300;
 }
-
-body a {
-	outline: none !important;
+.navbar {
+	min-height: 50px;
 }
-
-strong {
-	line-height: 1;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	font-family:"Roboto", "Open Sans", sans-serif;
-}
-
-li {
-	line-height: 24px;
-}
-div.logo {
-	padding: 30px 0 10px;
-}
-div.logo img {
-	max-height: 45px;
-}
-div.logo h1 {
-	font-weight: 900;
-	letter-spacing: -0.5px;
-	text-transform: uppercase;
-	color: #1d3051;
-}
-div.logo h6 {
-	font-weight: 400;
-	letter-spacing: -0.5px;
-}
-
-hr.solid {
-	/*border-top: 3px solid rgba(0,0,0,.1) !important;*/
-	margin: 5px 0 40px 0;
-	border: 0;
-	height: 1px;
-	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-}
-div.summary p,
-div.portfoliohealth p {
-	text-align: justify;
-}
-p.reportdate {
-	text-align: right;
-}
-div.healthrating_box {
-	border-radius: 50%;
-	width: 45px;
-	height: 45px;
-	background-color: #ccc;
-	content: " ";
-	float: right;
-}
-.summary > div.row {
-	background: #eee;
-	border-radius: 3px;
-	padding-top: 20px;
-	margin-bottom: 10px;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-}
-.summary .statistics.header {
+.navbar-brand {
+    font-size: 35px;
     font-weight: 500;
-    text-align: center !important;
-    font-size: 20px;
-    margin-bottom: 5px;
-}
-.summary .statistics.footer {
-    font-weight: 300;
-    text-align: center !important;
-    font-size: 13px;
-}
-.summary > .row > div:first-child .statistics.header,
-.summary > .row > div:first-child .statistics.footer {
-	color: #0077b6 !important;
+    line-height: 1;
+    margin: 0;
 }
 
-.summary > .row > div:last-child .statistics.header,
-.summary > .row > div:last-child .statistics.footer {
-	color: #17a2b8 !important;
+.navbar-brand > span {
+	color: #25b0c6;
+    display: inline-block;
+    -moz-transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+    transform: scale(-1, 1);
 }
 
 
-div.calculations,
-div.key {
-	width: 200px;
-	margin: 0 auto;
+
+
+.reportheader {
+	border-bottom: 0.1cm solid #707070;
+	margin: 0.8cm 0.4cm 0.4cm;
 }
-div.calculations table,
-div.key table,
-div.indicators table {
+.reportheader .logo img {
 	width: 100%;
+	max-width: 7cm;
 }
-div.calculations thead,
-div.calculations tbody {
-	font-size: 12px;
-}
-div.calculations thead {
-	border-bottom: 1px solid rgba(0,0,0,.5) !important
-}
-div.calculations thead th:nth-child(2),
-div.calculations tbody td:nth-child(2) {
-	text-align: right;
-	padding-right: 5px;
-}
-div.calculations tbody tr:last-child {
-	border-top: 1px dotted rgba(0,0,0,.5) !important;
-}
-div.calculations tbody tr span.rating {
-	width: 12px;
-	display: inline-block;
-	height: 12px;
-	margin: 0;
-	border-radius: 50%;
-}
-
-div.key, div.indicators {
-	padding-top: 20px;
-	font-size: 12px;
-}
-div.key tr:first-child td,
-div.indicators tr:first-child td {
-	font-style: italic;
-}
-div.key tr:last-child td {
-	/*width: 16.67%*/
-}
-div.key tr:last-child td:nth-child(1),
-div.key tr:last-child td:nth-child(3),
-div.key tr:last-child td:nth-child(5) {
-	width: 12px;
-	text-align: right;
-}
-div.key tr:last-child td:nth-child(1) span,
-div.key tr:last-child td:nth-child(3) span,
-div.key tr:last-child td:nth-child(5) span {
-	width: 12px;
-	display: inline-block;
-	height: 12px;
-	margin: 0;
-	border-radius: 50%;
-}
-div.key tr:last-child td:nth-child(2),
-div.key tr:last-child td:nth-child(4),
-div.key tr:last-child td:nth-child(6) {
+.reportheader .logo .compliancerating {
+	font-size: 0.6cm;
 	text-align: left;
-	padding-left: 5px;
-	padding-bottom: 4px;
+	font-weight: 600;margin:0;
+}
+.reportheader .logo .compliancedescription {
+	margin: 0;
+	font-size: 0.3cm;
+	color: #17a2b8;
+}
+.reportheader .title {
+	text-align: center;
+}
+.reportheader .title h1 {
+	margin: 0;
+	font-weight: 500;
+	font-size: 1.2cm;
+	color: #333;
+	letter-spacing: 0;
+}
+.reportheader .title h6 {
+	margin: 0;
+	letter-spacing: 0;
+	color: #707070;
+	padding-top: 0cm;
+	font-size: 0.4cm;
+	font-weight: 400; 
+	margin-top:0.15cm;
+}
+.reportheader .health {
+	text-align: right;
+}
+.reportheader .health .reportdate {
+	margin: 0;font-size: 0.35cm;font-weight: 400; margin-bottom: 0.2cm; margin-right: 25px;
+}
+.reportheader .health .healthrating_box {
+	border-radius: 30%;width: 1cm;height: 1cm; margin-top: -7px; margin-right:30px; position:absolute; right:15px;
+}
+.reportheader .health .healthratingdesc {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-size: 0.3cm;
+}
+.reportbody {
+	margin: 0.4cm 0.4cm 0.2cm;
+}
+.reportbody.section1 {
+	border-bottom: 0.06cm solid #707070;
+	padding-bottom: 0.2cm;
+}
+.reportbody.section2,
+.reportbody.section3 {
+	margin: 0.8cm 0.4cm 0.4cm;
+}
+.reportbody .sectiontitle {
+	margin: 0.2cm 0cm;font-size: 0.45cm;font-weight: 500;color: #333;
+}
+.reportbody.section2 .sectiontitle,
+.reportbody.section3 .sectiontitle {
+	margin-bottom: 0.6cm;
+}
+.reportbody.section1 .summary {
+	text-align: left;
+	background-color: #f6f6f6;
+}
+.reportbody.section1 .summary .summarytext {
+	margin: 0.2cm 0cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;
+}
+.reportbody.section1 .summarystatistics {
+	margin: 0.4cm 0cm 0.2cm;
+}
+.reportbody.section1 .summarystatistics .metric1,
+.reportbody.section1 .summarystatistics .metric2,
+.reportbody.section1 .summarystatistics .metric3,
+.reportbody.section1 .summarystatistics .metric4 {
+	padding: 0;
+}
+.reportbody.section1 .summarystatistics .metric1 {
+	color: #0077b6;
+}
+.reportbody.section1 .summarystatistics .metric2 {
+	color: #17a2b8;
+}
+.reportbody.section1 .summarystatistics .metric3 {
+	color: #688753;
+}
+.reportbody.section1 .summarystatistics .metric4 {
+	color: #dc3545;
+}
+.reportbody.section1 .summarystatistics .metricvalue {
+	text-align: center;
+	margin: 0;
+	font-size: 25px;
+	font-weight: 600;
+}
+.reportbody.section1 .summarystatistics .metricdesc {
+	text-align: center;
+	margin: 0;
+	margin-top: 3px;
+	font-size: 11px;
+	font-weight: 500;
+}
+.reportbody.section1 .portfoliostatistics {
+	margin: 0;
+}
+.reportbody.section1 .portfoliostatistics .metric1,
+.reportbody.section1 .portfoliostatistics .metric2,
+.reportbody.section1 .portfoliostatistics .metric3 {
+	margin-top: -65px;
+	padding-left: 0;
+	padding-right: 0;
+}
+.reportbody.section1 .portfoliostatistics .desc {
+	font-size: 10px;
+	text-align: center;
+	margin-top: -4px;
+	font-weight: 400;
+}
+.reportbody.section1 .portfoliostatistics .metric1 {
+	color: #0077b6;
+}
+.reportbody.section1 .portfoliostatistics .metric2 {
+	color: #d59442;
+}
+.reportbody.section1 .portfoliostatistics .metric3 {
+	color: #688753;
+}
+.chartrender .groupingbyage,
+.chartrender .budgetsize {
+	margin-top: 30px;
+}
+.chartrender .hrgender {
+	margin-top: 45px;
+}
+@page { 
+	size: auto;  
+	margin: 0mm; 
+}
+@media print {
+	@page {
+		size: landscape;
+	}
+	body, page {
+        margin: 0;
+        box-shadow: 0;
+        width: 100%;
+        background: rgb(255,255,255);
+    }
+    .pagebreak {
+        clear: both;
+        page-break-after: always;
+    }       
+	.noprint {
+		display: none !important;
+	}
+	.chartrender {
+		max-width: 9.3cm;
+	}
+	.reportbody.section2 table, .reportbody.section3 table {
+	    margin: 0.8cm 0.4cm 0.4cm;
+	}
+	.reportbody.section1 .portfoliostatistics .metric1,
+	.reportbody.section1 .portfoliostatistics .metric2,
+	.reportbody.section1 .portfoliostatistics .metric3 {
+		max-width: 100px;
+	}
+	.table {
+		border-bottom: 2px solid #333;
+	}
+	.table tr:nth-of-type(2n+1) {
+		background-color: #f6f6f6;
+	}
+	.table th {
+		background-color: #0077b6 !important;
+		color: #fff;
+		font-weight: 500;
+		text-align: center;
+	}
+	.table td {
+		background-color: transparent !important;
+	}
+
+	.section2 table td:nth-child(6), 
+	.section2 table td:nth-child(7),
+	.section2 table td:nth-child(8),
+	.section2 table td:nth-child(10),
+	.section2 table td:nth-child(11),
+	.section2 table td:nth-child(12) {
+	    text-align: center;
+	}
+
+	.section2 table td:nth-child(5) {
+	    text-align: right;
+	}
 }
 
-div.indicators {
-	width: 100%;
-	margin: 0 auto;
-	padding: 0 20px;
-}
 
-.col-lg-4.col-md-6 {
-    margin-bottom: 30px;
-}
+
 
 
 /* Responsive */
+/*
 @media (max-width: 991px) {
 	html.safari {
 		position: relative;
@@ -208,4 +276,4 @@ h6 {
 }
 .hidden {
 	display: none !important;
-}
+}*/

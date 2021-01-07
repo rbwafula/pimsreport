@@ -929,7 +929,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     }
 
     // display the division name its and number of projects
-    echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+    //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
 
     $d_sp_array = [];
     $d_sp_array['spnames'] = [];
