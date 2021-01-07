@@ -77,6 +77,7 @@ $proj_data = getdataobjectfromurl($proj_activity_url);
 
 // STAFF ORDER BY SENIORITY FOR REFERENCE
 $staff_order_array = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'GS'];
+$staff_order_array_all = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'G-7', 'G-6', 'G-5', 'G-4', 'G-3', 'G-2', 'G-1', 'NO-A', 'NO-B', 'NO-C', 'NO-D'];
 
 // CALCULATE THE TOTAL METRICS
 $total_projects = 0;
@@ -629,23 +630,26 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     foreach ($hr_data as $hkey => $hvalue) {
         if ($hvalue->office == $dvalue) {
             if ($hvalue->pers_no > 0) {
-                $filled = true;
+                $p_status = 'FILLED';
             } else {
-                $filled = false;
+                $p_status = 'VACANT';
             }
             $d_staff_information[] = [
                 'grade' => $hvalue->pos_ps_group,
                 'position_title' => $hvalue->pos_title,
                 'position_number' => $hvalue->pos_id,
                 'duty_station' => $hvalue->duty_station,
-                'filled' => $filled,
+                'position_status' => $p_status,
                 'staff_name' => $hvalue->first_name . ' ' . $hvalue->last_name,
                 'org_code' => $hvalue->org_unit,
                 'org_unit_description' => $hvalue->org_unit_desc,
+                'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
 
             ];
         }
     }
+
+    usort($d_staff_information, 'sortByOrder');
 
     $d_post_status_distribution = [];
 
@@ -909,13 +913,13 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     foreach ($d_post_status_distribution as $key => $value) {
         array_push($d_post_categories, $value['post']);
         array_push($d_post_filled, $value['filled']);
-        if ($value['filled'] != 0 && $value['filled_male'] != 0 ) {
-            array_push($d_post_filled_male, (-1*(100*$value['filled_male']/$value['filled'])));
+        if ($value['filled'] != 0 && $value['filled_male'] != 0) {
+            array_push($d_post_filled_male, (-1 * (100 * $value['filled_male'] / $value['filled'])));
         } else {
             array_push($d_post_filled_male, 0);
         }
-        if ($value['filled'] != 0 && $value['filled_female'] != 0 ) {
-            array_push($d_post_filled_female, ((100*$value['filled_female']/$value['filled'])));
+        if ($value['filled'] != 0 && $value['filled_female'] != 0) {
+            array_push($d_post_filled_female, ((100 * $value['filled_female'] / $value['filled'])));
         } else {
             array_push($d_post_filled_female, 0);
         }
@@ -925,7 +929,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     }
 
     // display the division name its and number of projects
-    //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+    echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
 
     $d_sp_array = [];
     $d_sp_array['spnames'] = [];
@@ -940,7 +944,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
     }
 
-    //var_dump($d_sp_array);
+    foreach ($d_staff_information as $key => $value) {
+        echo $value['grade'] . '<br />';
+    }
 
     /*echo ' <br /> <br />';
     echo $d_filled_posts . ' Filled posts (' . $d_filled_male_count . ' male, ' . $d_filled_female_count . ' female) <br />';
@@ -1031,7 +1037,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
         "projectlisting" => $d_project_information,
         "stafflisting" => $d_staff_information,
-        "projectsubprogramme" => $d_sp_array
+        "projectsubprogramme" => $d_sp_array,
     );
 
     ?>
