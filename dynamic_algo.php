@@ -810,13 +810,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 $d_amount_projects_budget_between0_1 += $value->consumable_budget;
             }
 
-            if ($value->final_rating) {
-                $d_reported_projects += 1;
-                $d_project_health += $value->final_rating;
-            } else {
-                $d_project_health += 0;
-            }
-
             if ($value->days_past_due > 0) {
                 $d_past_due_projects += 1;
             } else {
@@ -940,7 +933,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_sp_array['projectcount'] = [];
 
     foreach ($d_subprogramme_projects_distribution as $key => $value) {
-        $d_sp_array['spnames'][] = $value['subprogramme'];
+        $d_sp_array['spnames'][] = ucwords($value['subprogramme']);
         $d_sp_array['spnumbers'][] = $value['subprogramme_number'];
         $d_sp_array['projectcount'][] = $value['projects'];
 
