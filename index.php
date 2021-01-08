@@ -1,30 +1,29 @@
 <?php
 
-
 header('Location: landscape.php');
 die();
 // Variables here
 $month = Date("M") . ' ' . Date("Y");
 $division = ucwords('Africa');
-if( isset($_GET['office']) ) {
-     $division = ucwords($_GET['office']);
+if (isset($_GET['office'])) {
+    $division = ucwords($_GET['office']);
 }
-include_once('dynamic_algo.php');
+include_once 'dynamic_algo.php';
 
 /*
 echo '<pre>';
 print_r($processed_divisiondata[$division]["projectsubprogramme"]);
 echo '</pre>';
 echo '<hr/>';
-*/
+ */
 /*$d_subprogramme_projects_distribution_name = array();
 $d_subprogramme_projects_distribution_number = array();
 $d_subprogramme_projects_distribution_projects = array();
 $i;
 for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); $i++) {
-    array_push($d_subprogramme_projects_distribution_name, $processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme']);
-    array_push($d_subprogramme_projects_distribution_number, "SP ".$processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme_number']);
-    array_push($d_subprogramme_projects_distribution_projects, $processed_divisiondata[$division]["projectsubprogramme"][$i]['projects']);
+array_push($d_subprogramme_projects_distribution_name, $processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme']);
+array_push($d_subprogramme_projects_distribution_number, "SP ".$processed_divisiondata[$division]["projectsubprogramme"][$i]['subprogramme_number']);
+array_push($d_subprogramme_projects_distribution_projects, $processed_divisiondata[$division]["projectsubprogramme"][$i]['projects']);
 }*/
 ?>
 <!DOCTYPE html>
@@ -34,7 +33,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
     <link rel="stylesheet" href="assets/css/highcharts.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    
+
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
     <!--<link rel="stylesheet" href="assets/css/main.css">-->
@@ -105,7 +104,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
             margin-top: -55%;
         }
 
-        
+
         .tablelisting {
             border-collapse: collapse;
             margin: 0px 0;
@@ -153,7 +152,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
             page[size="A4"] {
                 width: 100%;
                 height: auto;
-            } 
+            }
             .page-content {
                 width: 100% !important;
                 max-width: 100% !important;
@@ -168,7 +167,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
             }
         }
     </style>
-    
+
 </head>
 <body>
     <page size="A4">
@@ -185,7 +184,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                             <tr>
                                 <td>
                                     <p style="font-size: 0.6cm;text-align: left;font-weight: 600;margin:0;">
-                                        <?php echo $processed_divisiondata[$division]["reportedprojectspct"];?>%
+                                        <?php echo $processed_divisiondata[$division]["reportedprojectspct"]; ?>%
                                     </p>
                                 </td>
                             </tr>
@@ -195,7 +194,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                 </td>
                             </tr>
                         </table>
-                        
+
                     </div>
                     <div class="title" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: center;">
                         <table style="border-collapse: collapse; width: 100%;">
@@ -226,7 +225,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                             </tr>
                             <tr>
                                 <td width="1cm">
-                                    <div class="healthrating_box" style="border-radius: 30%;width: 1cm;height: 1cm;float: right;background-color:<?php echo $processed_divisiondata[$division]["healthcolor"];?>; margin-top: 0cm; margin-right:30px;">&nbsp;</div>
+                                    <div class="healthrating_box" style="border-radius: 30%;width: 1cm;height: 1cm;float: right;background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>; margin-top: 0cm; margin-right:30px;">&nbsp;</div>
                                     <?php //echo $processed_divisiondata[$division]["healthrating"];?>
                                 </td>
                             </tr>
@@ -241,11 +240,11 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                 <div class="body" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; border-bottom: 0.1cm solid #707070; margin-bottom: 0.5cm; padding: 0.2cm 0 0.2cm">
                     <div class="left" style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.2cm;text-align: left;background-color: #f6f6f6;">
                         <h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Summary</h5>
-                        <p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"];?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',');?>)</strong>, capturing a rolling total of the cash received over time.</p>
-                        <?php 
-                           // echo '<p style="display:none;margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">Out of the '.$projects.', <strong>.'.$keystoneprojects.'.</strong>, these are projects with dollar value of $ 10 million and above, contributing to <strong>USD. '.$fundedactivities.'</strong> of the overall budget. Keystone projects are projects of significant value to the organization as they attract a higher dollar value and require further scrutiny by management, in comparison to other projects.</p>';
-                        ?>
-                        
+                        <p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"]; ?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ','); ?>)</strong>, capturing a rolling total of the cash received over time.</p>
+                        <?php
+// echo '<p style="display:none;margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">Out of the '.$projects.', <strong>.'.$keystoneprojects.'.</strong>, these are projects with dollar value of $ 10 million and above, contributing to <strong>USD. '.$fundedactivities.'</strong> of the overall budget. Keystone projects are projects of significant value to the organization as they attract a higher dollar value and require further scrutiny by management, in comparison to other projects.</p>';
+?>
+
 
                         <div class="bysubprogramme">
                             <div id="bysubprogramme_chart"></div>
@@ -351,29 +350,29 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                         <div style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; margin:0 0.4cm">
                             <div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
                                 <div style="text-align: center; color: #0077b6;">
-                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totalprojects"],0,'.',',');?></p>
+                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totalprojects"], 0, '.', ','); ?></p>
                                     <p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Projects</p>
                                 </div>
                             </div>
                             <div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
                                 <div style="text-align: center; color: #17a2b8;">
-                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totaloutputs"],0,'.',',');?></p>
+                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totaloutputs"], 0, '.', ','); ?></p>
                                     <p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Outputs</p>
                                 </div>
                             </div>
                             <div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
                                 <div style="text-align: center; color: #688753;">
-                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totalactivities"],0,'.',',');?></p>
+                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["totalactivities"], 0, '.', ','); ?></p>
                                     <p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Total Activities</p>
                                 </div>
                             </div>
                             <div style="position: relative;width: 100%;-ms-flex: 0 0 25%;flex: 0 0 25%;max-width: 25%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
                                 <div style="text-align: center; color: #dc3545;">
-                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["pastdueprojects"],0,'.',',');?></p>
+                                    <p style="margin: 0;font-size: 0.5cm;font-weight: 600;"><?php echo number_format($processed_divisiondata[$division]["pastdueprojects"], 0, '.', ','); ?></p>
                                     <p style="margin: 0;font-size: 0.25cm;font-weight: 400;">Expired Projects</p>
                                 </div>
                             </div>
-                            
+
 
                             <div style="position: relative;width: 100%;-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;margin-bottom: 0.5cm;text-align: left;background-color: #f6f6f6;">
                                 <div id="chart1"></div>
@@ -474,9 +473,9 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                         series: [{
                                             name: 'Current Yr',
                                             data: [
-                                                <? echo $processed_divisiondata[$division]["consumablebudget"]/1000000; ?>, 
-                                                <? echo $processed_divisiondata[$division]["totalconsumedbudget"]/1000000; ?>, 
-                                                <?php echo ($processed_divisiondata[$division]["consumablebudget"] - $processed_divisiondata[$division]["totalconsumedbudget"])/1000000; ?>],
+                                                <?php echo $processed_divisiondata[$division]["consumablebudget"] / 1000000; ?>,
+                                                <?php echo $processed_divisiondata[$division]["totalconsumedbudget"] / 1000000; ?>,
+                                                <?php echo ($processed_divisiondata[$division]["consumablebudget"] - $processed_divisiondata[$division]["totalconsumedbudget"]) / 1000000; ?>],
                                             showInLegend: false
 
                                         }]
@@ -494,7 +493,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                 <tr>
                                     <td height="70px" width="33%" style="background-color: transparent; width: 33%; max-width: 33%; vertical-align: top;">
                                         <div id="budgetutilized_chart"></div>
-                                        
+
                                     </td>
                                     <td width="33%" style="background-color: transparent; width: 33%; max-width: 33%; vertical-align: top;">
                                         <div id="timetaken_chart"></div>
@@ -517,7 +516,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                             </table>
                             <div id="budgetutilized" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
 
-                                
+
 
                                 <script type="text/javascript">
                                     Highcharts.chart('budgetutilized_chart', {
@@ -585,7 +584,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                                 ['Time Taken', <?php echo $processed_divisiondata[$division]["pctbudgetutilized"]; ?> ],
                                                 {
                                                     name: '',
-                                                    y: <?php echo (100 - $processed_divisiondata[$division]["pctbudgetutilized"]);  ?>,
+                                                    y: <?php echo (100 - $processed_divisiondata[$division]["pctbudgetutilized"]); ?>,
                                                     dataLabels: {
                                                         enabled: false
                                                     }
@@ -595,12 +594,12 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                     });
                                 </script>
 
-                                
 
-                                
+
+
                             </div>
                             <div id="timetaken" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
-                                
+
                                 <script type="text/javascript">
                                     Highcharts.chart('timetaken_chart', {
                                         chart: {
@@ -660,7 +659,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                                 ['Time Taken', <?php echo $processed_divisiondata[$division]["pctgdurationused"]; ?> ],
                                                 {
                                                     name: '',
-                                                    y: <?php echo (100 - $processed_divisiondata[$division]["pctgdurationused"]);  ?>,
+                                                    y: <?php echo (100 - $processed_divisiondata[$division]["pctgdurationused"]); ?>,
                                                     dataLabels: {
                                                         enabled: false
                                                     }
@@ -669,10 +668,10 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                         }]
                                     });
                                 </script>
-                                
+
                             </div>
                             <div id="activitiescompleted" style="position: relative;width: 33%;-ms-flex: 0 0 33%;flex: 0 0 33%;max-width: 33%;margin-bottom: 0.2cm;text-align: left;">
-                                
+
                                 <script type="text/javascript">
 
                                     Highcharts.chart('activitiescompleted_chart', {
@@ -733,7 +732,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                                 ['Time Taken', <?php echo $processed_divisiondata[$division]["avgactivitiescompleted"]; ?> ],
                                                 {
                                                     name: '',
-                                                    y: <?php echo (100 - $processed_divisiondata[$division]["avgactivitiescompleted"]);  ?>,
+                                                    y: <?php echo (100 - $processed_divisiondata[$division]["avgactivitiescompleted"]); ?>,
                                                     dataLabels: {
                                                         enabled: false
                                                     }
@@ -742,9 +741,9 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                         }]
                                     });
                                 </script>
-                                
+
                             </div>
-                            
+
                         </div>
 
                         <div id="budgetage_chart"></div>
@@ -833,7 +832,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                         thousandsSep: ','
                                     }
                                 });
-                                
+
                                 $('#budgetsize_chart').highcharts({
                                     credits: {
                                         text: 'Figure n'
@@ -909,7 +908,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                             });
 
 
-                            
+
                         </script>
 
 
@@ -917,12 +916,12 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
 
                         <div class="container" style="display: -ms-flexbox;display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap;">
                             <div id="projectdis" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
-                                
-                                
+
+
                             </div>
 
                             <div id="budgetsize" style="position: relative;width: 100%;-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;margin-bottom: 0.2cm;text-align: left;">
-                                
+
                             </div>
                         </div>
 
@@ -936,7 +935,7 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                             <script type="text/javascript">
                                 Highcharts.chart('humanresource_chart', {
                                     colors: ['#ccc','#17a2b8'],
-                                    credits: { 
+                                    credits: {
                                         text: 'Figure n'
                                     },
                                     chart: {
@@ -1117,23 +1116,23 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                             <th>Total Activities</th>
                         </thead>
                         <tbody>
-                            <?php 
-                                for($i=0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++ ) {
-                                    echo '<tr>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_id'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_title'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['subprogramme'].'</td>';
-                                    echo '<td>'.number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'],2,'.',',') .'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['system_rating'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['management_rating'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['reported'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_manager'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['outputs'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['total_activities'].'</td>';
-                                    echo '</tr>';
-                                }
-                            ?>
+                            <?php
+for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++) {
+    echo '<tr>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['project_id'] . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['project_title'] . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['subprogramme'] . '</td>';
+    echo '<td>' . number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'], 2, '.', ',') . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['system_rating'] . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['management_rating'] . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['reported'] . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['project_manager'] . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['outputs'] . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] . '</td>';
+    echo '<td>' . $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] . '</td>';
+    echo '</tr>';
+}
+?>
                         </tbody>
                     </table>
                 </div>
@@ -1141,33 +1140,33 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
         </div>
     </page>
 
-    <?php 
-        $staffcount = count($processed_divisiondata[$division]["stafflisting"]);
-        $recordsperpage = 13;
-        $pages = ceil($staffcount / $recordsperpage);
+    <?php
+$staffcount = count($processed_divisiondata[$division]["stafflisting"]);
+$recordsperpage = 13;
+$pages = ceil($staffcount / $recordsperpage);
 
-        //echo 'Records: '.$staffcount.'<hr/>';
-        $i;
-        $upperlimit;
-        for ($i=0; $i<$pages; $i++) {
-            if ($i != ($pages-1)) {
-                $upperlimit = (($i*$recordsperpage)+$recordsperpage-1);
-            } else {
-                $upperlimit = $staffcount-1;
-            }
-            //echo 'Page '.$i.' will have records: '.($i*$recordsperpage).' to '.$upperlimit.'</br>';
+//echo 'Records: '.$staffcount.'<hr/>';
+$i;
+$upperlimit;
+for ($i = 0; $i < $pages; $i++) {
+    if ($i != ($pages - 1)) {
+        $upperlimit = (($i * $recordsperpage) + $recordsperpage - 1);
+    } else {
+        $upperlimit = $staffcount - 1;
+    }
+    //echo 'Page '.$i.' will have records: '.($i*$recordsperpage).' to '.$upperlimit.'</br>';
 
-            ?>
+    ?>
             <page size="A4" layout="landscape">
                 <div class="page-margin" style="padding: 0.8cm 1.32cm 0.8cm 1.32cm;">
                     <div class="page-content" style="height: 18.36cm; width: 27.1cm; max-height: 18.36cm; max-width: 28.1cm;">
                         <?php
-                            if ($i == 0) {
-                                echo '<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Annex 2: Staff Table</h5>';
-                            } else {
-                                echo '<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>';
-                            }
-                        ?>
+if ($i == 0) {
+        echo '<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Annex 2: Staff Table</h5>';
+    } else {
+        echo '<h5 style="margin: 0.2cm 0.4cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">&nbsp;</h5>';
+    }
+    ?>
                         <div id="annex2" class="tablelisting" style="width: 100%; max-width: 100%; box-sizing: border-box; margin: 0 auto 1em; -moz-box-sizing: border-box;">
                             <table style="width:100%; table-layout: auto !important; border-collapse: collapse;">
                                 <thead>
@@ -1182,22 +1181,22 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                                     <th>Org Unit</th>
                                 </thead>
                                 <tbody>
-                                    <?php 
-                                        $j;
-                                        for($j=($i*$recordsperpage); $j <= $upperlimit; $j++ ) {
-                                            echo '<tr>';
-                                            echo '<td>'.$j.'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['grade'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_title'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_number'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['duty_station'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['position_status'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['staff_name'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['org_code'].'</td>';
-                                            echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$j]['org_unit_description'].'</td>';
-                                            echo '</tr>';
-                                        }
-                                    ?>
+                                    <?php
+$j;
+    for ($j = ($i * $recordsperpage); $j <= $upperlimit; $j++) {
+        echo '<tr>';
+        echo '<td>' . $j . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$j]['grade'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$j]['position_title'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$j]['position_number'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$j]['duty_station'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$j]['position_status'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$j]['staff_name'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$j]['org_code'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$j]['org_unit_description'] . '</td>';
+        echo '</tr>';
+    }
+    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -1205,10 +1204,10 @@ for ($i=0; $i<count($processed_divisiondata[$division]["projectsubprogramme"]); 
                 </div>
             </page>
 
-            <?
-        }
-    ?>
+            <?php
+}
+?>
 
-    
+
 </body>
 </html>
