@@ -951,9 +951,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     // display the division name its and number of projects
     //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
 
-    foreach ($d_project_information as $key => $value) {
-        echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
-    }
+    // foreach ($d_project_information as $key => $value) {
+    //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
+    // }
 
     $d_sp_array = [];
     $d_sp_array['spnames'] = [];
