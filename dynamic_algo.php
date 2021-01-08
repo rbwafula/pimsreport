@@ -621,9 +621,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             }
 
             if (!$prvalue->final_rating) {
-                $f_rating = 0;
+                $project_rating = 'NOT RATED';
             } else {
                 $f_rating = $prvalue->final_rating;
+                $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
             }
 
             $d_project_information[] = [
@@ -636,7 +637,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'final_rating' => $prvalue->final_rating,
                 'reported' => $reported,
                 'project_manager' => $prvalue->project_manager,
-                'project_rank' => array_search($f_rating, $unique_final_ratings),
+                'project_rank' => $project_rating,
                 'outputs' => $p_outputs,
                 'completed_activities' => $p_completed_activities,
                 'total_activities' => $p_activities,
@@ -950,9 +951,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     // display the division name its and number of projects
     //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
 
-    // foreach ($d_project_information as $key => $value) {
-    //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
-    // }
+    foreach ($d_project_information as $key => $value) {
+        echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
+    }
 
     $d_sp_array = [];
     $d_sp_array['spnames'] = [];
