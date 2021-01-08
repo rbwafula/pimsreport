@@ -938,7 +938,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     foreach ($d_subprogramme_projects_distribution as $key => $value) {
         $d_sp_array['spnames'][] = ucwords($value['subprogramme']);
-        $d_sp_array['spnumbers'][] = $value['subprogramme_number'];
+        $d_sp_array['spnumbers'][] = 'SP '.$value['subprogramme_number'];
         $d_sp_array['projectcount'][] = $value['projects'];
 
         // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
@@ -1031,6 +1031,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "hrpostsvacant" => $d_post_vacant,
         "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
         "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
+        "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
         "projectlisting" => $d_project_information,
         "stafflisting" => $d_staff_information,
         "projectsubprogramme" => $d_sp_array,
