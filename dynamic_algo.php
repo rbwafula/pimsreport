@@ -1063,8 +1063,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     ?>
 
-
-
 	<?php
 
 //SWITCHING TO DIVISIONAL CALCULATIONS
