@@ -139,8 +139,9 @@ $unique_posts_data = [];
 
 $unique_subprogrammes = [];
 $unique_subprogramme_data = [];
+$unique_final_ratings = [0];
 
-//USE DATA FROM API TO FEED THE UNIQUE SUBPROGRAMMES ARRAY
+//USE DATA FROM API TO FEED THE UNIQUE SUBPROGRAMMES AND FINAL RATINGS ARRAY
 $x = 2;
 foreach ($division_data as $key => $value) {
     $sp_name = strtolower($value->subprogramme);
@@ -158,7 +159,18 @@ foreach ($division_data as $key => $value) {
             }}
     }
     $x += 1;
+
+    if (!$value->final_rating) {
+        $f_rating = 0;
+    } else {
+        $f_rating = $value->final_rating;
+    }
+
+    if (!in_array($f_rating, $unique_final_ratings)) {
+        $unique_final_ratings[] = $f_rating;
+    }
 }
+rsort($unique_final_ratings);
 
 //USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
 foreach ($hr_data as $key => $value) {
@@ -608,6 +620,12 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 }
             }
 
+            if (!$prvalue->final_rating) {
+                $f_rating = 0;
+            } else {
+                $f_rating = $prvalue->final_rating;
+            }
+
             $d_project_information[] = [
                 'project_id' => $prvalue->project_id,
                 'project_title' => $prvalue->project_title,
@@ -615,9 +633,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'budget' => $prvalue->consumable_budget,
                 'system_rating' => $prvalue->system_rating,
                 'management_rating' => $prvalue->manager_rating,
+                'final_rating' => $prvalue->final_rating,
                 'reported' => $reported,
                 'project_manager' => $prvalue->project_manager,
-                // 'u_rank' => $prvalue->project_rank,
+                'project_rank' => array_search($f_rating, $unique_final_ratings),
                 'outputs' => $p_outputs,
                 'completed_activities' => $p_completed_activities,
                 'total_activities' => $p_activities,
@@ -930,6 +949,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     // display the division name its and number of projects
     //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+
+    // foreach ($d_project_information as $key => $value) {
+    //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
+    // }
 
     $d_sp_array = [];
     $d_sp_array['spnames'] = [];
