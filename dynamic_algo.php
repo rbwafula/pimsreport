@@ -438,6 +438,13 @@ foreach ($division_data as $prkey => $prvalue) {
         }
     }
 
+    if (!$prvalue->final_rating) {
+        $project_rating = 'NOT RATED';
+    } else {
+        $f_rating = $prvalue->final_rating;
+        $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
+    }
+
     $overall_project_information[] = [
         'project_id' => $prvalue->project_id,
         'project_title' => $prvalue->project_title,
@@ -447,7 +454,7 @@ foreach ($division_data as $prkey => $prvalue) {
         'management_rating' => $prvalue->manager_rating,
         'reported' => $reported,
         'project_manager' => $prvalue->project_manager,
-        // 'u_rank' => $prvalue->project_rank,
+        'project_rank' => $project_rating,
         'outputs' => $p_outputs,
         'completed_activities' => $p_completed_activities,
         'total_activities' => $p_activities,
@@ -598,8 +605,13 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     //DIVISION PROJECT INFORMATION
     $d_project_information = [];
+    $d_project_branch = [''];
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
+            if (!in_array($prvalue->managing_branch, $d_project_branch)) {
+                $d_project_branch[] = $prvalue->managing_branch;
+            }
+
             if (!$prvalue->final_rating) {
                 $reported = 'NO';
             } else {
@@ -631,6 +643,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'project_id' => $prvalue->project_id,
                 'project_title' => $prvalue->project_title,
                 'subprogramme' => $prvalue->subprogramme,
+                'branch' => $prvalue->managing_branch,
                 'budget' => $prvalue->consumable_budget,
                 'system_rating' => $prvalue->system_rating,
                 'management_rating' => $prvalue->manager_rating,
@@ -641,6 +654,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'outputs' => $p_outputs,
                 'completed_activities' => $p_completed_activities,
                 'total_activities' => $p_activities,
+                'order' => array_search($prvalue->managing_branch, $d_project_branch),
             ];
         }
     }
@@ -948,8 +962,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         array_push($d_post_vacant, $value['vacant']);
     }
 
+    usort($d_project_information, 'sortByOrder');
+
     // display the division name its and number of projects
-    //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+    // echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+    // var_dump($d_project_information);
 
     // foreach ($d_project_information as $key => $value) {
     //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
@@ -962,7 +979,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     foreach ($d_subprogramme_projects_distribution as $key => $value) {
         $d_sp_array['spnames'][] = ucwords($value['subprogramme']);
-        $d_sp_array['spnumbers'][] = 'SP '.$value['subprogramme_number'];
+        $d_sp_array['spnumbers'][] = 'SP ' . $value['subprogramme_number'];
         $d_sp_array['projectcount'][] = $value['projects'];
 
         // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
