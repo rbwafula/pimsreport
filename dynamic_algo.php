@@ -606,6 +606,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     //DIVISION PROJECT INFORMATION
     $d_project_information = [];
     $d_project_branch = [''];
+    $d_scatter_points = [];
+    $d_scatter_points_red = [];
+    $d_scatter_points_yellow = [];
+    $d_scatter_points_green = [];
+
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
             if (!in_array($prvalue->managing_branch, $d_project_branch)) {
@@ -634,9 +639,27 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
             if (!$prvalue->final_rating) {
                 $project_rating = 'NOT RATED';
+                $fr = 0;
             } else {
                 $f_rating = $prvalue->final_rating;
                 $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
+                $fr = $prvalue->final_rating;
+            }
+            //feed into scatter points -> consumable budget, rating
+            $d_scatter_points[] = [intval($prvalue->consumable_budget), intval($fr)];
+
+            if ($fr >= 2.5) {
+                //green
+                $d_scatter_points_green[] = [intval($prvalue->consumable_budget), intval($fr)];
+
+            } elseif ($fr >= 1.5) {
+                // yellow
+                $d_scatter_points_yellow[] = [intval($prvalue->consumable_budget), intval($fr)];
+
+            } else {
+                //red
+                $d_scatter_red[] = [intval($prvalue->consumable_budget), intval($fr)];
+
             }
 
             $d_project_information[] = [
@@ -965,8 +988,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     usort($d_project_information, 'sortByOrder');
 
     // display the division name its and number of projects
-    // echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
-    // var_dump($d_project_information);
+    echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+    var_dump($d_scatter_points);
 
     // foreach ($d_project_information as $key => $value) {
     //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
