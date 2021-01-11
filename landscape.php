@@ -653,8 +653,11 @@
                                     zoomType: 'xy',
                                     height: 200
                                 },
+                                credits: {
+                                    enabled: false
+                                },
                                 title: {
-                                    text: 'Figure 4: Grouping by Budget Size',
+                                    text: 'Figure 4: Project Rank vs Budget',
                                     floating: false,
                                     align: 'left',
                                     verticalAlign: 'top',
@@ -671,6 +674,9 @@
                                     y: 0
                                 },
                                 xAxis: {
+                                    min: 0,
+                                    max: 3,
+                                    categories: ["Not Reported","Red", "Yellow", "Green"],
                                     title: {
                                         enabled: false,
                                         text: 'Project Rating'
@@ -698,12 +704,13 @@
                                     y: 70,
                                     floating: true,
                                     backgroundColor: Highcharts.defaultOptions.chart.backgroundColor,
-                                    borderWidth: 1
+                                    borderWidth: 1,
+                                    enabled: false
                                 },
                                 plotOptions: {
                                     scatter: {
                                         marker: {
-                                            radius: 2,
+                                            radius: 3,
                                             states: {
                                                 hover: {
                                                     enabled: true,
@@ -720,63 +727,26 @@
                                         },
                                         tooltip: {
                                             headerFormat: '<b>{series.name}</b><br>',
-                                            pointFormat: '{point.x} cm, {point.y} kg'
+                                            pointFormat: 'Rating: {point.x}, Budget size: {point.y}'
                                         }
                                     }
                                 },
                                 series: [{
                                     name: 'Red',
-                                    color: 'rgba(220, 53, 69, .5)',
-                                    data: [ <?php echo str_replace(']', '', str_replace('[', '', json_encode($processed_divisiondata[$division]["grantfundingcountbygroup"]))); ?> ,{
-                                        dataLabels: {
-                                            enabled: true,
-                                            formatter: function(){
-                                                return (this.y!=0)? Highcharts.numberFormat(this.y,1):"";
-                                            }
-                                        }
-                                    }],
-                                    showInLegend: false
-                                }, {
-                                    name: 'Yellow',
-                                    color: 'rgba(255, 193, 7, .5)',
-                                    data: [ <?php echo str_replace(']', '', str_replace('[', '', json_encode($processed_divisiondata[$division]["grantfundingcountbygroup"]))); ?> ,{
-                                        dataLabels: {
-                                            enabled: true,
-                                            formatter: function(){
-                                                return (this.y!=0)? Highcharts.numberFormat(this.y,1):"";
-                                            }
-                                        }
-                                    }],
-                                    showInLegend: false
-                                }, {
-                                    name: 'Green',
-                                    color: 'rgba(40, 167, 69, .5)',
-                                    data: [ <?php echo str_replace(']', '', str_replace('[', '', json_encode($processed_divisiondata[$division]["grantfundingcountbygroup"]))); ?> ,{
-                                        dataLabels: {
-                                            enabled: true,
-                                            formatter: function(){
-                                                return (this.y!=0)? Highcharts.numberFormat(this.y,1):"";
-                                            }
-                                        }
-                                    }],
-                                    showInLegend: false
-                                }
-                                /*{
-                                    name: 'Red',
-                                    
-                                    data: [[161.2, 51.6], [167.5, 59.0]]
+                                    color: 'rgba(220, 53, 69, .9)',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["red"]); ?>
 
                                 }, {
                                     name: 'Yellow',
-                                    color: 'rgba(255, 193, 7, .5)',
-                                    data: [[161.2, 51.6], [167.5, 59.0]]
+                                    color: 'rgba(255, 193, 7, .9)',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["yellow"]); ?>
 
                                 }, {
                                     name: 'Green',
-                                    color: 'rgba(40, 167, 69, .5)',
-                                    data: [[161.2, 51.6], [167.5, 59.0]]
+                                    color: 'rgba(40, 167, 69, .9)',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>
 
-                                }*/]
+                                }]
                             });
                         </script>
         			</div>

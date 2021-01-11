@@ -643,23 +643,21 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             } else {
                 $f_rating = $prvalue->final_rating;
                 $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
-                $fr = round(floatval(number_format((float) $prvalue->final_rating, 2, '.', '')), 2);
+                $fr = floatval(number_format((float) $prvalue->final_rating, 2, '.', ''));
             }
             //feed into scatter points -> consumable budget, rating
             $d_scatter_points[] = [intval($prvalue->consumable_budget), $fr];
 
             if ($fr >= 2.5) {
                 //green
-                $d_scatter_points_green[] = [intval($prvalue->consumable_budget), $fr];
-
+                $d_scatter_points_green[] = [$fr, intval($prvalue->consumable_budget)];
             } elseif ($fr >= 1.5) {
                 // yellow
-                $d_scatter_points_yellow[] = [intval($prvalue->consumable_budget), $fr];
+                $d_scatter_points_yellow[] = [$fr, intval($prvalue->consumable_budget)];
 
             } else {
                 //red
-                $d_scatter_red[] = [intval($prvalue->consumable_budget), $fr];
-
+                $d_scatter_points_red[] = [$fr, intval($prvalue->consumable_budget)];
             }
 
             $d_project_information[] = [
