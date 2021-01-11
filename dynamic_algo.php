@@ -643,22 +643,22 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             } else {
                 $f_rating = $prvalue->final_rating;
                 $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
-                $fr = round(floatval(number_format((float) $prvalue->final_rating, 2, '.', '')), 2);
+                $fr = floatval($prvalue->final_rating);
             }
             //feed into scatter points -> consumable budget, rating
-            $d_scatter_points[] = [intval($prvalue->consumable_budget), $fr];
+            $d_scatter_points[] = [floatval($prvalue->consumable_budget), $fr];
 
             if ($fr >= 2.5) {
                 //green
-                $d_scatter_points_green[] = [intval($prvalue->consumable_budget), $fr];
+                $d_scatter_points_green[] = [floatval($prvalue->consumable_budget), $fr];
 
             } elseif ($fr >= 1.5) {
                 // yellow
-                $d_scatter_points_yellow[] = [intval($prvalue->consumable_budget), $fr];
+                $d_scatter_points_yellow[] = [floatval($prvalue->consumable_budget), $fr];
 
             } else {
                 //red
-                $d_scatter_red[] = [intval($prvalue->consumable_budget), $fr];
+                $d_scatter_red[] = [floatval($prvalue->consumable_budget), $fr];
 
             }
 
@@ -989,7 +989,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     // display the division name its and number of projects
     echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
-    var_dump($d_scatter_points);
+    print_r($d_scatter_points);
 
     // foreach ($d_project_information as $key => $value) {
     //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
