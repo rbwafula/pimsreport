@@ -666,6 +666,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'project_id' => $prvalue->project_id,
                 'project_title' => $prvalue->project_title,
                 'subprogramme' => $prvalue->subprogramme,
+                'sp_number' => $prvalue->sp_number,
                 'branch' => $prvalue->managing_branch,
                 'budget' => $prvalue->consumable_budget,
                 'system_rating' => $prvalue->system_rating,
@@ -971,12 +972,12 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         array_push($d_post_categories, $value['post']);
         array_push($d_post_filled, $value['filled']);
         if ($value['filled'] != 0 && $value['filled_male'] != 0) {
-            array_push($d_post_filled_male, (-1 * (100 * $value['filled_male'] / $value['filled'])));
+            array_push($d_post_filled_male, (1 * (100 * $value['filled_male'] / $value['filled'])));
         } else {
             array_push($d_post_filled_male, 0);
         }
         if ($value['filled'] != 0 && $value['filled_female'] != 0) {
-            array_push($d_post_filled_female, ((100 * $value['filled_female'] / $value['filled'])));
+            array_push($d_post_filled_female, (-1 * (100 * $value['filled_female'] / $value['filled'])));
         } else {
             array_push($d_post_filled_female, 0);
         }
@@ -988,8 +989,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     usort($d_project_information, 'sortByOrder');
 
     // display the division name its and number of projects
-    echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
-    var_dump($d_scatter_points);
+    //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+    //var_dump($d_scatter_points);
 
     // foreach ($d_project_information as $key => $value) {
     //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
@@ -1099,6 +1100,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "projectlisting" => $d_project_information,
         "stafflisting" => $d_staff_information,
         "projectsubprogramme" => $d_sp_array,
+        "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green]
     );
 
     ?>
