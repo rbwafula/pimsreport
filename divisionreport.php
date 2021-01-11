@@ -11,43 +11,45 @@ $reportheader = '
 <head>
 	<style>
 	body {
-        font-family: sans-serif;
+        font-family: Roboto, sans-serif !important;
         font-size: 10pt;
     }
-    p {
-        margin: 0pt;
+
+
+    .tablelisting {
+        border-collapse: collapse;
+        margin: 0px 0;
+        font-size: 12px;
+        font-family: \'Roboto\',sans-serif;
+        /*min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);*/
     }
-    table.items {
-        border: 0.1mm solid #000000;
+    .tablelisting thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
     }
-    td {
-        vertical-align: top;
+    .tablelisting th,
+    .tablelisting td {
+        padding: 5px;
     }
-    .items td {
-        border-left: 0.1mm solid #000000;
-        border-right: 0.1mm solid #000000;
+    .tablelisting tbody tr {
+        border-bottom: 1px solid #dddddd;
     }
-    table thead th, table thead td {
-        background-color: #EEEEEE;
-        text-align: center;
-        border: 0.1mm solid #000000;
-        font-variant: small-caps;
+
+    .tablelisting tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
     }
-    .items td.blanktotal {
-        background-color: #EEEEEE;
-        border: 0.1mm solid #000000;
-        background-color: #FFFFFF;
-        border: 0mm none #000000;
-        border-top: 0.1mm solid #000000;
-        border-right: 0.1mm solid #000000;
+
+    .tablelisting tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
     }
-    .items td.totals {
-        text-align: right;
-        border: 0.1mm solid #000000;
+    .tablelisting .styled-table tbody tr.active-row {
+        font-weight: bold;
+        color: #009879;
     }
-    .items td.cost {
-        text-align: "." center;
-    }
+
+
     .hidden {
         display: none !important;
     }
@@ -60,8 +62,24 @@ $reportheader = '
     }
     .body.left {
 		background-color: #f6f6f6;
-		font-family: 
 	}
+    .body.left h5 {
+        text-align: justify !important;
+        font-size: 0.45cm !important;
+        margin: 0.2cm 0.4cm !important;
+        font-weight: 500 !important;
+        color: #333 !important;
+    }
+    .body.left p {
+        text-align: justify !important;
+        margin: 0.2cm 0.4cm 0.4cm !important;
+        font-size: 0.33cm !important;
+        font-weight: 300 !important;
+        line-height: 0.5cm !important;
+    }
+
+
+
 	.body.middle {
 		
 	}
@@ -164,9 +182,23 @@ $dashboardpage .= '<div class="body" style="display: -ms-flexbox;display: flex; 
 
 $dashboardpage .= 	'<table width="100%" style="table-layout: fixed;">
 						<tr>
-							<td class="body left" width="33%" align="left">
-								<h5 style="margin: 0.2cm 0.4cm;font-size: 0.45cm;font-weight: 500;color: #333;">Summary</h5>
-								<p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The dashboard captured financial data of <strong>'.$processed_divisiondata[$division]["totalprojects"].' projects</strong> for the '.$division.' Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. '.number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',').')</strong>, capturing a rolling total of the cash received over time.</p>
+							<td class="body left" width="33%" align="left" style="padding:0.2cm;">
+                                <table style="border-collapse:collapse">
+                                    <tr>
+                                        <td style="padding-bottom: 0.4cm; font-size: 0.45cm;font-weight: 500;color: #333;">
+                                            <h5 style="font-size: 0.45cm;font-weight: 500;color: #333;">Summary</h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p style="margin: 0.2cm 0.4cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;">The dashboard captured financial data of <strong>'.$processed_divisiondata[$division]["totalprojects"].' projects</strong> for the '.$division.' Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. '.number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',').')</strong>, capturing a rolling total of the cash received over time.</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                </table>
 							</td>
 							<td class="body middle" width="33%" align="left">
 								
@@ -183,7 +215,7 @@ $dashboardpage .= '</div>'; // end of body
 
 
 $annex1_tablecontent = '';
-$annex1_tablecontent .= '<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">';
+$annex1_tablecontent .= '<table class="tablelisting" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">';
 $annex1_tablecontent .= '<thead>';
 $annex1_tablecontent .= '<tr>';
 $annex1_tablecontent .= '<th>Project ID</th>';
@@ -221,7 +253,7 @@ $annex1_tablecontent .= '</table>';
 
 
 $annex2_tablecontent = '';
-$annex2_tablecontent .= '<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">';
+$annex2_tablecontent .= '<table class="tablelisting" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">';
 $annex2_tablecontent .= '<thead>';
 $annex2_tablecontent .= '<tr>';
 $annex2_tablecontent .= '<th>#</th>';

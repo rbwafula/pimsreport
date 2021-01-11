@@ -4,7 +4,7 @@
 	if( isset($_GET['office']) ) {
 	     $division = ucwords($_GET['office']);
 	}
-	include_once('dynamic_algo.php');
+    include_once('dynamic_algo.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,6 +22,7 @@
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.min.css">
     <script src="assets/js/main.js"></script>
 </head>
 <body>
@@ -38,7 +39,7 @@
         </ul>
     </nav>
 
-    <div class="container-fluid">
+    <div class="container-fluid printlandscape">
         <div class="row noprint">
             <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -75,7 +76,6 @@
         <div class="row reportbody section1">
         	<div class="col-md-4 summary">
         		<h5 class="sectiontitle">Summary</h5>
-        		<p class="summarytext">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"];?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',');?>)</strong>, capturing a rolling total of the cash received over time.</p>
         		<div class="row summarystatistics">
         			<div class="col-md-3 metric1">
         				<p class="metricvalue">
@@ -102,6 +102,7 @@
         				<p class="metricdesc">Expired Projects</p>
         			</div>
         		</div>
+                <p class="summarytext">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"];?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',');?>)</strong>, capturing a rolling total of the cash received over time.</p>
         		<div class="row chartrender">
         			<div class="col-md-12 projectsbysubprogramme">
         				<div id="projectsbysubprogramme_chart"></div>
@@ -109,7 +110,7 @@
                             Highcharts.chart('projectsbysubprogramme_chart', {
                                 colors: ['#0077b6'],
                                 credits: {
-                                    text: 'Figure 1'
+                                    text: ''
                                 },
                                 chart: {
                                     backgroundColor: 'transparent',
@@ -117,25 +118,28 @@
                                     height: 200
                                 },
                                 title: {
-                                    text: 'Projects by Sub-Programme',
+                                    text: 'Figure 1: Projects by Sub-Programme',
                                     floating: false,
-                                    align: 'center',
-                                    verticalAlign: 'bottom',
-                                    margin: 0,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
                                     style: {
                                         color: '#707070',
                                         fontSize: '10px',
-                                        fontWeight: '700',
-                                        textTransform: 'none'
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
                                     },
-                                    x: 30,
-                                    y: 5
+                                    x: 0,
+                                    y: 0
                                 },
                                 xAxis: {
-                                    categories: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["spnames"]); ?>,
+                                    categories: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["spnumbers"]); ?>,
                                     labels: {
                                         style: {
-                                            fontSize: '0.2cm'
+                                            fontSize: '0.25cm',
+                                            fontWeight: 700
                                         },
                                         formatter: function() {
                                             var ret = this.value,
@@ -155,7 +159,7 @@
                                 yAxis: {
                                     min: 0,
                                     title: {
-                                        text: 'Projects'
+                                        text: ''
                                     },
                                     labels: {
                                         style: {
@@ -207,7 +211,7 @@
                             Highcharts.chart('budgetutilization_chart', {
                                 colors: ['#17a2b8'],
                                 credits: {
-                                    text: 'Figure 2'
+                                    text: ''
                                 },
                                 chart: {
                                     backgroundColor: 'transparent',
@@ -215,19 +219,21 @@
                                     height: 200
                                 },
                                 title: {
-                                    text: 'Budget Utilization',
+                                    text: 'Figure 2: Budget Utilization (USD M)',
                                     floating: false,
-                                    align: 'center',
-                                    verticalAlign: 'bottom',
-                                    margin: 0,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
                                     style: {
                                         color: '#707070',
                                         fontSize: '10px',
-                                        fontWeight: '700',
-                                        textTransform: 'none'
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
                                     },
-                                    x: 30,
-                                    y: 5
+                                    x: 0,
+                                    y: 0
                                 },
                                 xAxis: {
                                     categories: ['Consumable Budget','Consumed Budget','Budget Balance'],
@@ -253,7 +259,7 @@
                                 yAxis: {
                                     min: 0,
                                     title: {
-                                        text: 'USD (M)'
+                                        text: ''
                                     },
                                     labels: {
                                         style: {
@@ -537,32 +543,34 @@
                             Highcharts.chart('groupingbyage_chart', {
                                 colors: ['#0077b6'],
                                 credits: {
-                                    text: 'Figure 3'
+                                    text: ''
                                 },
                                 chart: {
                                     backgroundColor: 'transparent',
                                     type: 'bar',
-                                    height: 200
+                                    height: 250
                                 },
                                 title: {
-                                    text: 'Grouping by Age',
+                                    text: 'Figure 3: Projects Age Category',
                                     floating: false,
-                                    align: 'center',
-                                    verticalAlign: 'bottom',
-                                    margin: 0,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
                                     style: {
                                         color: '#707070',
                                         fontSize: '10px',
-                                        fontWeight: '700',
-                                        textTransform: 'none'
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
                                     },
-                                    x: 30,
-                                    y: 5
+                                    x: 0,
+                                    y: 0
                                 },
                                 xAxis: {
                                     categories: ['0-2 Y', '2-5 Y', '5-10 Y', '10+ Y'],
                                     title: {
-                                        text: 'Age Category',
+                                        text: '',
                                         style: {
                                             fontSize: '0.3cm'
                                         }
@@ -640,56 +648,36 @@
         				<div id="budgetsize_chart"></div>
         				<script type="text/javascript">
                             Highcharts.chart('budgetsize_chart', {
-                                colors: ['#0077b6'],
-                                credits: {
-                                    text: 'Figure 4'
-                                },
                                 chart: {
-                                    backgroundColor: 'transparent',
-                                    type: 'bar',
+                                    type: 'scatter',
+                                    zoomType: 'xy',
                                     height: 200
                                 },
                                 title: {
-                                    text: 'Grouping by Budget Size',
+                                    text: 'Figure 4: Grouping by Budget Size',
                                     floating: false,
-                                    align: 'center',
-                                    verticalAlign: 'bottom',
-                                    margin: 0,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
                                     style: {
                                         color: '#707070',
                                         fontSize: '10px',
-                                        fontWeight: '700',
-                                        textTransform: 'none'
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
                                     },
-                                    x: 30,
-                                    y: 5
+                                    x: 0,
+                                    y: 0
                                 },
                                 xAxis: {
-                                    categories: ['0-1 M','1-2 M', '2-5 M', '5-10 M', '10+ M'],
                                     title: {
-                                        text: 'Budget Size',
-                                        style: {
-                                            fontSize: '0.3cm'
-                                        }
+                                        enabled: false,
+                                        text: 'Project Rating'
                                     },
-                                    labels: {
-                                        style: {
-                                            fontSize: '0.2cm'
-                                        },
-                                        formatter: function() {
-                                            var ret = this.value,
-                                                len = ret.length;
-                                            //console.log(len);
-                                            if (len > 10) {
-                                                ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
-                                            }
-                                            if (len > 25) {
-                                                ret = ret.slice(0, 25) + '...';
-                                            }
-                                            return ret;
-                                        }
-                                    },
-                                    crosshair: true
+                                    startOnTick: true,
+                                    endOnTick: true,
+                                    showLastLabel: true
                                 },
                                 yAxis: {
                                     min: 0,
@@ -702,38 +690,93 @@
                                         }
                                     }
                                 },
-                                tooltip: {
-                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                        '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
-                                    footerFormat: '</table>',
-                                    shared: true,
-                                    useHTML: true,
-                                    enabled: false
+                                legend: {
+                                    layout: 'vertical',
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    x: 100,
+                                    y: 70,
+                                    floating: true,
+                                    backgroundColor: Highcharts.defaultOptions.chart.backgroundColor,
+                                    borderWidth: 1
                                 },
                                 plotOptions: {
-                                    bar: {
-                                        pointPadding: 0.2,
-                                        borderWidth: 0,
+                                    scatter: {
+                                        marker: {
+                                            radius: 2,
+                                            states: {
+                                                hover: {
+                                                    enabled: true,
+                                                    lineColor: 'rgb(100,100,100)'
+                                                }
+                                            }
+                                        },
+                                        states: {
+                                            hover: {
+                                                marker: {
+                                                    enabled: false
+                                                }
+                                            }
+                                        },
+                                        tooltip: {
+                                            headerFormat: '<b>{series.name}</b><br>',
+                                            pointFormat: '{point.x} cm, {point.y} kg'
+                                        }
+                                    }
+                                },
+                                series: [{
+                                    name: 'Red',
+                                    color: 'rgba(220, 53, 69, .5)',
+                                    data: [ <?php echo str_replace(']', '', str_replace('[', '', json_encode($processed_divisiondata[$division]["grantfundingcountbygroup"]))); ?> ,{
                                         dataLabels: {
                                             enabled: true,
                                             formatter: function(){
                                                 return (this.y!=0)? Highcharts.numberFormat(this.y,1):"";
                                             }
                                         }
-                                    },
-                                    series: {
-                                        groupPadding: 0,
-                                        pointPadding: 0.1,
-                                        borderWidth: 0
-                                    }
-                                },
-                                series: [{
-                                    name: 'Grant Funding',
-                                    data: <?php echo json_encode($processed_divisiondata[$division]["grantfundingbygroup"]); ?>,
-                                    color: '#0077b6',
+                                    }],
                                     showInLegend: false
-                                }]
+                                }, {
+                                    name: 'Yellow',
+                                    color: 'rgba(255, 193, 7, .5)',
+                                    data: [ <?php echo str_replace(']', '', str_replace('[', '', json_encode($processed_divisiondata[$division]["grantfundingcountbygroup"]))); ?> ,{
+                                        dataLabels: {
+                                            enabled: true,
+                                            formatter: function(){
+                                                return (this.y!=0)? Highcharts.numberFormat(this.y,1):"";
+                                            }
+                                        }
+                                    }],
+                                    showInLegend: false
+                                }, {
+                                    name: 'Green',
+                                    color: 'rgba(40, 167, 69, .5)',
+                                    data: [ <?php echo str_replace(']', '', str_replace('[', '', json_encode($processed_divisiondata[$division]["grantfundingcountbygroup"]))); ?> ,{
+                                        dataLabels: {
+                                            enabled: true,
+                                            formatter: function(){
+                                                return (this.y!=0)? Highcharts.numberFormat(this.y,1):"";
+                                            }
+                                        }
+                                    }],
+                                    showInLegend: false
+                                }
+                                /*{
+                                    name: 'Red',
+                                    
+                                    data: [[161.2, 51.6], [167.5, 59.0]]
+
+                                }, {
+                                    name: 'Yellow',
+                                    color: 'rgba(255, 193, 7, .5)',
+                                    data: [[161.2, 51.6], [167.5, 59.0]]
+
+                                }, {
+                                    name: 'Green',
+                                    color: 'rgba(40, 167, 69, .5)',
+                                    data: [[161.2, 51.6], [167.5, 59.0]]
+
+                                }*/]
                             });
                         </script>
         			</div>
@@ -743,12 +786,66 @@
         		<h5 class="sectiontitle">Human Resource</h5>
         		<div class="row chartrender">
         			<div class="col-md-12 hrfilled">
+                        <div class="row hrstatistics">
+                            <?php
+                                $totalposts = 0;
+                                $filledposts = 0;
+                                $vacantposts = 0;
+                                for ($i=0; $i<count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
+                                    $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
+                                    $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
+                                    $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
+                                }
+                            ?>
+                            <div class="col-md-2 metric1">
+                                <p class="metricvalue">
+                                    <?php echo number_format($totalposts,0,'.',',');?>
+                                </p>
+                                <p class="metricdesc">Total Posts</p>
+                            </div>
+                            <div class="col-md-2 metric3">
+                                <p class="metricvalue">
+                                    <?php echo number_format($vacantposts,0,'.',',');?>
+                                </p>
+                                <p class="metricdesc">Vacant Posts</p>
+                            </div>
+                            <div class="col-md-2 metric2">
+                                <p class="metricvalue">
+                                    <?php echo number_format($filledposts,0,'.',',');?>
+                                </p>
+                                <p class="metricdesc">Filled Posts</p>
+                            </div>
+                            <div class="col-md-2 metric3">
+                                <p class="metricvalue">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                    
+                                    <!--<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                      <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                    </svg>-->
+                                </p>
+                                <p class="metricdesc">&nbsp;</p>
+                            </div>
+                            <div class="col-md-2 metric4">
+                                <p class="metricvalue">
+                                    <?php 
+                                        echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledfemale"]))/count($processed_divisiondata[$division]["hrpostsfilledfemale"]), 0) ; ?>%
+                                </p>
+                                <p class="metricdesc">Female</p>
+                            </div>
+                            <div class="col-md-2 metric5">
+                                <p class="metricvalue">
+                                    <?php 
+                                        echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledmale"]))/count($processed_divisiondata[$division]["hrpostsfilledmale"]), 0) ; ?>%
+                                </p>
+                                <p class="metricdesc">Male</p>
+                            </div>
+                        </div>
         				<div id="hrfilled_chart"></div>
         				<script type="text/javascript">
                             Highcharts.chart('hrfilled_chart', {
-                                colors: ['#ccc','#17a2b8'],
+                                colors: ['#ddd','#17a2b8'],
                                 credits: { 
-                                    text: 'Figure 5'
+                                    text: ''
                                 },
                                 chart: {
                                     type: 'bar',
@@ -756,19 +853,21 @@
                                     backgroundColor: 'transparent'
                                 },
                                 title: {
-                                    text: 'Post Occupancy',
+                                    text: 'Figure 5: Post Occupancy',
                                     floating: false,
-                                    align: 'center',
-                                    verticalAlign: 'bottom',
-                                    margin: 0,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
                                     style: {
                                         color: '#707070',
                                         fontSize: '10px',
-                                        fontWeight: '700',
-                                        textTransform: 'none'
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
                                     },
-                                    x: 30,
-                                    y: 5
+                                    x: 0,
+                                    y: 0
                                 },
                                 xAxis: {
                                     categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
@@ -787,7 +886,7 @@
                                 legend: {
                                     reversed: true,
                                     style: {
-                                        fontSize: '10px'
+                                        fontSize: '9px'
                                     }
                                 },
                                 plotOptions: {
@@ -828,29 +927,31 @@
         				<div id="hrgender_chart"></div>
         				<script type="text/javascript">
                             Highcharts.chart('hrgender_chart', {
-                                colors: ['#ccc','#17a2b8'],
+                                colors: ['#17a2b8','#d59442'],
                                 chart: {
                                     type: 'bar',
                                     height: 250,
                                     backgroundColor: 'transparent'
                                 },
                                 credits: {
-                                    text: 'Figure 6'
+                                    text: ''
                                 },
                                 title: {
-                                    text: 'Gender Balance',
+                                    text: 'Figure 6: Gender Balance',
                                     floating: false,
-                                    align: 'center',
-                                    verticalAlign: 'bottom',
-                                    margin: 0,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
                                     style: {
                                         color: '#707070',
                                         fontSize: '10px',
-                                        fontWeight: '700',
-                                        textTransform: 'none'
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
                                     },
-                                    x: 30,
-                                    y: 5
+                                    x: 0,
+                                    y: 0
                                 },
                                 subtitle: {
                                     text: ''
@@ -916,11 +1017,11 @@
                                     enabled: false
                                 },
                                 series: [{
-                                    name: 'Male',
-                                    data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledmale"]); ?>
-                                }, {
                                     name: 'Female',
                                     data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledfemale"]); ?>
+                                },{
+                                    name: 'Male',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledmale"]); ?>
                                 }]
                             });
                         </script>
@@ -939,14 +1040,14 @@
                         	<th>Project ID</th>
                             <th>Project Title</th>
                             <th>Subprogramme</th>
-                            <th >Budget</th>
-                            <th>System Rating</th>
-                            <th>Management Rating</th>
-                            <th>Reported</th>
                             <th>Project Manager</th>
+                            <th>Budget</th>
+                            <th>System Rating <span>(40%)</span></th>
+                            <th>Management Rating <span>(60%)</span></th>
+                            <th>Final Rating</th>
+                            <th>Project Rank</th>
                             <th>Outputs</th>
                             <th>Completed Activities</th>
-                            <th>Total Activities</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -956,15 +1057,15 @@
                                 echo '<td>'.($i+1).'.</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_id'].'</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_title'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['subprogramme'].'</td>';
-                                echo '<td>'.number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'],2,'.',',') .'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['system_rating'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['management_rating'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['reported'].'</td>';
+                                echo '<td>SP '.$processed_divisiondata[$division]["projectlisting"][$i]['sp_number'].'</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_manager'].'</td>';
+                                echo '<td>'.number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'],0,'.',',') .'</td>';
+                                echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']).'">&nbsp;</p></td>';
+                                echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['management_rating']).'">&nbsp;</p></td>';
+                                echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['final_rating']).'">&nbsp;</p></td>';
+                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_rank'].'</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['outputs'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['total_activities'].'</td>';
+                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'].' / '.$processed_divisiondata[$division]["projectlisting"][$i]['total_activities'].' </td>';
                                 echo '</tr>';
                             }
                         ?>

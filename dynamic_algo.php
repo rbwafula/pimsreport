@@ -631,6 +631,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'project_id' => $prvalue->project_id,
                 'project_title' => $prvalue->project_title,
                 'subprogramme' => $prvalue->subprogramme,
+                'sp_number' => $prvalue->sp_number,
                 'budget' => $prvalue->consumable_budget,
                 'system_rating' => $prvalue->system_rating,
                 'management_rating' => $prvalue->manager_rating,
@@ -640,7 +641,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'project_rank' => $project_rating,
                 'outputs' => $p_outputs,
                 'completed_activities' => $p_completed_activities,
-                'total_activities' => $p_activities,
+                'total_activities' => $p_activities
             ];
         }
     }
@@ -934,12 +935,12 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         array_push($d_post_categories, $value['post']);
         array_push($d_post_filled, $value['filled']);
         if ($value['filled'] != 0 && $value['filled_male'] != 0) {
-            array_push($d_post_filled_male, (-1 * (100 * $value['filled_male'] / $value['filled'])));
+            array_push($d_post_filled_male, (1 * (100 * $value['filled_male'] / $value['filled'])));
         } else {
             array_push($d_post_filled_male, 0);
         }
         if ($value['filled'] != 0 && $value['filled_female'] != 0) {
-            array_push($d_post_filled_female, ((100 * $value['filled_female'] / $value['filled'])));
+            array_push($d_post_filled_female, (-1 * (100 * $value['filled_female'] / $value['filled'])));
         } else {
             array_push($d_post_filled_female, 0);
         }

@@ -105,7 +105,10 @@ body {
 	margin: 0.8cm 0.4cm 0.4cm;
 }
 .reportbody .sectiontitle {
-	margin: 0.2cm 0cm;font-size: 0.45cm;font-weight: 500;color: #333;
+	margin: 0.2cm 0cm;font-size: 0.45cm;font-weight: 500;color: #333; text-decoration: underline;
+}
+.reportbody .sectiontitle:after {
+	/*content: ":";*/
 }
 .reportbody.section2 .sectiontitle,
 .reportbody.section3 .sectiontitle {
@@ -119,33 +122,50 @@ body {
 	margin: 0.2cm 0cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;
 }
 .reportbody.section1 .summarystatistics {
-	margin: 0.4cm 0cm 0.2cm;
+	margin: 20px 0cm 0.2cm; /* 0.4cm 0cm 0.2cm */
 }
 .reportbody.section1 .summarystatistics .metric1,
 .reportbody.section1 .summarystatistics .metric2,
 .reportbody.section1 .summarystatistics .metric3,
-.reportbody.section1 .summarystatistics .metric4 {
+.reportbody.section1 .summarystatistics .metric4,
+.reportbody.section1 .hrstatistics .metric1,
+.reportbody.section1 .hrstatistics .metric2,
+.reportbody.section1 .hrstatistics .metric3,
+.reportbody.section1 .hrstatistics .metric4,
+.reportbody.section1 .hrstatistics .metric5 {
 	padding: 0;
 }
-.reportbody.section1 .summarystatistics .metric1 {
+.reportbody.section1 .summarystatistics .metric1,
+.reportbody.section1 .hrstatistics .metric1 {
 	color: #0077b6;
 }
-.reportbody.section1 .summarystatistics .metric2 {
+.reportbody.section1 .summarystatistics .metric2,
+.reportbody.section1 .hrstatistics .metric4 {
 	color: #17a2b8;
 }
-.reportbody.section1 .summarystatistics .metric3 {
+.reportbody.section1 .summarystatistics .metric3,
+.reportbody.section1 .hrstatistics .metric2 {
 	color: #688753;
 }
-.reportbody.section1 .summarystatistics .metric4 {
+.reportbody.section1 .summarystatistics .metric4,
+.reportbody.section1 .hrstatistics .metric3 {
 	color: #dc3545;
 }
-.reportbody.section1 .summarystatistics .metricvalue {
+.reportbody.section1 .hrstatistics .metric5 {
+	color: #d59442;
+}
+.reportbody.section1 .hrstatistics .metricvalue i {
+	color: #707070;
+}
+.reportbody.section1 .summarystatistics .metricvalue,
+.reportbody.section1 .hrstatistics .metricvalue {
 	text-align: center;
 	margin: 0;
-	font-size: 25px;
+	font-size: 30px;
 	font-weight: 600;
 }
-.reportbody.section1 .summarystatistics .metricdesc {
+.reportbody.section1 .summarystatistics .metricdesc,
+.reportbody.section1 .hrstatistics .metricdesc {
 	text-align: center;
 	margin: 0;
 	margin-top: 3px;
@@ -158,7 +178,7 @@ body {
 .reportbody.section1 .portfoliostatistics .metric1,
 .reportbody.section1 .portfoliostatistics .metric2,
 .reportbody.section1 .portfoliostatistics .metric3 {
-	margin-top: -65px;
+	margin-top: -60px; /*-65px;*/
 	padding-left: 0;
 	padding-right: 0;
 }
@@ -184,6 +204,55 @@ body {
 .chartrender .hrgender {
 	margin-top: 45px;
 }
+
+.projectsbysubprogramme,
+.budgetutilization {
+	margin-top: 25px;
+}
+.hrstatistics {
+	margin: 20px 0 30px;
+}
+.section2 .table,
+.section3 .table {
+	font-size: 10px !important;
+}
+
+.section2 .table th,
+.section3 .table th {
+	line-height: 1.375;
+}
+.section2 .table thead th:nth-child(7),
+.section2 .table thead th:nth-child(8),
+.section2 .table thead th:nth-child(9) {
+	max-width: 90px;
+}
+.section2 .table tbody td:nth-child(6) {
+	text-align: right;
+}
+
+.section2 .table thead th,
+.section2 .table tbody td:nth-child(4),
+.section2 .table tbody td:nth-child(10),
+.section2 .table tbody td:nth-child(11),
+.section2 .table tbody td:nth-child(12) {
+	text-align: center;
+}
+.section2 .table thead th:nth-child(2),
+.section2 .table thead th:nth-child(3) {
+	text-align: left;
+}
+.section2 .table tbody td:nth-child(7),
+.section2 .table tbody td:nth-child(8),
+.section2 .table tbody td:nth-child(9) {
+	vertical-align: middle;
+}
+.section2 .table tbody .projectlistinghealth {
+	width: 10px;
+	border-radius: 50%;
+	text-align: center;
+	margin: 0 auto;
+	height: 10px;
+}
 @page { 
 	size: auto;  
 	margin: 0mm; 
@@ -198,6 +267,12 @@ body {
         width: 100%;
         background: rgb(255,255,255);
     }
+    body {
+    	zoom: 70%;
+    }
+    .container-fluid.printlandscape {
+    	max-width: 29.7cm;/*landscape layout */
+    }
     .pagebreak {
         clear: both;
         page-break-after: always;
@@ -209,7 +284,7 @@ body {
 		max-width: 9.3cm;
 	}
 	.reportbody.section2 table, .reportbody.section3 table {
-	    margin: 0.8cm 0.4cm 0.4cm;
+	    margin: 0.8cm 0cm 0.4cm;
 	}
 	.reportbody.section1 .portfoliostatistics .metric1,
 	.reportbody.section1 .portfoliostatistics .metric2,
@@ -218,6 +293,7 @@ body {
 	}
 	.table {
 		border-bottom: 2px solid #333;
+		max-width: 29.7cm;
 	}
 	.table tr:nth-of-type(2n+1) {
 		background-color: #f6f6f6;
@@ -244,6 +320,59 @@ body {
 	.section2 table td:nth-child(5) {
 	    text-align: right;
 	}
+
+	.reportbody.section1 .summarystatistics .metricvalue,
+	.reportbody.section1 .hrstatistics .metricvalue {
+		font-size: 20px !important;
+	}
+	.reportbody.section1 .summarystatistics .metricdesc,
+	.reportbody.section1 .hrstatistics .metricdesc {
+		margin-top: -5px;
+		font-size: 8px;
+	}
+	.reportbody.section1 .hrstatistics .metricvalue svg {
+		color: #333;
+		height: 35px;
+		width: 35px;
+		font-weight: 700;
+	}
+
+
+
+	.reportbody.section1 .portfoliostatistics .metric1,
+	.reportbody.section1 .portfoliostatistics .metric2,
+	.reportbody.section1 .portfoliostatistics .metric3 {
+		margin-top: -80px; /*-65px;*/
+	}
+
+
+	.projectsbysubprogramme {
+		margin-top: 5px;
+	}
+
+
+	.reportbody.section1 .summarystatistics {
+		margin: 12px 0cm 0.2cm;
+	}
+	.hrstatistics {
+	    margin: 5px 0 35px !important;
+	}
+	.chartrender .groupingbyage, 
+	.chartrender .budgetsize {
+		margin-top: 10px !important;
+	}
+	.chartrender .budgetsize {
+		margin-top: 20px !important;
+	}
+	.chartrender .hrgender {
+		margin-top: 18px !important;
+	}
+
+
+
+
+
+
 }
 
 
