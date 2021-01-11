@@ -646,19 +646,19 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 $fr = $prvalue->final_rating;
             }
             //feed into scatter points -> consumable budget, rating
-            $d_scatter_points[] = [intval($prvalue->consumable_budget), intval($fr)];
+            $d_scatter_points[] = [intval($prvalue->consumable_budget), $fr];
 
             if ($fr >= 2.5) {
                 //green
-                $d_scatter_points_green[] = [intval($prvalue->consumable_budget), intval($fr)];
+                $d_scatter_points_green[] = [intval($prvalue->consumable_budget), $fr];
 
             } elseif ($fr >= 1.5) {
                 // yellow
-                $d_scatter_points_yellow[] = [intval($prvalue->consumable_budget), intval($fr)];
+                $d_scatter_points_yellow[] = [intval($prvalue->consumable_budget), $fr];
 
             } else {
                 //red
-                $d_scatter_red[] = [intval($prvalue->consumable_budget), intval($fr)];
+                $d_scatter_red[] = [intval($prvalue->consumable_budget), $fr];
 
             }
 
