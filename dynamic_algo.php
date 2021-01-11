@@ -643,7 +643,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             } else {
                 $f_rating = $prvalue->final_rating;
                 $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
-                $fr = $prvalue->final_rating;
+                $fr = number_format((float) $prvalue->final_rating, 2, '.', '');
             }
             //feed into scatter points -> consumable budget, rating
             $d_scatter_points[] = [intval($prvalue->consumable_budget), $fr];
