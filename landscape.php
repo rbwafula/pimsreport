@@ -65,7 +65,7 @@ include_once 'dynamic_algo.php';
             </main>
         </div>
 
-        <div class="toprint">
+        <div id="toprint" class="toprint">
             <div class="row reportheader">
                 <div class="col-md-4 logo">
                     <img class="logo" src="assets/images/pimslogo.png">
@@ -919,7 +919,8 @@ include_once 'dynamic_algo.php';
                             <div id="hrfilled_chart"></div>
                             <script type="text/javascript">
                                 Highcharts.chart('hrfilled_chart', {
-                                    colors: ['rgb(220,53,69,0.7)','rgb(112,112,112,0.7)'],
+                                    colors: ['rgb(220,53,69,0.6)','rgb(104,135,83,0.6)'],
+                                    /*colors: ['rgb(220,53,69,0.7)','rgb(112,112,112,0.7)'],*/
                                     credits: {
                                         text: ''
                                     },
@@ -1249,13 +1250,14 @@ include_once 'dynamic_algo.php';
     <!-- HTML TO PDF  FUNCTION TO EXPORT THE DOCUMENT -->
     <script>
 function jsp(){
-    var element = document.getElementById('to_export');
+    var element = document.getElementById('toprint');
     var opt = {
     margin:       0,
     filename:     '<?php echo $processed_divisiondata[$division]["entity"]; ?> pimsreport.pdf',
     image:        { type: 'jpeg', quality: 75 },
     //html2canvas:  {​​ scale: 0.8 }​​,
-    html2canvas:  { scale: 0.8 },
+    html2canvas:{dpi:600, letterRendering:true},
+    //html2canvas:  { scale: 0.8 },
     //pagebreak: { mode: 'avoid-all', after: '#page1el' },
     jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
@@ -1265,30 +1267,6 @@ function jsp(){
 
     // Old monolithic-style usage:
     // html2pdf(element, opt);
-}
-
-function CreatePDFfromHTML() {
-    var HTML_Width = $(".toprint").width()*3;
-    var HTML_Height = $(".toprint").height()*3;
-    var top_left_margin = 15;
-    var PDF_Width = HTML_Width + (top_left_margin * 2);
-    var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
-    var canvas_image_width = HTML_Width;
-    var canvas_image_height = HTML_Height;
-
-    var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
-
-    html2canvas($(".toprint")[0]).then(function (canvas) {
-        var imgData = canvas.toDataURL("image/jpeg", 1.0);
-        var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
-        pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
-        for (var i = 1; i <= totalPDFPages; i++) { 
-            pdf.addPage(PDF_Width, PDF_Height);
-            pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
-        }
-        pdf.save("<?php echo $processed_divisiondata[$division]["entity"]; ?> pimsreport.pdf");
-        $(".toprint").hide();
-    });
 }
 </script>
 </body>

@@ -121,7 +121,7 @@ body {
 	margin: 20px 0cm 0.2cm; /* 0.4cm 0cm 0.2cm */
 }
 .reportbody.section1 .summarystatistics .col,
-.reportbody.section1 .hrstatistics .col-md-2 {
+.reportbody.section1 .hrstatistics .col {
 	padding: 0;
 }
 .reportbody.section1 .summarystatistics .metric1,
@@ -155,7 +155,7 @@ body {
 }
 .reportbody.section1 .hrstatistics .metric4 .metricvalue,
 .reportbody.section1 .hrstatistics .metric5 .metricvalue {
-	font-size: 26px;
+	/*font-size: 26px;*/
 }
 .reportbody.section1 .summarystatistics .metricdesc,
 .reportbody.section1 .hrstatistics .metricdesc {
@@ -198,7 +198,7 @@ body {
 	margin-top: 10px;
 }
 .chartrender .hrgender {
-	margin-top: 45px;
+	margin-top: 10px;
 }
 
 .projectsbysubprogramme,
@@ -211,6 +211,12 @@ body {
 .section2 .table,
 .section3 .table {
 	font-size: 10px !important;
+	/*page-break-after:always;*/
+	page-break-inside:auto
+}
+.section2 .table tr,
+.section3 .table tr {
+	page-break-inside:avoid; page-break-after:auto
 }
 
 .section2 .table th,
