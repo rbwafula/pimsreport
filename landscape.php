@@ -648,6 +648,101 @@
         				<div id="budgetsize_chart"></div>
         				<script type="text/javascript">
                             Highcharts.chart('budgetsize_chart', {
+                                credits: {
+                                    text: ''
+                                },
+                                chart: {
+                                    backgroundColor: 'transparent',
+                                    type: 'column',
+                                    height: 200
+                                },
+                                title: {
+                                    text: 'Figure 4: Projects by Rating',
+                                    floating: false,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
+                                    style: {
+                                        color: '#707070',
+                                        fontSize: '10px',
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
+                                    },
+                                    x: 0,
+                                    y: 0
+                                },
+                                xAxis: {
+                                    categories: ["Red", "Yellow", "Green"],
+                                    labels: {
+                                        style: {
+                                            fontSize: '0.25cm',
+                                            fontWeight: 700
+                                        },
+                                        formatter: function() {
+                                            var ret = this.value,
+                                                len = ret.length;
+                                            //console.log(len);
+                                            if (len > 10) {
+                                                ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                            }
+                                            if (len > 25) {
+                                                ret = ret.slice(0, 25) + '...';
+                                            }
+                                            return ret;
+                                        }
+                                    },
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: ''
+                                    },
+                                    labels: {
+                                        style: {
+                                            fontSize: '0.2cm'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true,
+                                    enabled: false
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0,
+                                        dataLabels: {
+                                            enabled: true,
+                                            formatter: function() {
+                                                return '' + Highcharts.numberFormat(this.y,0) + '';
+                                            }
+                                        }
+                                    },
+                                    series: {
+                                        groupPadding: 0,
+                                        pointPadding: 0.1,
+                                        borderWidth: 0,
+                                        colorByPoint: true,
+                                        colors: ['#dc3545','#ffc107', '#28a745']
+                                    }
+                                },
+                                series: [{
+                                    name: 'Rating',
+                                    data: [<?php echo count($processed_divisiondata[$division]["scatterpoints"]["red"]); ?>,<?php echo count($processed_divisiondata[$division]["scatterpoints"]["yellow"]); ?>,<?php echo count($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>],
+                                    showInLegend: false
+
+                                }]
+                            });
+                            /*
+                            Highcharts.chart('budgetsize_chart', {
                                 chart: {
                                     type: 'scatter',
                                     zoomType: 'xy',
@@ -747,7 +842,7 @@
                                     data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>
 
                                 }]
-                            });
+                            });*/
                         </script>
         			</div>
         		</div>
@@ -1010,6 +1105,7 @@
                         	<th>Project ID</th>
                             <th>Project Title</th>
                             <th>Subprogramme</th>
+                            <th>Branch</th>
                             <th>Project Manager</th>
                             <th>Budget</th>
                             <th>System Rating <span>(40%)</span></th>
@@ -1028,6 +1124,7 @@
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_id'].'</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_title'].'</td>';
                                 echo '<td>SP '.$processed_divisiondata[$division]["projectlisting"][$i]['sp_number'].'</td>';
+                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['branch'].'</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_manager'].'</td>';
                                 echo '<td>'.number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'],0,'.',',') .'</td>';
                                 echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']).'">&nbsp;</p></td>';
@@ -1045,7 +1142,7 @@
         </div>
         <div class="pagebreak"></div>
         <div class="row reportbody section3">
-        	<h2 class="sectiontitle">Annex 2: Position Table</h2>
+        	<h2 class="sectiontitle">Annex 2: Vacant Positions Table</h2>
         	<div class="table-responsive">
                 <table class="table table-striped table-sm">
                     <thead>
@@ -1055,26 +1152,68 @@
                             <th>Position Title</th>
                             <th>Position Number</th>
                             <th>Duty Station</th>
-                            <th>Status</th>
                             <th>Staff Name</th>
                             <th>Org Code</th>
                             <th>Org Unit</th>
                         </tr>
                     </thead>
                     <tbody>
-                    	<?php 
+                    	<?php
+                            $j = 0;
                             for($i=0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++ ) {
-                            	echo '<tr>';
-                                echo '<td>'.($i+1).'.</td>';
-                            	echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['grade'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_title'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_number'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['duty_station'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_status'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['staff_name'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_code'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'].'</td>';
-                                echo '</tr>';
+                                if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
+                                    echo '<tr>';
+                                    echo '<td>'.($j+1).'.</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['grade'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_title'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_number'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['duty_station'].'</td>';
+                                    echo '<td> N/A </td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_code'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'].'</td>';
+                                    echo '</tr>';
+                                    $j++;
+                                }
+                            }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pagebreak"></div>
+        <div class="row reportbody section3">
+            <h2 class="sectiontitle">Annex 3: Filled Positions Table</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>Grade</th>
+                            <th>Position Title</th>
+                            <th>Position Number</th>
+                            <th>Duty Station</th>
+                            <th>Staff Name</th>
+                            <th>Org Code</th>
+                            <th>Org Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            $j = 0;
+                            for($i=0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++ ) {
+                                if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
+                                    echo '<tr>';
+                                    echo '<td>'.($j+1).'.</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['grade'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_title'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_number'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['duty_station'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['staff_name'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_code'].'</td>';
+                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'].'</td>';
+                                    echo '</tr>';
+                                    $j++;
+                                }
                             }
                         ?>
                     </tbody>
