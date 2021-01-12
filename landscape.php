@@ -60,8 +60,6 @@
         <div class="row reportheader">
         	<div class="col-md-4 logo">
         		<img class="logo" src="assets/images/pimslogo.png">
-        		<p class="compliancerating"><?php echo $processed_divisiondata[$division]["reportedprojectspct"];?>%</p>
-                <p class="compliancedescription">Compliance Reporting</p>
         	</div>
         	<div class="col-md-4 title">
         		<h1><?php echo $processed_divisiondata[$division]["entity"]; ?></h1>
@@ -106,6 +104,13 @@
                             <?php echo number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]),0,'.',',');?>
                         </p>
                         <p class="metricdesc">Avg Months<br/>Past Due</p>
+                    </div>
+                    <?php $complianceclass = ($processed_divisiondata[$division]["reportedprojectspct"] < 80)? 'metric4' : 'metric5'; ?>
+                    <div class="col <?php echo $complianceclass; ?>">
+                        <p class="metricvalue">
+                            <?php echo number_format($processed_divisiondata[$division]["reportedprojectspct"],0);?>%
+                        </p>
+                        <p class="metricdesc">Reporting<br/>Compliance</p>
                     </div>
         		</div>
                 <p class="summarytext">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"];?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',');?>)</strong>, capturing a rolling total of the cash received over time.</p>

@@ -86,7 +86,7 @@ body {
 	margin: 0;font-size: 0.35cm;font-weight: 400; margin-bottom: 0.2cm; margin-right: 25px;
 }
 .reportheader .health .healthrating_box {
-	border-radius: 30%;width: 1cm;height: 1cm; margin-top: -7px; margin-right:30px; position:absolute; right:15px;
+	border-radius: 50%;width: 1.2cm;height: 1.2cm; margin-top: -11px; margin-right:27px; position:absolute; right:15px;
 }
 .reportheader .health .healthratingdesc {
 	margin-top: 40px;
