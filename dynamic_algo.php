@@ -654,7 +654,12 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             $startDater = time();
             $datediffr = $endDater - $startDater;
             $project_days_remaining = round($datediffr / (60 * 60 * 24));
-            $project_months_remaining = ceil($project_days_remaining / 30);
+
+            if ($project_days_remaining < 0) {
+                $project_months_remaining = floor($project_days_remaining / 30);
+            } else {
+                $project_months_remaining = ceil($project_days_remaining / 30);
+            }
 
             if ($project_days_remaining < 0) {
                 $d_overan_days += $project_days_remaining;

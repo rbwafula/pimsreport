@@ -1,10 +1,10 @@
 <?php
-	$month = Date("M") . ' ' . Date("Y");
-	$division = ucwords('Africa');
-	if( isset($_GET['office']) ) {
-	     $division = ucwords($_GET['office']);
-	}
-    include_once('dynamic_algo.php');
+$month = Date("M") . ' ' . Date("Y");
+$division = ucwords('Africa');
+if (isset($_GET['office'])) {
+    $division = ucwords($_GET['office']);
+}
+include_once 'dynamic_algo.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -24,6 +24,9 @@
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.min.css">
     <script src="assets/js/main.js"></script>
+
+    <!-- HTML TO PDF LIB LOADED -->
+    <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
 </head>
 <body>
 	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -39,6 +42,9 @@
         </ul>
     </nav>
 
+    <!-- THE DIVISION TO BE EXPORTED MARKED -->
+    <div id="to_export">
+
     <div class="container-fluid printlandscape">
         <div class="row noprint">
             <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-md-4">
@@ -48,6 +54,8 @@
                         <div class="btn-group mr-2">
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="javascript:void(0);">Share</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print();return false;">Export to PDF</button>
+                            <!-- TRIGGER FOR THE HTML TO PDF FUNCTION -->
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="jsp();"> PDF</button>
                         </div>
                         <!--<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
                             <span data-feather="calendar"></span> This week
@@ -67,7 +75,7 @@
         	</div>
         	<div class="col-md-4 health">
         		<p class="reportdate">Jan 2021</p>
-        		<p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"];?>;">&nbsp;</p>
+        		<p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>;">&nbsp;</p>
         		<p class="healthratingdesc">Project Portfolio Rating</p>
         	</div>
         </div>
@@ -77,43 +85,43 @@
         		<div class="row summarystatistics">
         			<div class="col metric1">
         				<p class="metricvalue">
-        					<?php echo number_format($processed_divisiondata[$division]["totalprojects"],0,'.',',');?>
+        					<?php echo number_format($processed_divisiondata[$division]["totalprojects"], 0, '.', ','); ?>
     					</p>
         				<p class="metricdesc">Total Projects</p>
         			</div>
         			<div class="col metric2">
         				<p class="metricvalue">
-        					<?php echo number_format($processed_divisiondata[$division]["totaloutputs"],0,'.',',');?>
+        					<?php echo number_format($processed_divisiondata[$division]["totaloutputs"], 0, '.', ','); ?>
         				</p>
         				<p class="metricdesc">Total Outputs</p>
         			</div>
         			<div class="col metric3">
         				<p class="metricvalue">
-        					<?php echo number_format($processed_divisiondata[$division]["totalactivities"],0,'.',',');?>
+        					<?php echo number_format($processed_divisiondata[$division]["totalactivities"], 0, '.', ','); ?>
         				</p>
         				<p class="metricdesc">Total Activities</p>
         			</div>
         			<div class="col metric4">
         				<p class="metricvalue">
-        					<?php echo number_format($processed_divisiondata[$division]["pastdueprojects"],0,'.',',');?>
+        					<?php echo number_format($processed_divisiondata[$division]["pastdueprojects"], 0, '.', ','); ?>
         				</p>
         				<p class="metricdesc">Expired Projects</p>
         			</div>
                     <div class="col metric4">
                         <p class="metricvalue">
-                            <?php echo number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]),0,'.',',');?>
+                            <?php echo number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]), 0, '.', ','); ?>
                         </p>
                         <p class="metricdesc">Avg Months<br/>Past Due</p>
                     </div>
-                    <?php $complianceclass = ($processed_divisiondata[$division]["reportedprojectspct"] < 80)? 'metric4' : 'metric5'; ?>
+                    <?php $complianceclass = ($processed_divisiondata[$division]["reportedprojectspct"] < 80) ? 'metric4' : 'metric5';?>
                     <div class="col <?php echo $complianceclass; ?>">
                         <p class="metricvalue">
-                            <?php echo number_format($processed_divisiondata[$division]["reportedprojectspct"],0);?>%
+                            <?php echo number_format($processed_divisiondata[$division]["reportedprojectspct"], 0); ?>%
                         </p>
                         <p class="metricdesc">Reporting<br/>Compliance</p>
                     </div>
         		</div>
-                <p class="summarytext">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"];?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',');?>)</strong>, capturing a rolling total of the cash received over time.</p>
+                <p class="summarytext">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"]; ?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ','); ?>)</strong>, capturing a rolling total of the cash received over time.</p>
         		<div class="row chartrender">
         			<div class="col-md-12 budgetsize">
                         <div id="budgetsize_chart"></div>
@@ -410,9 +418,9 @@
                                 series: [{
                                      name: 'Current Yr',
                                     data: [
-                                        <? echo $processed_divisiondata[$division]["consumablebudget"]/1000000; ?>, 
-                                        <? echo $processed_divisiondata[$division]["totalconsumedbudget"]/1000000; ?>, 
-                                        <?php echo ($processed_divisiondata[$division]["consumablebudget"] - $processed_divisiondata[$division]["totalconsumedbudget"])/1000000; ?>],
+                                        <? echo $processed_divisiondata[$division]["consumablebudget"]/1000000; ?>,
+                                        <? echo $processed_divisiondata[$division]["totalconsumedbudget"]/1000000; ?>,
+                                        <?php echo ($processed_divisiondata[$division]["consumablebudget"] - $processed_divisiondata[$division]["totalconsumedbudget"]) / 1000000; ?>],
                                     showInLegend: false
                                 }]
                             });
@@ -502,7 +510,7 @@
                                     ['Time Taken', <?php echo $processed_divisiondata[$division]["pctbudgetutilized"]; ?> ],
                                     {
                                         name: '',
-                                        y: <?php echo (100 - $processed_divisiondata[$division]["pctbudgetutilized"]);  ?>,
+                                        y: <?php echo (100 - $processed_divisiondata[$division]["pctbudgetutilized"]); ?>,
                                         dataLabels: {
                                             enabled: false
                                         }
@@ -571,7 +579,7 @@
                                     ['Time Taken', <?php echo $processed_divisiondata[$division]["pctgdurationused"]; ?> ],
                                     {
                                         name: '',
-                                        y: <?php echo (100 - $processed_divisiondata[$division]["pctgdurationused"]);  ?>,
+                                        y: <?php echo (100 - $processed_divisiondata[$division]["pctgdurationused"]); ?>,
                                         dataLabels: {
                                             enabled: false
                                         }
@@ -639,7 +647,7 @@
                                     ['Time Taken', <?php echo $processed_divisiondata[$division]["avgactivitiescompleted"]; ?> ],
                                     {
                                         name: '',
-                                        y: <?php echo (100 - $processed_divisiondata[$division]["avgactivitiescompleted"]);  ?>,
+                                        y: <?php echo (100 - $processed_divisiondata[$division]["avgactivitiescompleted"]); ?>,
                                         dataLabels: {
                                             enabled: false
                                         }
@@ -864,37 +872,37 @@
         			<div class="col-md-12 hrfilled">
                         <div class="row hrstatistics">
                             <?php
-                                $totalposts = 0;
-                                $filledposts = 0;
-                                $vacantposts = 0;
-                                for ($i=0; $i<count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
-                                    $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
-                                    $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
-                                    $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
-                                }
-                            ?>
+$totalposts = 0;
+$filledposts = 0;
+$vacantposts = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
+    $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
+    $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
+    $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
+}
+?>
                             <div class="col-md-2 metric1">
                                 <p class="metricvalue">
-                                    <?php echo number_format($totalposts,0,'.',',');?>
+                                    <?php echo number_format($totalposts, 0, '.', ','); ?>
                                 </p>
                                 <p class="metricdesc">Total Posts</p>
                             </div>
                             <div class="col-md-2 metric3">
                                 <p class="metricvalue">
-                                    <?php echo number_format($vacantposts,0,'.',',');?>
+                                    <?php echo number_format($vacantposts, 0, '.', ','); ?>
                                 </p>
                                 <p class="metricdesc">Vacant Posts</p>
                             </div>
                             <div class="col-md-2 metric2">
                                 <p class="metricvalue">
-                                    <?php echo number_format($filledposts,0,'.',',');?>
+                                    <?php echo number_format($filledposts, 0, '.', ','); ?>
                                 </p>
                                 <p class="metricdesc">Filled Posts</p>
                             </div>
                             <div class="col-md-2 metric3">
                                 <p class="metricvalue">
                                     <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                                    
+
                                     <!--<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                                       <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
                                     </svg>-->
@@ -903,15 +911,15 @@
                             </div>
                             <div class="col-md-2 metric4">
                                 <p class="metricvalue">
-                                    <?php 
-                                        echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledfemale"]))/count($processed_divisiondata[$division]["hrpostsfilledfemale"]), 0) ; ?>%
+                                    <?php
+echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledfemale"])) / count($processed_divisiondata[$division]["hrpostsfilledfemale"]), 0); ?>%
                                 </p>
                                 <p class="metricdesc">Female</p>
                             </div>
                             <div class="col-md-2 metric5">
                                 <p class="metricvalue">
-                                    <?php 
-                                        echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledmale"]))/count($processed_divisiondata[$division]["hrpostsfilledmale"]), 0) ; ?>%
+                                    <?php
+echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledmale"])) / count($processed_divisiondata[$division]["hrpostsfilledmale"]), 0); ?>%
                                 </p>
                                 <p class="metricdesc">Male</p>
                             </div>
@@ -920,7 +928,7 @@
         				<script type="text/javascript">
                             Highcharts.chart('hrfilled_chart', {
                                 colors: ['rgb(220,53,69,0.7)','rgb(112,112,112,0.7)'],
-                                credits: { 
+                                credits: {
                                     text: ''
                                 },
                                 chart: {
@@ -1129,35 +1137,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                    	<?php 
-                            for($i=0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++ ) {
-                                echo '<tr>';
-                                echo '<td class="right">'.($i+1).'.</td>';
-                                echo '<td class="left">'.$processed_divisiondata[$division]["projectlisting"][$i]['branch'].'</td>';
-                                echo '<td class="left">'.$processed_divisiondata[$division]["projectlisting"][$i]['project_id'].'</td>';
-                                echo '<td class="left">'.$processed_divisiondata[$division]["projectlisting"][$i]['project_title'].'</td>';
-                                echo '<td class="center">SP '.$processed_divisiondata[$division]["projectlisting"][$i]['sp_number'].'</td>';
+                    	<?php
+for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++) {
+    echo '<tr>';
+    echo '<td class="right">' . ($i + 1) . '.</td>';
+    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['branch'] . '</td>';
+    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_id'] . '</td>';
+    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_title'] . '</td>';
+    echo '<td class="center">SP ' . $processed_divisiondata[$division]["projectlisting"][$i]['sp_number'] . '</td>';
 
-                                if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
-                                    echo '<td class="center" style="color:#dc3545; font-weight: 500;">'.$processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'].'</td>';
-                                } else {
-                                    echo '<td class="center" style="font-weight:500;">'.$processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'].'</td>';
-                                }
-                                echo '<td class="left">'.$processed_divisiondata[$division]["projectlisting"][$i]['project_manager'].'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'],0,'.',',') .'</td>';
-                                echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']).'">&nbsp;</p></td>';
-                                echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['management_rating']).'">&nbsp;</p></td>';
-                                echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['final_rating']).'">&nbsp;</p></td>';
-                                echo '<td class="center">'.$processed_divisiondata[$division]["projectlisting"][$i]['project_rank'].'</td>';
-                                echo '<td class="center">'.$processed_divisiondata[$division]["projectlisting"][$i]['outputs'].'</td>';
-                                if ($processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] != '' && $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] != '') {
-                                    echo '<td class="center">'.$processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'].' / '.$processed_divisiondata[$division]["projectlisting"][$i]['total_activities'].' </td>';
-                                } else {
-                                    echo '<td class="center"> - </td>';
-                                }
-                                echo '</tr>';
-                            }
-                        ?>
+    if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
+        echo '<td class="center" style="color:#dc3545; font-weight: 500;">' . $processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] . '</td>';
+    } else {
+        echo '<td class="center" style="font-weight:500;">' . $processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] . '</td>';
+    }
+    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_manager'] . '</td>';
+    echo '<td class="right">' . number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'], 0, '.', ',') . '</td>';
+    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']) . '">&nbsp;</p></td>';
+    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['management_rating']) . '">&nbsp;</p></td>';
+    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['final_rating']) . '">&nbsp;</p></td>';
+    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_rank'] . '</td>';
+    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['outputs'] . '</td>';
+    if ($processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] != '' && $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] != '') {
+        echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] . ' / ' . $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] . ' </td>';
+    } else {
+        echo '<td class="center"> - </td>';
+    }
+    echo '</tr>';
+}
+?>
                     </tbody>
                 </table>
             </div>
@@ -1181,23 +1189,23 @@
                     </thead>
                     <tbody>
                     	<?php
-                            $j = 0;
-                            for($i=0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++ ) {
-                                if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
-                                    echo '<tr>';
-                                    echo '<td>'.($j+1).'.</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['grade'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_title'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_number'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['duty_station'].'</td>';
-                                    echo '<td> N/A </td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_code'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'].'</td>';
-                                    echo '</tr>';
-                                    $j++;
-                                }
-                            }
-                        ?>
+$j = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
+    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
+        echo '<tr>';
+        echo '<td>' . ($j + 1) . '.</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
+        echo '<td> N/A </td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
+        echo '</tr>';
+        $j++;
+    }
+}
+?>
                     </tbody>
                 </table>
             </div>
@@ -1221,27 +1229,49 @@
                     </thead>
                     <tbody>
                         <?php
-                            $j = 0;
-                            for($i=0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++ ) {
-                                if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
-                                    echo '<tr>';
-                                    echo '<td>'.($j+1).'.</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['grade'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_title'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['position_number'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['duty_station'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['staff_name'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_code'].'</td>';
-                                    echo '<td>'.$processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'].'</td>';
-                                    echo '</tr>';
-                                    $j++;
-                                }
-                            }
-                        ?>
+$j = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
+    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
+        echo '<tr>';
+        echo '<td>' . ($j + 1) . '.</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
+        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
+        echo '</tr>';
+        $j++;
+    }
+}
+?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    </div>
+
+    <!-- HTML TO PDF  FUNCTION TO EXPORT THE DOCUMENT -->
+    <script>
+function jsp(){
+    var element = document.getElementById('to_export');
+    var opt = {
+    margin:       0,
+    filename:     '<?php echo $processed_divisiondata[$division]["entity"]; ?> pimsreport.pdf',
+    image:        { type: 'jpeg', quality: 1 },
+    // html2canvas:  { width: 2000 },
+    pagebreak: { mode: 'avoid-all', before: '#page2el' },
+    jsPDF:        { unit: 'in', format: 'a2', orientation: 'landscape' }
+    };
+
+    // New Promise-based usage:
+    html2pdf().set(opt).from(element).save();
+
+    // Old monolithic-style usage:
+    // html2pdf(element, opt);
+}
+</script>
 </body>
 </html>
