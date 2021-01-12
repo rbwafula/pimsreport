@@ -77,38 +77,43 @@
         	<div class="col-md-4 summary">
         		<h5 class="sectiontitle">Summary</h5>
         		<div class="row summarystatistics">
-        			<div class="col-md-3 metric1">
+        			<div class="col metric1">
         				<p class="metricvalue">
         					<?php echo number_format($processed_divisiondata[$division]["totalprojects"],0,'.',',');?>
     					</p>
         				<p class="metricdesc">Total Projects</p>
         			</div>
-        			<div class="col-md-3 metric2">
+        			<div class="col metric2">
         				<p class="metricvalue">
         					<?php echo number_format($processed_divisiondata[$division]["totaloutputs"],0,'.',',');?>
         				</p>
         				<p class="metricdesc">Total Outputs</p>
         			</div>
-        			<div class="col-md-3 metric3">
+        			<div class="col metric3">
         				<p class="metricvalue">
         					<?php echo number_format($processed_divisiondata[$division]["totalactivities"],0,'.',',');?>
         				</p>
         				<p class="metricdesc">Total Activities</p>
         			</div>
-        			<div class="col-md-3 metric4">
+        			<div class="col metric4">
         				<p class="metricvalue">
         					<?php echo number_format($processed_divisiondata[$division]["pastdueprojects"],0,'.',',');?>
         				</p>
         				<p class="metricdesc">Expired Projects</p>
         			</div>
+                    <div class="col metric4">
+                        <p class="metricvalue">
+                            <?php echo number_format($processed_divisiondata[$division]["pastdueprojects"],0,'.',',');?>
+                        </p>
+                        <p class="metricdesc">Avg Months<br/>Past Due</p>
+                    </div>
         		</div>
                 <p class="summarytext">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"];?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ',');?>)</strong>, capturing a rolling total of the cash received over time.</p>
         		<div class="row chartrender">
-        			<div class="col-md-12 projectsbysubprogramme">
-        				<div id="projectsbysubprogramme_chart"></div>
-        				<script type="text/javascript">
-                            Highcharts.chart('projectsbysubprogramme_chart', {
-                                colors: ['#0077b6'],
+        			<div class="col-md-12 budgetsize">
+                        <div id="budgetsize_chart"></div>
+                        <script type="text/javascript">
+                            Highcharts.chart('budgetsize_chart', {
                                 credits: {
                                     text: ''
                                 },
@@ -118,7 +123,7 @@
                                     height: 200
                                 },
                                 title: {
-                                    text: 'Figure 1: Projects by Sub-Programme',
+                                    text: 'Figure 1: Projects by Rating',
                                     floating: false,
                                     align: 'left',
                                     verticalAlign: 'top',
@@ -135,7 +140,7 @@
                                     y: 0
                                 },
                                 xAxis: {
-                                    categories: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["spnumbers"]); ?>,
+                                    categories: ["Red", "Yellow", "Green"],
                                     labels: {
                                         style: {
                                             fontSize: '0.25cm',
@@ -190,18 +195,122 @@
                                     series: {
                                         groupPadding: 0,
                                         pointPadding: 0.1,
-                                        borderWidth: 0
+                                        borderWidth: 0,
+                                        colorByPoint: true,
+                                        colors: ['#dc3545','#ffc107', '#28a745']
                                     }
                                 },
                                 series: [{
-                                    name: 'Subprogramme',
-                                    data: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["projectcount"]); ?>,
+                                    name: 'Rating',
+                                    data: [<?php echo count($processed_divisiondata[$division]["scatterpoints"]["red"]); ?>,<?php echo count($processed_divisiondata[$division]["scatterpoints"]["yellow"]); ?>,<?php echo count($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>],
                                     showInLegend: false
 
                                 }]
                             });
+                            /*
+                            Highcharts.chart('budgetsize_chart', {
+                                chart: {
+                                    type: 'scatter',
+                                    zoomType: 'xy',
+                                    height: 200
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: 'Figure 4: Project Rank vs Budget',
+                                    floating: false,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
+                                    style: {
+                                        color: '#707070',
+                                        fontSize: '10px',
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
+                                    },
+                                    x: 0,
+                                    y: 0
+                                },
+                                xAxis: {
+                                    min: 0,
+                                    max: 3,
+                                    categories: ["Not Reported","Red", "Yellow", "Green"],
+                                    title: {
+                                        enabled: false,
+                                        text: 'Project Rating'
+                                    },
+                                    startOnTick: true,
+                                    endOnTick: true,
+                                    showLastLabel: true
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: ''
+                                    },
+                                    labels: {
+                                        style: {
+                                            fontSize: '0.2cm'
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    x: 100,
+                                    y: 70,
+                                    floating: true,
+                                    backgroundColor: Highcharts.defaultOptions.chart.backgroundColor,
+                                    borderWidth: 1,
+                                    enabled: false
+                                },
+                                plotOptions: {
+                                    scatter: {
+                                        marker: {
+                                            radius: 3,
+                                            states: {
+                                                hover: {
+                                                    enabled: true,
+                                                    lineColor: 'rgb(100,100,100)'
+                                                }
+                                            }
+                                        },
+                                        states: {
+                                            hover: {
+                                                marker: {
+                                                    enabled: false
+                                                }
+                                            }
+                                        },
+                                        tooltip: {
+                                            headerFormat: '<b>{series.name}</b><br>',
+                                            pointFormat: 'Rating: {point.x}, Budget size: {point.y}'
+                                        }
+                                    }
+                                },
+                                series: [{
+                                    name: 'Red',
+                                    color: 'rgba(220, 53, 69, .9)',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["red"]); ?>
+
+                                }, {
+                                    name: 'Yellow',
+                                    color: 'rgba(255, 193, 7, .9)',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["yellow"]); ?>
+
+                                }, {
+                                    name: 'Green',
+                                    color: 'rgba(40, 167, 69, .9)',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>
+
+                                }]
+                            });*/
                         </script>
-        			</div>
+                    </div>
         		</div>
 
         		<div class="row chartrender">
@@ -644,10 +753,11 @@
         		</div>
 
         		<div class="row chartrender">
-        			<div class="col-md-12 budgetsize">
-        				<div id="budgetsize_chart"></div>
-        				<script type="text/javascript">
-                            Highcharts.chart('budgetsize_chart', {
+                    <div class="col-md-12 projectsbysubprogramme">
+                        <div id="projectsbysubprogramme_chart"></div>
+                        <script type="text/javascript">
+                            Highcharts.chart('projectsbysubprogramme_chart', {
+                                colors: ['#0077b6'],
                                 credits: {
                                     text: ''
                                 },
@@ -657,7 +767,7 @@
                                     height: 200
                                 },
                                 title: {
-                                    text: 'Figure 4: Projects by Rating',
+                                    text: 'Figure 4: Projects by Sub-Programme',
                                     floating: false,
                                     align: 'left',
                                     verticalAlign: 'top',
@@ -674,7 +784,7 @@
                                     y: 0
                                 },
                                 xAxis: {
-                                    categories: ["Red", "Yellow", "Green"],
+                                    categories: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["spnumbers"]); ?>,
                                     labels: {
                                         style: {
                                             fontSize: '0.25cm',
@@ -729,122 +839,18 @@
                                     series: {
                                         groupPadding: 0,
                                         pointPadding: 0.1,
-                                        borderWidth: 0,
-                                        colorByPoint: true,
-                                        colors: ['#dc3545','#ffc107', '#28a745']
+                                        borderWidth: 0
                                     }
                                 },
                                 series: [{
-                                    name: 'Rating',
-                                    data: [<?php echo count($processed_divisiondata[$division]["scatterpoints"]["red"]); ?>,<?php echo count($processed_divisiondata[$division]["scatterpoints"]["yellow"]); ?>,<?php echo count($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>],
+                                    name: 'Subprogramme',
+                                    data: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["projectcount"]); ?>,
                                     showInLegend: false
 
                                 }]
                             });
-                            /*
-                            Highcharts.chart('budgetsize_chart', {
-                                chart: {
-                                    type: 'scatter',
-                                    zoomType: 'xy',
-                                    height: 200
-                                },
-                                credits: {
-                                    enabled: false
-                                },
-                                title: {
-                                    text: 'Figure 4: Project Rank vs Budget',
-                                    floating: false,
-                                    align: 'left',
-                                    verticalAlign: 'top',
-                                    margin: 20,
-                                    style: {
-                                        color: '#707070',
-                                        fontSize: '10px',
-                                        fontWeight: '900',
-                                        textTransform: 'none',
-                                        textDecoration: 'underline'
-
-                                    },
-                                    x: 0,
-                                    y: 0
-                                },
-                                xAxis: {
-                                    min: 0,
-                                    max: 3,
-                                    categories: ["Not Reported","Red", "Yellow", "Green"],
-                                    title: {
-                                        enabled: false,
-                                        text: 'Project Rating'
-                                    },
-                                    startOnTick: true,
-                                    endOnTick: true,
-                                    showLastLabel: true
-                                },
-                                yAxis: {
-                                    min: 0,
-                                    title: {
-                                        text: ''
-                                    },
-                                    labels: {
-                                        style: {
-                                            fontSize: '0.2cm'
-                                        }
-                                    }
-                                },
-                                legend: {
-                                    layout: 'vertical',
-                                    align: 'left',
-                                    verticalAlign: 'top',
-                                    x: 100,
-                                    y: 70,
-                                    floating: true,
-                                    backgroundColor: Highcharts.defaultOptions.chart.backgroundColor,
-                                    borderWidth: 1,
-                                    enabled: false
-                                },
-                                plotOptions: {
-                                    scatter: {
-                                        marker: {
-                                            radius: 3,
-                                            states: {
-                                                hover: {
-                                                    enabled: true,
-                                                    lineColor: 'rgb(100,100,100)'
-                                                }
-                                            }
-                                        },
-                                        states: {
-                                            hover: {
-                                                marker: {
-                                                    enabled: false
-                                                }
-                                            }
-                                        },
-                                        tooltip: {
-                                            headerFormat: '<b>{series.name}</b><br>',
-                                            pointFormat: 'Rating: {point.x}, Budget size: {point.y}'
-                                        }
-                                    }
-                                },
-                                series: [{
-                                    name: 'Red',
-                                    color: 'rgba(220, 53, 69, .9)',
-                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["red"]); ?>
-
-                                }, {
-                                    name: 'Yellow',
-                                    color: 'rgba(255, 193, 7, .9)',
-                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["yellow"]); ?>
-
-                                }, {
-                                    name: 'Green',
-                                    color: 'rgba(40, 167, 69, .9)',
-                                    data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>
-
-                                }]
-                            });*/
                         </script>
-        			</div>
+                    </div>
         		</div>
         	</div>
         	<div class="col-md-4 humanresource">
@@ -908,7 +914,7 @@
         				<div id="hrfilled_chart"></div>
         				<script type="text/javascript">
                             Highcharts.chart('hrfilled_chart', {
-                                colors: ['#ddd','#17a2b8'],
+                                colors: ['rgb(220,53,69,0.7)','rgb(112,112,112,0.7)'],
                                 credits: { 
                                     text: ''
                                 },
@@ -1102,14 +1108,14 @@
                     <thead>
                         <tr>
                         	<th>&nbsp;</th>
-                        	<th>Project ID</th>
-                            <th>Project Title</th>
-                            <th>Subprogramme</th>
-                            <th>Branch</th>
-                            <th>Project Manager</th>
-                            <th>Budget</th>
-                            <th>System Rating <span>(40%)</span></th>
-                            <th>Management Rating <span>(60%)</span></th>
+                            <th class="left">Branch</th>
+                        	<th width="150px" class="left">Project ID</th>
+                            <th class="left">Project Title</th>
+                            <th class="center">Sub<br/>Programme</th>
+                            <th class="left">Project<br/>Manager</th>
+                            <th class="right">Budget</th>
+                            <th class="sysrating">System Rating <span>(40%)</span></th>
+                            <th class="sysrating">Management Rating <span>(60%)</span></th>
                             <th>Final Rating</th>
                             <th>Project Rank</th>
                             <th>Outputs</th>
@@ -1121,10 +1127,10 @@
                             for($i=0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++ ) {
                                 echo '<tr>';
                                 echo '<td>'.($i+1).'.</td>';
+                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['branch'].'</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_id'].'</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_title'].'</td>';
                                 echo '<td>SP '.$processed_divisiondata[$division]["projectlisting"][$i]['sp_number'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['branch'].'</td>';
                                 echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_manager'].'</td>';
                                 echo '<td>'.number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'],0,'.',',') .'</td>';
                                 echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']).'">&nbsp;</p></td>';

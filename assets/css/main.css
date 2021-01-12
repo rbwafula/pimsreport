@@ -124,15 +124,8 @@ body {
 .reportbody.section1 .summarystatistics {
 	margin: 20px 0cm 0.2cm; /* 0.4cm 0cm 0.2cm */
 }
-.reportbody.section1 .summarystatistics .metric1,
-.reportbody.section1 .summarystatistics .metric2,
-.reportbody.section1 .summarystatistics .metric3,
-.reportbody.section1 .summarystatistics .metric4,
-.reportbody.section1 .hrstatistics .metric1,
-.reportbody.section1 .hrstatistics .metric2,
-.reportbody.section1 .hrstatistics .metric3,
-.reportbody.section1 .hrstatistics .metric4,
-.reportbody.section1 .hrstatistics .metric5 {
+.reportbody.section1 .summarystatistics .col,
+.reportbody.section1 .hrstatistics .col-md-2 {
 	padding: 0;
 }
 .reportbody.section1 .summarystatistics .metric1,
@@ -168,9 +161,10 @@ body {
 .reportbody.section1 .hrstatistics .metricdesc {
 	text-align: center;
 	margin: 0;
-	margin-top: 3px;
-	font-size: 11px;
+	margin-top: 5px;
+	font-size: 9px;
 	font-weight: 500;
+	line-height: 1.375;
 }
 .reportbody.section1 .portfoliostatistics {
 	margin: 0;

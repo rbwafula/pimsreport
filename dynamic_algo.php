@@ -439,7 +439,7 @@ foreach ($division_data as $prkey => $prvalue) {
     }
 
     if (!$prvalue->final_rating) {
-        $project_rating = 'NOT RATED';
+        $project_rating = 'N/A';
     } else {
         $f_rating = $prvalue->final_rating;
         $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
@@ -638,7 +638,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             }
 
             if (!$prvalue->final_rating) {
-                $project_rating = 'NOT RATED';
+                $project_rating = 'N/A';
                 $fr = 0;
             } else {
                 $f_rating = $prvalue->final_rating;
