@@ -654,7 +654,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             $startDater = time();
             $datediffr = $endDater - $startDater;
             $project_days_remaining = round($datediffr / (60 * 60 * 24));
-            $project_months_remaining = round($project_days_remaining / 30);
+            $project_months_remaining = ceil($project_days_remaining / 30);
 
             if ($project_days_remaining < 0) {
                 $d_overan_days += $project_days_remaining;
@@ -971,7 +971,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         $d_average_overan_months = 0;
     } else {
         $d_average_overan_days = round($d_overan_days / $d_projects);
-        $d_average_overan_months = round($d_average_overan_days / 30);
+        $d_average_overan_months = ceil($d_average_overan_days / 30);
     }
 
     $G_d_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
