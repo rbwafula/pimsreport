@@ -224,21 +224,17 @@ body {
 	text-align: right;
 }
 
-.section2 .table thead th,
-.section2 .table tbody td:nth-child(4),
-.section2 .table tbody td:nth-child(10),
-.section2 .table tbody td:nth-child(11),
-.section2 .table tbody td:nth-child(12) {
-	text-align: center;
-}
-.section2 .table thead th:nth-child(2),
-.section2 .table thead th:nth-child(3) {
+.section2 .table thead th.left,
+.section2 .table tbody td.left {
 	text-align: left;
 }
-.section2 .table tbody td:nth-child(7),
-.section2 .table tbody td:nth-child(8),
-.section2 .table tbody td:nth-child(9) {
-	vertical-align: middle;
+.section2 .table thead th.center,
+.section2 .table tbody td.center {
+	text-align: center;
+}
+.section2 .table thead th.right,
+.section2 .table tbody td.right {
+	text-align: right;
 }
 .section2 .table tbody .projectlistinghealth {
 	width: 10px;
@@ -246,6 +242,7 @@ body {
 	text-align: center;
 	margin: 0 auto;
 	height: 10px;
+	margin-top: 6px;
 }
 @page { 
 	size: auto;  

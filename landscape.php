@@ -103,7 +103,7 @@
         			</div>
                     <div class="col metric4">
                         <p class="metricvalue">
-                            <?php echo number_format($processed_divisiondata[$division]["pastdueprojects"],0,'.',',');?>
+                            <?php echo number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]),0,'.',',');?>
                         </p>
                         <p class="metricdesc">Avg Months<br/>Past Due</p>
                     </div>
@@ -1109,36 +1109,47 @@
                         <tr>
                         	<th>&nbsp;</th>
                             <th class="left">Branch</th>
-                        	<th width="150px" class="left">Project ID</th>
+                        	<th width="115px" class="left">Project ID</th>
                             <th class="left">Project Title</th>
                             <th class="center">Sub<br/>Programme</th>
+                            <th class="center">Avg Months<br/>Past Due</th>
                             <th class="left">Project<br/>Manager</th>
                             <th class="right">Budget</th>
-                            <th class="sysrating">System Rating <span>(40%)</span></th>
-                            <th class="sysrating">Management Rating <span>(60%)</span></th>
-                            <th>Final Rating</th>
-                            <th>Project Rank</th>
-                            <th>Outputs</th>
-                            <th>Completed Activities</th>
+                            <th class="projectlistinghealth">System Rating <span>(40%)</span></th>
+                            <th class="projectlistinghealth">Management Rating <span>(60%)</span></th>
+                            <th class="projectlistinghealth">Final Rating</th>
+                            <th class="center">Project Rank</th>
+                            <th class="center">Outputs</th>
+                            <th class="center">Completed Activities</th>
                         </tr>
                     </thead>
                     <tbody>
                     	<?php 
                             for($i=0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++ ) {
                                 echo '<tr>';
-                                echo '<td>'.($i+1).'.</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['branch'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_id'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_title'].'</td>';
-                                echo '<td>SP '.$processed_divisiondata[$division]["projectlisting"][$i]['sp_number'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_manager'].'</td>';
-                                echo '<td>'.number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'],0,'.',',') .'</td>';
+                                echo '<td class="right">'.($i+1).'.</td>';
+                                echo '<td class="left">'.$processed_divisiondata[$division]["projectlisting"][$i]['branch'].'</td>';
+                                echo '<td class="left">'.$processed_divisiondata[$division]["projectlisting"][$i]['project_id'].'</td>';
+                                echo '<td class="left">'.$processed_divisiondata[$division]["projectlisting"][$i]['project_title'].'</td>';
+                                echo '<td class="center">SP '.$processed_divisiondata[$division]["projectlisting"][$i]['sp_number'].'</td>';
+
+                                if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
+                                    echo '<td class="center" style="color:#dc3545; font-weight: 500;">'.$processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'].'</td>';
+                                } else {
+                                    echo '<td class="center" style="font-weight:500;">'.$processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'].'</td>';
+                                }
+                                echo '<td class="left">'.$processed_divisiondata[$division]["projectlisting"][$i]['project_manager'].'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'],0,'.',',') .'</td>';
                                 echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']).'">&nbsp;</p></td>';
                                 echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['management_rating']).'">&nbsp;</p></td>';
                                 echo '<td><p class="projectlistinghealth" style="background-color:'.gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['final_rating']).'">&nbsp;</p></td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['project_rank'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['outputs'].'</td>';
-                                echo '<td>'.$processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'].' / '.$processed_divisiondata[$division]["projectlisting"][$i]['total_activities'].' </td>';
+                                echo '<td class="center">'.$processed_divisiondata[$division]["projectlisting"][$i]['project_rank'].'</td>';
+                                echo '<td class="center">'.$processed_divisiondata[$division]["projectlisting"][$i]['outputs'].'</td>';
+                                if ($processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] != '' && $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] != '') {
+                                    echo '<td class="center">'.$processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'].' / '.$processed_divisiondata[$division]["projectlisting"][$i]['total_activities'].' </td>';
+                                } else {
+                                    echo '<td class="center"> - </td>';
+                                }
                                 echo '</tr>';
                             }
                         ?>

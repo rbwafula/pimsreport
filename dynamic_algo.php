@@ -1096,6 +1096,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "healthrating" => $d_average_project_health,
         "consumablebudget" => $d_consumable_budget,
         "pastdueprojects" => $d_past_due_projects,
+        "avgmonthspastdue" => $d_average_overan_months,
         "in6monthexpiry" => $d_projects_expiringin6,
         "pctconsumablebudget" => $d_percentage_consumable_budget,
         "avgconsumablebudget" => $d_average_consumable,
