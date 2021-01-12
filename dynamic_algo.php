@@ -58,6 +58,20 @@ function sortByOrder($a, $b)
     return $a['order'] - $b['order'];
 }
 
+function filter_unique($array, $key)
+{
+    $temp_array = [];
+    foreach ($array as &$v) {
+        if (!isset($temp_array[$v[$key]])) {
+            $temp_array[$v[$key]] = &$v;
+        }
+
+    }
+    $array = array_values($temp_array);
+    return $array;
+
+}
+
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
 
@@ -68,7 +82,10 @@ $activities_data = getdataobjectfromurl($activities_url);
 $outputs_data = getdataobjectfromurl($outputs_url);
 
 //GET HR DATA
-$hr_data = getdataobjectfromurl($hr_url);
+$hr_data_uf = getdataobjectfromurl($hr_url);
+
+// CLEANSE HR DATA FOR UNIQUE pos_id
+$hr_data = filter_unique($hr_data_uf, 'pos_id');
 
 // GET PROJECT ACTIVITIES DATA
 $proj_data = getdataobjectfromurl($proj_activity_url);
