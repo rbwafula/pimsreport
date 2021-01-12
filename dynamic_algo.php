@@ -325,6 +325,11 @@ foreach ($division_data as $key => $value) {
     $datediffa = $endDatea - $startDatea;
     $project_days_age = round($datediffa / (60 * 60 * 24));
 
+    $endDater = strtotime($value->EndDate);
+    $startDater = time();
+    $datediffr = $endDater - $startDater;
+    $project_days_remaining = round($datediffr / (60 * 60 * 24));
+
     $total_projects_duration += $project_days_duration;
     $total_projects_age += $project_days_age;
 
@@ -610,11 +615,21 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_scatter_points_red = [];
     $d_scatter_points_yellow = [];
     $d_scatter_points_green = [];
+    $d_overan_days = 0;
 
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
             if (!in_array($prvalue->managing_branch, $d_project_branch)) {
                 $d_project_branch[] = $prvalue->managing_branch;
+            }
+            $endDater = strtotime($prvalue->EndDate);
+            $startDater = time();
+            $datediffr = $endDater - $startDater;
+            $project_days_remaining = round($datediffr / (60 * 60 * 24));
+            $project_months_remaining = round($project_days_remaining / 30);
+
+            if ($project_days_remaining < 0) {
+                $d_overan_days += $project_days_remaining;
             }
 
             if (!$prvalue->final_rating) {
@@ -676,6 +691,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'outputs' => $p_outputs,
                 'completed_activities' => $p_completed_activities,
                 'total_activities' => $p_activities,
+                'days_remaining' => $project_days_remaining,
+                'months_remaining' => $project_months_remaining,
                 'order' => array_search($prvalue->managing_branch, $d_project_branch),
             ];
         }
@@ -921,6 +938,14 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_avg_project_pctgtimetaken_a = round($d_project_pctgtimetaken / $d_projects, 2) * 100;
     $d_average_percentage_activities_completed = round($d_percentage_activities_completed / $d_projects, 2) * 100;
 
+    if ($d_overan_days == 0) {
+        $d_average_overan_days = 0;
+        $d_average_overan_months = 0;
+    } else {
+        $d_average_overan_days = round($d_overan_days / $d_projects);
+        $d_average_overan_months = round($d_average_overan_days / 30);
+    }
+
     $G_d_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
 
     foreach ($d_post_status_distribution as $key => $value) {
@@ -1098,7 +1123,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "projectlisting" => $d_project_information,
         "stafflisting" => $d_staff_information,
         "projectsubprogramme" => $d_sp_array,
-        "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green]
+        "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green],
     );
 
     ?>
