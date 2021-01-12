@@ -153,6 +153,10 @@ body {
 	font-size: 30px;
 	font-weight: 600;
 }
+.reportbody.section1 .hrstatistics .metric4 .metricvalue,
+.reportbody.section1 .hrstatistics .metric5 .metricvalue {
+	font-size: 26px;
+}
 .reportbody.section1 .summarystatistics .metricdesc,
 .reportbody.section1 .hrstatistics .metricdesc {
 	text-align: center;
@@ -187,9 +191,11 @@ body {
 .reportbody.section1 .portfoliostatistics .metric3 {
 	color: #688753;
 }
-.chartrender .groupingbyage,
-.chartrender .budgetsize {
+.chartrender .groupingbyage{
 	margin-top: 30px;
+}
+.chartrender .budgetsize {
+	margin-top: 10px;
 }
 .chartrender .hrgender {
 	margin-top: 45px;
@@ -239,6 +245,9 @@ body {
 	margin: 0 auto;
 	height: 10px;
 	margin-top: 6px;
+}
+.container-fluid.printlandscape {
+	max-width: 29.7cm;/*landscape layout */
 }
 @page { 
 	size: auto;  
