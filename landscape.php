@@ -1175,7 +1175,7 @@ include_once 'dynamic_algo.php';
                                 <th>Position Title</th>
                                 <th>Position Number</th>
                                 <th>Duty Station</th>
-                                <!--<th>Fund</th>-->
+                                <th>Fund</th>
                                 <th>Org Code</th>
                                 <th>Org Unit</th>
                             </tr>
@@ -1191,7 +1191,7 @@ include_once 'dynamic_algo.php';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-                                    //echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
                                     echo '</tr>';
@@ -1215,7 +1215,7 @@ include_once 'dynamic_algo.php';
                                 <th>Position Title</th>
                                 <th>Position Number</th>
                                 <th>Duty Station</th>
-                                <!--<th>Fund</th>-->
+                                <th>Fund</th>
                                 <th>Staff Name</th>
                                 <th>Org Code</th>
                                 <th>Org Unit</th>
@@ -1232,7 +1232,7 @@ include_once 'dynamic_algo.php';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-                                    //echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
@@ -1260,7 +1260,7 @@ function jsp(){
         //html2canvas:  {​​ scale: 0.8 }​​,
         html2canvas:{dpi:600, letterRendering:true},
         //pagebreak: { mode: 'avoid-all', after: '#page1el' },
-        pagebreak: {​​ avoid: 'tr'}​​,
+        //pagebreak: {​​ avoid: 'tr'}​​,
         jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
 
