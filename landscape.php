@@ -27,15 +27,6 @@ include_once 'dynamic_algo.php';
 
     <!-- HTML TO PDF LIB LOADED -->
     <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
-    <style>
-    table {
-        page-break-inside:auto !important;
-        }
-    tr  {
-        page-break-inside:avoid !important;
-        page-break-before:always !important;
-        }
-    </style>
 </head>
 <body>
 	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -1141,7 +1132,7 @@ echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfill
                         <tbody>
                             <?php
 for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++) {
-    echo '<tr style="page-break-before: always !important;">';
+    echo '<tr>';
     echo '<td class="right">' . ($i + 1) . '.</td>';
     echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['branch'] . '</td>';
     echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_id'] . '</td>';
@@ -1194,7 +1185,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
 $j = 0;
 for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
     if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
-        echo '<tr style="page-break-before: always !important;">';
+        echo '<tr>';
         echo '<td>' . ($j + 1) . '.</td>';
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
@@ -1234,7 +1225,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
 $j = 0;
 for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
     if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
-        echo '<tr style="page-break-before: always !important;">';
+        echo '<tr>';
         echo '<td>' . ($j + 1) . '.</td>';
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
@@ -1268,7 +1259,7 @@ function jsp(){
     // html2canvas:{dpi:92, letterRendering:true},
     html2canvas: {scale: 2, logging: true},
     //html2canvas:  { scale: 0.8 },
-    pagebreak: { avoid: 'tr'},
+    //pagebreak: { mode: 'avoid-all', after: '#page1el' },
     jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
 
