@@ -1142,8 +1142,10 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
 
     if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
         echo '<td class="center" style="color:#dc3545; font-weight: 500;">' . abs($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining']) . '</td>';
+    } else if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] == 'No Enddate') {
+        echo '<td class="center" style="color:#dc3545; font-weight: 500;">No end date</td>';
     } else {
-        echo '<td class="center" style="font-weight:500;">&nbsp;</td>';
+        echo '<td class="center" style="font-weight:500; color:green">&nbsp;</td>';
     }
     echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_manager'] . '</td>';
     echo '<td class="right">' . number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'], 0, '.', ',') . '</td>';
