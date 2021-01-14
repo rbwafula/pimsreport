@@ -40,7 +40,7 @@ body {
 }
 .reportheader {
 	border-bottom: 0.1cm solid #707070;
-	margin: 0.8cm 0.4cm 0.4cm;
+	margin: 0.4cm 0.4cm 0.4cm;
 }
 .reportheader .logo img {
 	width: 100%;
@@ -62,7 +62,7 @@ body {
 .reportheader .title h1 {
 	margin: 0;
 	font-weight: 500;
-	font-size: 1.2cm;
+	font-size: 35px;
 	color: #333;
 	letter-spacing: 0;
 }
@@ -71,21 +71,21 @@ body {
 	letter-spacing: 0;
 	color: #707070;
 	padding-top: 0cm;
-	font-size: 0.4cm;
+	font-size: 14px;
 	font-weight: 400; 
-	margin-top:0.15cm;
+	margin-top:5px;
 }
 .reportheader .health {
 	text-align: right;
 }
 .reportheader .health .reportdate {
-	margin: 0;font-size: 0.35cm;font-weight: 400; margin-bottom: 0.2cm; margin-right: 25px;
+	margin: 0;font-size: 0.35cm;font-weight: 400; margin-bottom: 0.2cm; margin-right: 30px;
 }
 .reportheader .health .healthrating_box {
-	border-radius: 50%;width: 1.2cm;height: 1.2cm; margin-top: -11px; margin-right:27px; position:absolute; right:15px;
+	border-radius: 50%;width: 0.8cm;height: 0.8cm; margin-top: -11px; margin-right:40px; position:absolute; right:15px;
 }
 .reportheader .health .healthratingdesc {
-	margin-top: 40px;
+	margin-top: 25px;
 	margin-bottom: 0;
 	font-size: 0.3cm;
 }
@@ -118,7 +118,7 @@ body {
 	margin: 0.2cm 0cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;
 }
 .reportbody.section1 .summarystatistics {
-	margin: 20px 0cm 0.2cm; /* 0.4cm 0cm 0.2cm */
+	margin: 10px 0cm 0.2cm; /* 0.4cm 0cm 0.2cm */
 }
 .reportbody.section1 .summarystatistics .col,
 .reportbody.section1 .hrstatistics .col {
@@ -150,7 +150,7 @@ body {
 .reportbody.section1 .hrstatistics .metricvalue {
 	text-align: center;
 	margin: 0;
-	font-size: 30px;
+	font-size: 20px;
 	font-weight: 600;
 }
 .reportbody.section1 .hrstatistics .metric4 .metricvalue,
@@ -161,10 +161,10 @@ body {
 .reportbody.section1 .hrstatistics .metricdesc {
 	text-align: center;
 	margin: 0;
-	margin-top: 5px;
+	margin-top: 2px;
 	font-size: 9px;
 	font-weight: 500;
-	line-height: 1.375;
+	line-height: 1.175;
 }
 .reportbody.section1 .portfoliostatistics {
 	margin: 0;
@@ -192,7 +192,7 @@ body {
 	color: #688753;
 }
 .chartrender .groupingbyage{
-	margin-top: 30px;
+	margin-top: 27px;
 }
 .chartrender .budgetsize {
 	margin-top: 10px;
@@ -206,7 +206,7 @@ body {
 	margin-top: 25px;
 }
 .hrstatistics {
-	margin: 20px 0 30px;
+	margin: 10px 0 25px;
 }
 .section2 .table,
 .section3 .table {

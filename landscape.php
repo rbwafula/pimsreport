@@ -89,25 +89,25 @@ include_once 'dynamic_algo.php';
                             <p class="metricvalue">
                                 <?php echo number_format($processed_divisiondata[$division]["totalprojects"], 0, '.', ','); ?>
                             </p>
-                            <p class="metricdesc">Total Projects</p>
+                            <p class="metricdesc">Total<br/>Projects</p>
                         </div>
                         <div class="col metric2">
                             <p class="metricvalue">
                                 <?php echo number_format($processed_divisiondata[$division]["totaloutputs"], 0, '.', ','); ?>
                             </p>
-                            <p class="metricdesc">Total Outputs</p>
+                            <p class="metricdesc">Total<br/>Outputs</p>
                         </div>
                         <div class="col metric3">
                             <p class="metricvalue">
                                 <?php echo number_format($processed_divisiondata[$division]["totalactivities"], 0, '.', ','); ?>
                             </p>
-                            <p class="metricdesc">Total Activities</p>
+                            <p class="metricdesc">Total<br/>Activities</p>
                         </div>
                         <div class="col metric4">
                             <p class="metricvalue">
                                 <?php echo number_format($processed_divisiondata[$division]["pastdueprojects"], 0, '.', ','); ?>
                             </p>
-                            <p class="metricdesc">Expired Projects</p>
+                            <p class="metricdesc">Expired<br/>Projects</p>
                         </div>
                         <div class="col metric4">
                             <p class="metricvalue">
@@ -672,7 +672,7 @@ include_once 'dynamic_algo.php';
                                     chart: {
                                         backgroundColor: 'transparent',
                                         type: 'bar',
-                                        height: 250
+                                        height: 200
                                     },
                                     title: {
                                         text: 'Figure 3: Projects Age Category',
@@ -779,7 +779,7 @@ include_once 'dynamic_algo.php';
                                     chart: {
                                         backgroundColor: 'transparent',
                                         type: 'column',
-                                        height: 200
+                                        height: 250
                                     },
                                     title: {
                                         text: 'Figure 4: Projects by Sub-Programme',
@@ -908,7 +908,7 @@ include_once 'dynamic_algo.php';
                                     </p>
                                     <p class="metricdesc">Female</p>
                                 </div>
-                                <div class="col-md-2 metric5">
+                                <div class="col metric5">
                                     <p class="metricvalue">
                                         <?php
                                         echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledmale"])) / count($processed_divisiondata[$division]["hrpostsfilledmale"]), 0); ?>%
@@ -1118,7 +1118,7 @@ include_once 'dynamic_algo.php';
                                 <th width="115px" class="left">Project ID</th>
                                 <th class="left">Project Title</th>
                                 <th class="center">Sub<br/>Programme</th>
-                                <th class="center">Avg Months<br/>Past Due</th>
+                                <th class="center">Months<br/>Past Due</th>
                                 <th class="left">Project<br/>Manager</th>
                                 <th class="right">Budget</th>
                                 <th class="projectlistinghealth">System Rating <span>(40%)</span></th>
@@ -1140,9 +1140,9 @@ include_once 'dynamic_algo.php';
                                 echo '<td class="center">SP ' . $processed_divisiondata[$division]["projectlisting"][$i]['sp_number'] . '</td>';
 
                                 if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
-                                    echo '<td class="center" style="color:#dc3545; font-weight: 500;">' . $processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] . '</td>';
+                                    echo '<td class="center" style="color:#dc3545; font-weight: 500;">' .abs($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining']). '</td>';
                                 } else {
-                                    echo '<td class="center" style="font-weight:500;">' . $processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] . '</td>';
+                                    echo '<td class="center" style="font-weight:500;">&nbsp;</td>';
                                 }
                                 echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_manager'] . '</td>';
                                 echo '<td class="right">' . number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'], 0, '.', ',') . '</td>';
@@ -1215,7 +1215,7 @@ include_once 'dynamic_algo.php';
                                 <th>Position Title</th>
                                 <th>Position Number</th>
                                 <th>Duty Station</th>
-                                <th>Fund</th>
+                                <!--<th>Fund</th>-->
                                 <th>Staff Name</th>
                                 <th>Org Code</th>
                                 <th>Org Unit</th>
@@ -1232,7 +1232,7 @@ include_once 'dynamic_algo.php';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
+                                    //echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
                                     echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
