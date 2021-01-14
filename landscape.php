@@ -1105,6 +1105,7 @@ include_once 'dynamic_algo.php';
                         </div>
                     </div>
                 </div>
+                <p class="quote">Do the difficult things while they are easy and do the great things while they are small. — LAO TZU</p>
             </div>
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section2">

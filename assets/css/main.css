@@ -93,8 +93,16 @@ body {
 	margin: 0.4cm 0.4cm 0.2cm;
 }
 .reportbody.section1 {
-	border-bottom: 0.06cm solid #707070;
+	/*border-bottom: 0.06cm solid #707070;*/
 	padding-bottom: 0.2cm;
+}
+.reportbody.section1 p.quote {
+	border-top: 0.06cm solid #707070;
+	width: 100%;
+	text-align: center;
+	font-size: 11px;
+	font-style: italic;
+	padding-top: 5px;
 }
 .reportbody.section2,
 .reportbody.section3 {
