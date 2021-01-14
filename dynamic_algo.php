@@ -658,10 +658,14 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             $datediffr = $endDater - $startDater;
             $project_days_remaining = round($datediffr / (60 * 60 * 24));
 
-            if ($project_days_remaining < 0) {
-                $project_months_remaining = floor($project_days_remaining / 30);
+            if ($prvalue->EndDate) {
+                if ($project_days_remaining < 0) {
+                    $project_months_remaining = floor($project_days_remaining / 30);
+                } else {
+                    $project_months_remaining = ceil($project_days_remaining / 30);
+                }
             } else {
-                $project_months_remaining = ceil($project_days_remaining / 30);
+                $project_months_remaining = 'No Enddate';
             }
 
             if ($project_days_remaining < 0) {
