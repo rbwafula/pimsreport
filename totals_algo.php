@@ -1496,7 +1496,7 @@ if ($total_overan_days == 0) {
 }
 $avg_project_pctgtimetaken_a = round($total_project_pctgtimetaken / $total_projects, 2) * 100;
 
-//POST JOB GRADE-ONLY ->$unique_posts_data
+//JOB GRADES -ONLY ->$unique_posts_data
 // POSTS-VACANT, FILLED, MALE,FEMALE->$overall_post_status_distribution
 
 $processed_divisiondata['Unep'] = array(
