@@ -1534,6 +1534,12 @@ $overall_percentage_completed_activitiesA = round($total_avg_activities_complete
 //JOB GRADES -ONLY ->$unique_posts_data
 // POSTS-VACANT, FILLED, MALE,FEMALE->$overall_post_status_distribution
 
+foreach ($overall_post_status_distribution as $key => $value) {
+    if ($value['post'] == 'INT-I' || $value['post'] == 'INT-II') {
+        unset($overall_post_status_distribution[$key]);
+    }
+}
+
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
     , "totalprojects" => $total_projects
