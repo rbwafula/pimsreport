@@ -152,7 +152,8 @@ $total_projects_age = 0;
 $total_activities = 0;
 $total_completed_activities = 0;
 $total_outputs = 0;
-$overall_percentage_completed_activitiesA = 0;
+//$overall_percentage_completed_activitiesA = 0;
+$total_avg_activities_completed = 0;
 
 $total_projects_timetaken = 0;
 
@@ -339,7 +340,7 @@ foreach ($activities_data as $key => $value) {
     $total_completed_activities += $value->completed_activities;
     $total_outputs += $value->total_outputs;
 }
-$overall_percentage_completed_activitiesA = round($total_completed_activities / $total_activities, 2) * 100;
+//$overall_percentage_completed_activitiesA = round($total_completed_activities / $total_activities, 2) * 100;
 
 foreach ($division_data as $key => $value) {
     $startDate = strtotime($value->StartDate);
@@ -370,6 +371,10 @@ foreach ($division_data as $key => $value) {
         $total_projects_timetaken += $value->percentage_time_taken;
     } else {
         $total_projects_timetaken += 0;
+    }
+
+    if ($value->percentage_activities_completed) {
+        $total_avg_activities_completed += $value->percentage_activities_completed;
     }
 
     if ($project_days_duration > 3648) {
@@ -1415,7 +1420,19 @@ echo $b_reporting_percentage . '% projects reported<br />';
 }
  */
 /*
+ */
 
+//$o_unsorted_posts = $overall_post_status_distribution;
+// $d_post_status_distribution = [];
+
+foreach ($overall_post_status_distribution as $key => $value) {
+    $position = intval(array_search($value['post'], $staff_order_array));
+    $overall_post_status_distribution[$key]['order'] = $position;
+}
+
+usort($overall_post_status_distribution, 'sortByOrder');
+
+/*
 foreach ($overall_post_status_distribution as $key => $value) {
 $position = intval(array_search($value['post'], $staff_order_array));
 echo $overall_post_status_distribution[$key]['order'] = $position;
@@ -1495,6 +1512,11 @@ if ($total_overan_days == 0) {
     $average_overan_months = ceil($d_average_overan_days / 30);
 }
 $avg_project_pctgtimetaken_a = round($total_project_pctgtimetaken / $total_projects, 2) * 100;
+
+$overall_percentage_completed_activitiesA = round($total_avg_activities_completed / $total_projects, 2) * 100;
+// echo 'Total time taken ' . $total_avg_activities_completed . '<br />';
+// echo 'Total total projects ' . $total_projects . '<br />';
+// echo $overall_percentage_completed_activitiesA;
 
 //JOB GRADES -ONLY ->$unique_posts_data
 // POSTS-VACANT, FILLED, MALE,FEMALE->$overall_post_status_distribution
