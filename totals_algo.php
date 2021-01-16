@@ -581,6 +581,8 @@ foreach ($unique_branches as $i => $row) {
 $total_scatter_points_red = [];
 $total_scatter_points_yellow = [];
 $total_scatter_points_green = [];
+$total_overan_days = 0;
+$total_project_pctgtimetaken = 0;
 
 foreach ($unique_divisions as $dkey => $dvalue) {
 //CALCULATE DIVISIONAL METRICS
@@ -674,6 +676,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
             if ($project_days_remaining < 0) {
                 $d_overan_days += $project_days_remaining;
+                $total_overan_days += $project_days_remaining;
+
             }
 
             if (!$prvalue->final_rating) {
@@ -870,8 +874,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
             if ($value->percentage_time_taken != null) {
                 $d_project_pctgtimetaken += $value->percentage_time_taken;
+                $total_project_pctgtimetaken += $value->percentage_time_taken;
             } else {
                 $d_project_pctgtimetaken += 0;
+                $total_project_pctgtimetaken += 0;
             }
 
             $d_projects += 1;
@@ -1141,40 +1147,40 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "entity" => $dvalue,
         "totalprojects" => $d_projects,
         /*"totalactivities" => $d_activities,
-        "totaloutputs" => $d_outputs,
-        "healthcolor" => gethealthcolor($d_average_project_health),
-        "healthrating" => $d_average_project_health,
-        "consumablebudget" => $d_consumable_budget,
-        "pastdueprojects" => $d_past_due_projects,
-        "avgmonthspastdue" => $d_average_overan_months,
-        "in6monthexpiry" => $d_projects_expiringin6,
-        "pctconsumablebudget" => $d_percentage_consumable_budget,
-        "avgconsumablebudget" => $d_average_consumable,
-        "totalconsumedbudget" => $d_consumed_budget,
-        "avgbudgetutilized" => $d_average_percentage_budget_utilized,
-        "pctbudgetutilized" => $pctbudgetutilized,
-        "avgactivitiescompleted" => $d_average_percentage_activities_completed,
-        "avgtimetaken" => $d_average_project_days_duration,
-        "avgprojecthealth" => $d_average_project_health,
-        "avgsystemrating" => $d_total_average_system_rating,
-        "avgmanagerrating" => $d_total_average_manager_rating,
-        "avgfinalrating" => $d_total_average_final_rating,
-        "reportedprojects" => $d_reported_projects,
-        "reportedprojectspct" => $d_reporting_percentage,
-        "pctgdurationused" => $d_avg_project_pctgtimetaken_a,
-        "pctcompletedactivities" => $d_percentage_completed_activitiesA,
-        "hrpostscategories" => $d_post_categories,
-        "hrpostsfilled" => $d_post_filled,
-        "hrpostsfilledmale" => $d_post_filled_male,
-        "hrpostsfilledfemale" => $d_post_filled_female,
-        "hrpostsvacant" => $d_post_vacant,
-        "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
-        "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
-        "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
-        "projectlisting" => $d_project_information,
-        "stafflisting" => $d_staff_information,
-        "projectsubprogramme" => $d_sp_array,
-        "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green],*/
+    "totaloutputs" => $d_outputs,
+    "healthcolor" => gethealthcolor($d_average_project_health),
+    "healthrating" => $d_average_project_health,
+    "consumablebudget" => $d_consumable_budget,
+    "pastdueprojects" => $d_past_due_projects,
+    "avgmonthspastdue" => $d_average_overan_months,
+    "in6monthexpiry" => $d_projects_expiringin6,
+    "pctconsumablebudget" => $d_percentage_consumable_budget,
+    "avgconsumablebudget" => $d_average_consumable,
+    "totalconsumedbudget" => $d_consumed_budget,
+    "avgbudgetutilized" => $d_average_percentage_budget_utilized,
+    "pctbudgetutilized" => $pctbudgetutilized,
+    "avgactivitiescompleted" => $d_average_percentage_activities_completed,
+    "avgtimetaken" => $d_average_project_days_duration,
+    "avgprojecthealth" => $d_average_project_health,
+    "avgsystemrating" => $d_total_average_system_rating,
+    "avgmanagerrating" => $d_total_average_manager_rating,
+    "avgfinalrating" => $d_total_average_final_rating,
+    "reportedprojects" => $d_reported_projects,
+    "reportedprojectspct" => $d_reporting_percentage,
+    "pctgdurationused" => $d_avg_project_pctgtimetaken_a,
+    "pctcompletedactivities" => $d_percentage_completed_activitiesA,
+    "hrpostscategories" => $d_post_categories,
+    "hrpostsfilled" => $d_post_filled,
+    "hrpostsfilledmale" => $d_post_filled_male,
+    "hrpostsfilledfemale" => $d_post_filled_female,
+    "hrpostsvacant" => $d_post_vacant,
+    "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
+    "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
+    "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
+    "projectlisting" => $d_project_information,
+    "stafflisting" => $d_staff_information,
+    "projectsubprogramme" => $d_sp_array,
+    "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green],*/
     );
 
     ?>
@@ -1452,7 +1458,6 @@ echo $total_count_projects_duration_between5_10 . ' Projects whose duration is b
 echo $total_count_projects_duration_between2_5 . ' Projects whose duration is between 2 and 5 years <br />';
 echo $total_count_projects_duration_between0_2 . ' Projects whose duration is between 0 and 2 years <br />';
 
-
 echo $total_count_projects_age_more10 . ' Projects whose age is more than 10 years<br />';
 echo $total_count_projects_age_between5_10 . ' Projects whose age is between 5 and 10 years  <br />';
 echo $total_count_projects_age_between2_5 . ' Projects whose age is between 2 and 5 years <br />';
@@ -1476,12 +1481,23 @@ echo $total_average_final_rating . ' Average final rating<br />';
 echo $total_reported_projects . ' total projects reported<br />';
 
 echo $total_reporting_percentage . '% projects reported<br />';
-*/
-
+ */
 
 /* Totals Array */
 
-//array_push($processed_divisiondata, ['unep'] => 
+//array_push($processed_divisiondata, ['unep'] =>
+
+if ($total_overan_days == 0) {
+    $average_overan_days = 0;
+    $average_overan_months = 0;
+} else {
+    $average_overan_days = round($total_overan_days / $total_projects);
+    $average_overan_months = ceil($d_average_overan_days / 30);
+}
+$avg_project_pctgtimetaken_a = round($total_project_pctgtimetaken / $total_projects, 2) * 100;
+
+//POST JOB GRADE-ONLY ->$unique_posts_data
+// POSTS-VACANT, FILLED, MALE,FEMALE->$overall_post_status_distribution
 
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
@@ -1492,51 +1508,46 @@ $processed_divisiondata['Unep'] = array(
     , "healthrating" => $overall_average_project_health
     , "consumablebudget" => $total_consumable_budget
     , "pastdueprojects" => $total_past_due_projects
-    , "avgmonthspastdue" => 0 //$d_average_overan_months,
+    , "avgmonthspastdue" => $average_overan_months
     , "in6monthexpiry" => $total_projects_expiringin6
     , "reportedprojectspct" => $total_reporting_percentage
     , "scatterpoints" => ["red" => $total_scatter_points_red, "yellow" => $total_scatter_points_yellow, "green" => $total_scatter_points_green]
     , "totalconsumedbudget" => $total_consumed_budget
     , "pctbudgetutilized" => ($total_consumed_budget * 100 / $total_consumable_budget)
-    , "pctgdurationused" => 0 //$d_avg_project_pctgtimetaken_a
+    , "pctgdurationused" => $avg_project_pctgtimetaken_a
     , "avgactivitiescompleted" => $overall_percentage_completed_activitiesA
     , "projectage" => array($total_count_projects_age_between0_2, $total_count_projects_age_between2_5, $total_count_projects_age_between5_10, $total_count_projects_age_more10)
     , "hrpostsvacant" => $t_vacant_posts
     , "hrpostsfilled" => $t_filled_posts
     , "hrpoststotal" => $t_posts
     , "hrpostsfilledmale" => $t_filled_male_count
-    , "hrpostsfilledfemale" => $t_filled_female_count
+    , "hrpostsfilledfemale" => $t_filled_female_count,
 
-    
-
-    
     /*"pctconsumablebudget" => $d_percentage_consumable_budget,
-    
-    
-    "avgbudgetutilized" => $d_average_percentage_budget_utilized,
-    "pctbudgetutilized" => $pctbudgetutilized,
-    
-    "avgtimetaken" => $d_average_project_days_duration,
-    "avgprojecthealth" => $d_average_project_health,
-    "avgsystemrating" => $d_total_average_system_rating,
-    "avgmanagerrating" => $d_total_average_manager_rating,
-    "avgfinalrating" => $d_total_average_final_rating,
-    "reportedprojects" => $d_reported_projects,
-    
-    "pctgdurationused" => $d_avg_project_pctgtimetaken_a,
-    "pctcompletedactivities" => $d_percentage_completed_activitiesA,
-    "hrpostscategories" => $d_post_categories,
-    
-    "hrpostsfilledmale" => $d_post_filled_male,
-    "hrpostsfilledfemale" => $d_post_filled_female,
-    
-    
-    "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
-    "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
-    "projectlisting" => $d_project_information,
-    "stafflisting" => $d_staff_information,
-    "projectsubprogramme" => $d_sp_array,
-    "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green],*/
+
+"avgbudgetutilized" => $d_average_percentage_budget_utilized,
+"pctbudgetutilized" => $pctbudgetutilized,
+
+"avgtimetaken" => $d_average_project_days_duration,
+"avgprojecthealth" => $d_average_project_health,
+"avgsystemrating" => $d_total_average_system_rating,
+"avgmanagerrating" => $d_total_average_manager_rating,
+"avgfinalrating" => $d_total_average_final_rating,
+"reportedprojects" => $d_reported_projects,
+
+"pctgdurationused" => $d_avg_project_pctgtimetaken_a,
+"pctcompletedactivities" => $d_percentage_completed_activitiesA,
+"hrpostscategories" => $d_post_categories,
+
+"hrpostsfilledmale" => $d_post_filled_male,
+"hrpostsfilledfemale" => $d_post_filled_female,
+
+"grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
+"grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
+"projectlisting" => $d_project_information,
+"stafflisting" => $d_staff_information,
+"projectsubprogramme" => $d_sp_array,
+"scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green],*/
 );
 
 ?>
