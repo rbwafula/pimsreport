@@ -1472,4 +1472,46 @@ echo $total_reporting_percentage . '% projects reported<br />';
 
  */
 
+/* Totals Array */
+
+$processed_divisiondata['unep'] = array(
+    "entity" => 'UN Environment',
+    "totalprojects" => $total_projects,
+    "totalactivities" => $d_activities,
+    "totaloutputs" => $d_outputs,
+    "healthcolor" => gethealthcolor($d_average_project_health),
+    "healthrating" => $d_average_project_health,
+    "consumablebudget" => $d_consumable_budget,
+    "pastdueprojects" => $d_past_due_projects,
+    "avgmonthspastdue" => $d_average_overan_months,
+    "in6monthexpiry" => $d_projects_expiringin6,
+    "pctconsumablebudget" => $d_percentage_consumable_budget,
+    "avgconsumablebudget" => $d_average_consumable,
+    "totalconsumedbudget" => $d_consumed_budget,
+    "avgbudgetutilized" => $d_average_percentage_budget_utilized,
+    "pctbudgetutilized" => $pctbudgetutilized,
+    "avgactivitiescompleted" => $d_average_percentage_activities_completed,
+    "avgtimetaken" => $d_average_project_days_duration,
+    "avgprojecthealth" => $d_average_project_health,
+    "avgsystemrating" => $d_total_average_system_rating,
+    "avgmanagerrating" => $d_total_average_manager_rating,
+    "avgfinalrating" => $d_total_average_final_rating,
+    "reportedprojects" => $d_reported_projects,
+    "reportedprojectspct" => $d_reporting_percentage,
+    "pctgdurationused" => $d_avg_project_pctgtimetaken_a,
+    "pctcompletedactivities" => $d_percentage_completed_activitiesA,
+    "hrpostscategories" => $d_post_categories,
+    "hrpostsfilled" => $d_post_filled,
+    "hrpostsfilledmale" => $d_post_filled_male,
+    "hrpostsfilledfemale" => $d_post_filled_female,
+    "hrpostsvacant" => $d_post_vacant,
+    "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
+    "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
+    "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
+    "projectlisting" => $d_project_information,
+    "stafflisting" => $d_staff_information,
+    "projectsubprogramme" => $d_sp_array,
+    "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green],
+);
+
 ?>
