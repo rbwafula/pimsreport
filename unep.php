@@ -5,6 +5,8 @@ if (isset($_GET['office'])) {
     $division = ucwords($_GET['office']);
 }
 include_once 'totals_algo.php';
+
+echo json_encode($hrpostscategories);
 ?>
 <!DOCTYPE html>
 <html>
@@ -773,8 +775,8 @@ include_once 'totals_algo.php';
                             <div class="row hrstatistics">
                                 <?php
                                 $totalposts = $processed_divisiondata[$division]["hrpoststotal"];
-                                $filledposts = $processed_divisiondata[$division]["hrpostsfilled"];
-                                $vacantposts = $processed_divisiondata[$division]["hrpostsvacant"];
+                                $filledpostscount = $processed_divisiondata[$division]["hrpostsfilledcount"];
+                                $vacantpostscount = $processed_divisiondata[$division]["hrpostsvacantcount"];
 
                                 ?>
                                 <div class="col metric1">
@@ -785,30 +787,29 @@ include_once 'totals_algo.php';
                                 </div>
                                 <div class="col metric3">
                                     <p class="metricvalue">
-                                        <?php echo number_format($vacantposts, 0, '.', ','); ?>
+                                        <?php echo number_format($vacantpostscount, 0, '.', ','); ?>
                                     </p>
                                     <p class="metricdesc">Vacant Posts</p>
                                 </div>
                                 <div class="col metric2">
                                     <p class="metricvalue">
-                                        <?php echo number_format($filledposts, 0, '.', ','); ?>
+                                        <?php echo number_format($filledpostscount, 0, '.', ','); ?>
                                     </p>
                                     <p class="metricdesc">Filled Posts</p>
                                 </div>
                                 <div class="col metric4">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($processed_divisiondata[$division]["hrpostsfilledfemale"]*100)/$filledposts),0,'.',',').'%';?>
+                                        <?php echo number_format((($processed_divisiondata[$division]["hrpostsfilledfemale"]*100)/$filledpostscount),0,'.',',').'%';?>
                                     </p>
                                     <p class="metricdesc">Female</p>
                                 </div>
                                 <div class="col metric5">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($processed_divisiondata[$division]["hrpostsfilledmale"]*100)/$filledposts),0,'.',',').'%';?>
+                                        <?php echo number_format((($processed_divisiondata[$division]["hrpostsfilledmale"]*100)/$filledpostscount),0,'.',',').'%';?>
                                     </p>
                                     <p class="metricdesc">Male</p>
                                 </div>
                             </div>
-                            <?php exit; ?>
                             <div id="hrfilled_chart"></div>
                             <script type="text/javascript">
                                 Highcharts.chart('hrfilled_chart', {
@@ -819,7 +820,7 @@ include_once 'totals_algo.php';
                                     },
                                     chart: {
                                         type: 'bar',
-                                        height: 250,
+                                        height: 400,
                                         backgroundColor: 'transparent'
                                     },
                                     title: {
@@ -890,7 +891,7 @@ include_once 'totals_algo.php';
                                 });
                             </script>
                         </div>
-                    </div>
+                    </div><?php exit; ?>
 
                     <div class="row chartrender">
                         <div class="col-md-12 hrgender">

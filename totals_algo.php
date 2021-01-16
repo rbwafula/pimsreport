@@ -1429,8 +1429,21 @@ foreach ($overall_post_status_distribution as $key => $value) {
     $position = intval(array_search($value['post'], $staff_order_array));
     $overall_post_status_distribution[$key]['order'] = $position;
 }
-
 usort($overall_post_status_distribution, 'sortByOrder');
+
+
+$hrpostscategories = array();
+$hrpostsfilled = array();
+$hrpostsvacant = array();
+
+foreach ($overall_post_status_distribution as $key => $value) {
+    array_push($hrpostscategories, $value['post']);
+    array_push($hrpostsfilled, $value['filled']);
+    array_push($hrpostsvacant, $value['vacant']);
+}
+
+
+
 
 /*
 foreach ($overall_post_status_distribution as $key => $value) {
@@ -1539,11 +1552,16 @@ $processed_divisiondata['Unep'] = array(
     , "pctgdurationused" => $avg_project_pctgtimetaken_a
     , "avgactivitiescompleted" => $overall_percentage_completed_activitiesA
     , "projectage" => array($total_count_projects_age_between0_2, $total_count_projects_age_between2_5, $total_count_projects_age_between5_10, $total_count_projects_age_more10)
-    , "hrpostsvacant" => $t_vacant_posts
-    , "hrpostsfilled" => $t_filled_posts
+    , "hrpostscategories" => $hrpostscategories
+    , "hrpostsfilled" => $hrpostsfilled
+    , "hrpostsvacant" => $hrpostsvacant
+    , "hrpostsvacantcount" => $t_vacant_posts
+    , "hrpostsfilledcount" => $t_filled_posts
     , "hrpoststotal" => $t_posts
     , "hrpostsfilledmale" => $t_filled_male_count
-    , "hrpostsfilledfemale" => $t_filled_female_count,
+    , "hrpostsfilledfemale" => $t_filled_female_count
+    
+    
 
     /*"pctconsumablebudget" => $d_percentage_consumable_budget,
 
@@ -1559,7 +1577,7 @@ $processed_divisiondata['Unep'] = array(
 
 "pctgdurationused" => $d_avg_project_pctgtimetaken_a,
 "pctcompletedactivities" => $d_percentage_completed_activitiesA,
-"hrpostscategories" => $d_post_categories,
+
 
 "hrpostsfilledmale" => $d_post_filled_male,
 "hrpostsfilledfemale" => $d_post_filled_female,
