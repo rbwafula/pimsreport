@@ -9,7 +9,7 @@ include_once 'totals_algo.php';
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo strtoupper($division); ?> Report</title>
+	<title><?php echo strtoupper($division);?> | PIMS+ Report</title>
 	<!-- Vendor CSS -->
     <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/highcharts.css">

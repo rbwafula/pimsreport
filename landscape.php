@@ -6,11 +6,13 @@ if (isset($_GET['office'])) {
     $division = $office[$_GET['office']];
 }
 include_once 'dynamic_algo.php';
+echo '<br/>'.json_encode($processed_divisiondata[$division]["hrpostsmale"]);
+echo '<br/>'.json_encode($processed_divisiondata[$division]["hrpostsfemale"]);
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Landscape Report</title>
+	<title><?php echo $division;?> | PIMS+ Report</title>
 	<!-- Vendor CSS -->
     <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/highcharts.css">

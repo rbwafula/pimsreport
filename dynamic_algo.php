@@ -59,6 +59,19 @@ function gethealthcolor($health)
 
     return $color;
 }
+function gethealthimage($health)
+{
+    $color = 'red.png'; //red
+
+    if ($health >= 2.5) {
+        $color = 'green.png'; //green
+
+    } elseif ($health >= 1.5) {
+        $color = 'yellow.png'; // yellow
+    }
+
+    return $color;
+}
 
 function sortByOrder($a, $b)
 {
