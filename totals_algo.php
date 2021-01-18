@@ -1136,8 +1136,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
     //var_dump($d_scatter_points);
 
-    $d_red_projects = 0;
-
     $overall_office_budget_distribution[] = [
         'office' => $dvalue,
         'consumable' => $d_consumable_budget,
@@ -1672,7 +1670,7 @@ usort($overall_office_budget_distribution, 'sortByConsumable');
 //     }
 // }
 
-//var_dump($o_staff_information);
+var_dump($o_sp_array);
 
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
