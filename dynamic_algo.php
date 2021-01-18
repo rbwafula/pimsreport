@@ -1030,6 +1030,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_post_filled_male = array();
     $d_post_filled_female = array();
     $d_post_vacant = array();
+    $d_post_male = array();
+    $d_post_female = array();
 
     foreach ($d_subprogramme_projects_distribution as $key => $value) {
         if (!$value['projects'] > 0) {
@@ -1054,9 +1056,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         } else {
             array_push($d_post_filled_female, 0);
         }
-        //array_push($d_post_filled_male, (-1*(100*$value['filled_male']/$value['filled'])));
-        //array_push($d_post_filled_female, ((100*$value['filled_female']/$value['filled'])));
         array_push($d_post_vacant, $value['vacant']);
+        array_push($d_post_male, $value['filled_male']);
+        array_push($d_post_female, $value['filled_female']);
     }
 
     usort($d_project_information, 'sortByOrder');
@@ -1168,6 +1170,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "hrpostsfilledmale" => $d_post_filled_male,
         "hrpostsfilledfemale" => $d_post_filled_female,
         "hrpostsvacant" => $d_post_vacant,
+        "hrpostsmale" => $d_post_male,
+        "hrpostsfemale" => $d_post_female,
         "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
         "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
         "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
@@ -1512,6 +1516,8 @@ $processed_divisiondata['unep'] = array(
     "hrpostsfilledmale" => $d_post_filled_male,
     "hrpostsfilledfemale" => $d_post_filled_female,
     "hrpostsvacant" => $d_post_vacant,
+    "hrpostsmale" => $d_post_male,
+    "hrpostsfemale" => $d_post_female,
     "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
     "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
     "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),

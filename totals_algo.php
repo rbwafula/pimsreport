@@ -1494,10 +1494,30 @@ $hrpostscategories = array();
 $hrpostsfilled = array();
 $hrpostsvacant = array();
 
+
+$overall_post_categories = array();
+$overall_post_filled = array();
+$overall_post_filled_male = array();
+$overall_post_filled_female = array();
+$overall_post_vacant = array();
+$overall_post_male = array();
+$overall_post_female = array();
 foreach ($overall_post_status_distribution as $key => $value) {
-    array_push($hrpostscategories, $value['post']);
-    array_push($hrpostsfilled, $value['filled']);
-    array_push($hrpostsvacant, $value['vacant']);
+    array_push($overall_post_categories, $value['post']);
+    array_push($overall_post_filled, $value['filled']);
+    if ($value['filled'] != 0 && $value['filled_male'] != 0) {
+        array_push($overall_post_filled_male, number_format((1 * (100 * $value['filled_male'] / $value['filled'])),2));
+    } else {
+        array_push($overall_post_filled_male, 0);
+    }
+    if ($value['filled'] != 0 && $value['filled_female'] != 0) {
+        array_push($overall_post_filled_female, number_format((-1 * (100 * $value['filled_female'] / $value['filled'])),2) );
+    } else {
+        array_push($overall_post_filled_female, 0);
+    }
+    array_push($overall_post_vacant, $value['vacant']);
+    array_push($overall_post_male, $value['filled_male']);
+    array_push($overall_post_female, $value['filled_female']);
 }
 
 /*
@@ -1617,14 +1637,26 @@ $processed_divisiondata['Unep'] = array(
     , "pctgdurationused" => $avg_project_pctgtimetaken_a
     , "avgactivitiescompleted" => $overall_percentage_completed_activitiesA
     , "projectage" => array($total_count_projects_age_between0_2, $total_count_projects_age_between2_5, $total_count_projects_age_between5_10, $total_count_projects_age_more10)
-    , "hrpostscategories" => $hrpostscategories
+    , "hrpostscategories" => $overall_post_categories
+    , "hrpostsfilled" => $overall_post_filled
+    , "hrpostsfilledmale" => $overall_post_filled_male
+    , "hrpostsfilledfemale" => $overall_post_filled_female
+    , "hrpostsvacant" => $overall_post_vacant
+    , "hrpostsmale" => $overall_post_male
+    , "hrpostsfemale" => $overall_post_female
+
+    /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled
     , "hrpostsvacant" => $hrpostsvacant
     , "hrpostsvacantcount" => $t_vacant_posts
     , "hrpostsfilledcount" => $t_filled_posts
     , "hrpoststotal" => $t_posts
-    , "hrpostsfilledmale" => $t_filled_male_count
-    , "hrpostsfilledfemale" => $t_filled_female_count,
+    , "hrpostsfilledmale" => $t_filled_male
+    , "hrpostsfilledfemale" => $t_filled_female
+    , "hrpostsfilledmalecount" => $t_filled_male_count
+    , "hrpostsfilledfemalecount" => $t_filled_female_count*/
+    
+    
 
     /*"pctconsumablebudget" => $d_percentage_consumable_budget,
 
