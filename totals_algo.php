@@ -1695,7 +1695,7 @@ $processed_divisiondata['Unep'] = array(
     , "hrpostsvacant" => $overall_post_vacant
     , "hrpostsmale" => $overall_post_male
     , "hrpostsfemale" => $overall_post_female
-    , "projectsubprogramme" => $overall_sp_array
+    , "projectsubprogramme" => $o_sp_array
     , "divisionlisting" => $overall_office_budget_distribution
 
     /*, "hrpostscategories" => $hrpostscategories

@@ -30,7 +30,7 @@ include_once 'dynamic_algo.php';
     <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
 </head>
 <body>
-	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 "><!-- shadow -->
+	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 hidden "><!-- shadow -->
         <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="javascript:void(0);">KIRI</a>
         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -47,7 +47,7 @@ include_once 'dynamic_algo.php';
     <div id="to_export">
 
     <div class="container-fluid printlandscape">
-        <div class="row noprint" data-html2canvas-ignore="true">
+        <div class="row noprint hidden" data-html2canvas-ignore="true">
             <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Division Dashboard</h1>

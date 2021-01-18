@@ -29,7 +29,7 @@ include_once 'totals_algo.php';
     <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
 </head>
 <body>
-	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow hidden">
         <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="javascript:void(0);">KIRI</a>
         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -1013,7 +1013,7 @@ include_once 'totals_algo.php';
 
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section2">
-                <h2 class="sectiontitle">Annex 1: Projects Table</h2>
+                <h2 class="sectiontitle">Annex 1: UNEP Programme Delivery Overview</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
                         <thead>
@@ -1025,16 +1025,17 @@ include_once 'totals_algo.php';
                                 <th class="right">Balance</th>
                                 <th class="right">Total<br/>Posts</th>
                                 <th class="right">Percentage<br/>Vacancy</th>
+                                <th class="right">% Senior<br/>Posts</th>
                                 <th class="right">Average<br/>Post Budget</th>
                                 <th class="right">Total<br/>Projects</th>
                                 <th class="right">Red<br/>Projects</th>
                                 <th class="right">Yellow<br/>Projects</th>
                                 <th class="right">Green<br/>Projects</th>
-                                <th class="right">% Senior<br/>Posts</th>
+                                
                                 <th class="right">Reporting<br/>Compliance</th>
                                 <th class="right">Expired<br/>Projects</th>
                                 <th class="right">Average Months<br/>Past Due</th>
-                                <th class="right">Short<br/>Projects %</th>
+                                <!--<th class="right">Short<br/>Projects %</th>-->
                             </tr>
                         </thead>
                         <tbody>
@@ -1048,16 +1049,16 @@ include_once 'totals_algo.php';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['balance'],0,'.',',').'</td>';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['total_posts'],0,'.',',').'</td>';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['average_post_budget'],0,'.',',').'</td>';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['total_projects'],0,'.',',').'</td>';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['red_projects'],0,'.',',').'</td>';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['yellow_projects'],0,'.',',').'</td>';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['green_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['reporting_compliance'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['reporting_compliance'],0,'.',',').'%</td>';
                                 echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['expired_projects'],0,'.',',').'</td>';
                                 echo '<td class="right">'.number_format(abs($processed_divisiondata[$division]["divisionlisting"][$i]['average_months_past_due']),0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['short_projects_percentage'],0,'.',',').'</td>';
+                                //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
                                 echo '</tr>';
                             }
                             ?>

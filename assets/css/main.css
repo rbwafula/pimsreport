@@ -263,6 +263,9 @@ body {
 .container-fluid.printlandscape {
 	max-width: 29.7cm;/*landscape layout */
 }
+.hidden {
+	display: none !important;
+}
 @page { 
 	size: auto;  
 	margin: 0mm; 
@@ -412,7 +415,4 @@ h5 {
 }
 h6 {
 	text-align: center;
-}
-.hidden {
-	display: none !important;
 }*/
