@@ -1494,7 +1494,6 @@ $hrpostscategories = array();
 $hrpostsfilled = array();
 $hrpostsvacant = array();
 
-
 $overall_post_categories = array();
 $overall_post_filled = array();
 $overall_post_filled_male = array();
@@ -1506,12 +1505,12 @@ foreach ($overall_post_status_distribution as $key => $value) {
     array_push($overall_post_categories, $value['post']);
     array_push($overall_post_filled, $value['filled']);
     if ($value['filled'] != 0 && $value['filled_male'] != 0) {
-        array_push($overall_post_filled_male, number_format((1 * (100 * $value['filled_male'] / $value['filled'])),2));
+        array_push($overall_post_filled_male, number_format((1 * (100 * $value['filled_male'] / $value['filled'])), 2));
     } else {
         array_push($overall_post_filled_male, 0);
     }
     if ($value['filled'] != 0 && $value['filled_female'] != 0) {
-        array_push($overall_post_filled_female, number_format((-1 * (100 * $value['filled_female'] / $value['filled'])),2) );
+        array_push($overall_post_filled_female, number_format((-1 * (100 * $value['filled_female'] / $value['filled'])), 2));
     } else {
         array_push($overall_post_filled_female, 0);
     }
@@ -1643,7 +1642,7 @@ $processed_divisiondata['Unep'] = array(
     , "hrpostsfilledfemale" => $overall_post_filled_female
     , "hrpostsvacant" => $overall_post_vacant
     , "hrpostsmale" => $overall_post_male
-    , "hrpostsfemale" => $overall_post_female
+    , "hrpostsfemale" => $overall_post_female,
 
     /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled
@@ -1655,8 +1654,6 @@ $processed_divisiondata['Unep'] = array(
     , "hrpostsfilledfemale" => $t_filled_female
     , "hrpostsfilledmalecount" => $t_filled_male_count
     , "hrpostsfilledfemalecount" => $t_filled_female_count*/
-    
-    
 
     /*"pctconsumablebudget" => $d_percentage_consumable_budget,
 
@@ -1683,5 +1680,7 @@ $processed_divisiondata['Unep'] = array(
 "projectsubprogramme" => $d_sp_array,
 "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green],*/
 );
+
+//Clean
 
 ?>
