@@ -61,6 +61,11 @@ function sortByOrder($a, $b)
     return $a['order'] - $b['order'];
 }
 
+function sortByConsumable($a, $b)
+{
+    return $b['consumable'] - $a['consumable'];
+}
+
 function filter_unique($array, $key)
 {
     $temp_array = [];
@@ -603,6 +608,10 @@ $overall_sp_array['spnames'] = [];
 $overall_sp_array['spnumbers'] = [];
 $overall_sp_array['projectcount'] = [];
 
+$o_staff_information = [];
+
+$o_subprogramme_projects_distribution = [];
+
 foreach ($unique_divisions as $dkey => $dvalue) {
 //CALCULATE DIVISIONAL METRICS
 
@@ -810,6 +819,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     usort($d_staff_information, 'sortByOrder');
 
+    foreach ($d_staff_information as $key => $value) {
+        $value['division'] = $dvalue;
+        $o_staff_information[] = $value;
+    }
+
     $d_post_status_distribution = [];
 
     foreach ($unique_posts_data as $pkey => $pvalue) {
@@ -874,9 +888,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             }
         }
         $d_subprogramme_projects_distribution[$value['subprogramme_number']] = ["order" => $value['subprogramme_number'], "subprogramme" => $value['subprogramme'], "subprogramme_number" => $value['subprogramme_number'], "projects" => $sp_projects_count];
+
     }
 
     usort($d_subprogramme_projects_distribution, 'sortByOrder');
+    usort($o_subprogramme_projects_distribution, 'sortByOrder');
 
     foreach ($activities_data as $key => $value) {
         if ($value->managing_division == $dvalue) {
@@ -1137,6 +1153,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
     ];
 
+    //sort by budget
+
     // foreach ($d_project_information as $key => $value) {
     //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
     // }
@@ -1150,10 +1168,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         $d_sp_array['spnames'][] = ucwords($value['subprogramme']);
         $d_sp_array['spnumbers'][] = 'SP ' . $value['subprogramme_number'];
         $d_sp_array['projectcount'][] = $value['projects'];
-
-        $overall_sp_array['spnames'][] = ucwords($value['subprogramme']);
-        $overall_sp_array['spnumbers'][] = 'SP ' . $value['subprogramme_number'];
-        $overall_sp_array['projectcount'][] = $value['projects'];
 
         // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
     }
@@ -1607,6 +1621,38 @@ if ($total_overan_days == 0) {
 $avg_project_pctgtimetaken_a = round($total_project_pctgtimetaken / $total_projects, 2) * 100;
 
 $overall_percentage_completed_activitiesA = round($total_avg_activities_completed / $total_projects, 2) * 100;
+
+foreach ($unique_subprogramme_data as $key => $value) {
+    $o_projects_count = 0;
+    foreach ($value['divisions'] as $udkey => $udvalue) {
+        $o_projects_count += 1;
+    }
+    $o_subprogramme_projects_distribution[$value['subprogramme_number']] = ["order" => $value['subprogramme_number'], "subprogramme" => $value['subprogramme'], "subprogramme_number" => $value['subprogramme_number'], "projects" => $o_projects_count];
+
+}
+
+foreach ($o_subprogramme_projects_distribution as $key => $value) {
+    if (!$value['projects'] > 0) {
+        unset($o_subprogramme_projects_distribution[$key]);
+    }
+}
+
+$o_sp_array = [];
+$o_sp_array['spnames'] = [];
+$o_sp_array['spnumbers'] = [];
+$o_sp_array['projectcount'] = [];
+
+foreach ($o_subprogramme_projects_distribution as $key => $value) {
+    $o_sp_array['spnames'][] = ucwords($value['subprogramme']);
+    $o_sp_array['spnumbers'][] = 'SP ' . $value['subprogramme_number'];
+    $o_sp_array['projectcount'][] = $value['projects'];
+}
+
+usort($overall_office_budget_distribution, 'sortByConsumable');
+
+//sort by consumable
+
+//var_dump($overall_office_budget_distribution);
 // echo 'Total time taken ' . $total_avg_activities_completed . '<br />';
 // echo 'Total total projects ' . $total_projects . '<br />';
 // echo $overall_percentage_completed_activitiesA;
@@ -1622,7 +1668,7 @@ $overall_percentage_completed_activitiesA = round($total_avg_activities_complete
 //     }
 // }
 
-// var_dump($overall_office_budget_distribution);
+//var_dump($o_staff_information);
 
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
