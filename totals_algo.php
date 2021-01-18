@@ -9,11 +9,11 @@ $hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/offic
 
 $proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
 
-$url = 'http://localhost/sandbox/mpdf/assets/data/final_data.json';
-$activities_url = 'http://localhost/sandbox/mpdf/assets/data/div_activitycount_data.json';
-$outputs_url = 'http://localhost/sandbox/mpdf/assets/data/div_activitycount_data.json';
-$hr_url = 'http://localhost/sandbox/mpdf/assets/data/officestaff_data.json';
-$proj_activity_url = 'http://localhost/sandbox/mpdf/assets/data/div_practivitycount_data.json';
+$url = 'http://localhost:81/pimsreport/assets/data/final_data.json';
+$activities_url = 'http://localhost:81/pimsreport/assets/data/div_activitycount_data.json';
+$outputs_url = 'http://localhost:81/pimsreport/assets/data/div_activitycount_data.json';
+$hr_url = 'http://localhost:81/pimsreport/assets/data/officestaff_data.json';
+$proj_activity_url = 'http://localhost:81/pimsreport/assets/data/div_practivitycount_data.json';
 
 $processed_divisiondata = array();
 
@@ -284,6 +284,7 @@ foreach ($hr_data as $key => $value) {
 }
 
 $overall_post_status_distribution = [];
+$overall_office_budget_distribution = [];
 
 $t_filled_posts = 0;
 $t_vacant_posts = 0;
@@ -310,7 +311,11 @@ foreach ($unique_posts_data as $pkey => $pvalue) {
         $t_filled_male += $pvalue['filled_male'];
         $t_filled_female += $pvalue['filled_female'];
 
-        $overall_post_status_distribution[] = ["post" => $pvalue['post'], "filled" => $t_filled_count, "filled_male" => $t_filled_male, "filled_female" => $t_filled_female, "vacant" => $t_vacant_count];
+        if ($pvalue['post'] == 'INT-I' || $pvalue['post'] == 'INT-II') {
+
+        } else {
+            $overall_post_status_distribution[] = ["post" => $pvalue['post'], "filled" => $t_filled_count, "filled_male" => $t_filled_male, "filled_female" => $t_filled_female, "vacant" => $t_vacant_count];
+        }
 
         $t_filled_posts += $t_filled_count;
         $t_vacant_posts += $t_vacant_count;
@@ -534,7 +539,8 @@ $total_percentage_projects_budget_between2_5 = round($total_count_projects_budge
 $total_percentage_projects_budget_between5_10 = round($total_count_projects_budget_between5_10 / $total_projects, 2) * 100;
 $total_percentage_projects_budget_more10 = round($total_count_projects_budget_more10 / $total_projects, 2) * 100;
 
-$total_reporting_percentage = round(($total_reported_projects / $total_projects), 1);
+$total_reporting_percentage = round(($total_reported_projects / $total_projects), 2) * 100;
+
 $overall_average_consumable = round($total_consumable_budget / $total_projects, 2);
 $overall_average_project_days_duration = round($total_project_days / $total_projects);
 $overall_average_project_years_duration = round($overall_average_project_days_duration / 365.25, 1);
@@ -665,6 +671,14 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_scatter_points_green = [];
     $d_overan_days = 0;
 
+    $d_red_projects = 0;
+    $d_yellow_projects = 0;
+    $d_green_projects = 0;
+
+    $d_senior_posts = 0;
+
+    $d_short_projects = 0;
+
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
             if (!in_array($prvalue->managing_branch, $d_project_branch)) {
@@ -726,15 +740,17 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 //green
                 $d_scatter_points_green[] = [$fr, intval($prvalue->consumable_budget)];
                 $total_scatter_points_green[] = [$fr, intval($prvalue->consumable_budget)];
+                $d_green_projects += 1;
             } elseif ($fr >= 1.5) {
                 // yellow
                 $d_scatter_points_yellow[] = [$fr, intval($prvalue->consumable_budget)];
                 $total_scatter_points_yellow[] = [$fr, intval($prvalue->consumable_budget)];
-
+                $d_yellow_projects += 1;
             } else {
                 //red
                 $d_scatter_points_red[] = [$fr, intval($prvalue->consumable_budget)];
                 $total_scatter_points_red[] = [$fr, intval($prvalue->consumable_budget)];
+                $d_red_projects += 1;
             }
 
             $d_project_information[] = [
@@ -764,6 +780,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_staff_information = [];
     foreach ($hr_data as $hkey => $hvalue) {
         if ($hvalue->office == $dvalue) {
+            if ($hvalue->pos_ps_group == 'D-2' || $hvalue->pos_ps_group == 'D-1' || $hvalue->pos_ps_group == 'P-5') {
+                $d_senior_posts += 1;
+            }
             if ($hvalue->pers_no > 0) {
                 $p_status = 'FILLED';
             } else {
@@ -920,9 +939,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
             } elseif ($project_days_age > 728) {
                 $d_count_projects_age_between2_5 += 1;
+                $d_short_projects += 1;
 
             } else {
                 $d_count_projects_age_between0_2 += 1;
+                $d_short_projects += 1;
 
             }
 
@@ -1058,6 +1079,17 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     //     echo $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
     // }
 
+    // total poists,
+    // vacancy rates - vacant/total,
+    // ratio of total budget/ filled posts,
+    // no red projects red, yellow,green,
+    // total projects,
+    // total post in d1,d2,p5 divided by total filled posts.(senior management compared to filled)
+    // reporting compliance-
+    // expired projects,
+    // average months past due,
+    // percentage projects projecst implemented 5 years and below.
+
     foreach ($d_post_status_distribution as $key => $value) {
         array_push($d_post_categories, $value['post']);
         array_push($d_post_filled, $value['filled']);
@@ -1081,6 +1113,27 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     // display the division name its and number of projects
     //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
     //var_dump($d_scatter_points);
+
+    $d_red_projects = 0;
+
+    $overall_office_budget_distribution[] = [
+        'office' => $dvalue,
+        'consumable' => $d_consumable_budget,
+        'consumed' => $d_consumed_budget,
+        'balance' => $d_consumable_budget - $d_consumed_budget,
+        'total_posts' => $d_posts,
+        'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
+        'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
+        'total_projects' => $d_projects,
+        'red_projects' => $d_red_projects,
+        'yellow_projects' => $d_yellow_projects,
+        'green_projects' => $d_green_projects,
+        'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
+        'reporting_compliance' => $d_reporting_percentage,
+        'expired_projects' => $d_past_due_projects,
+        'average_months_past_due' => $d_average_overan_months,
+        'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
+    ];
 
     // foreach ($d_project_information as $key => $value) {
     //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
@@ -1437,12 +1490,6 @@ foreach ($overall_post_status_distribution as $key => $value) {
 }
 usort($overall_post_status_distribution, 'sortByOrder');
 
-foreach ($overall_post_status_distribution as $key => $value) {
-    if ($value['post'] == 'INT-I' || $value['post'] == 'INT-II') {
-        unset($overall_post_status_distribution[$key]);
-    }
-}
-
 $hrpostscategories = array();
 $hrpostsfilled = array();
 $hrpostsvacant = array();
@@ -1562,6 +1609,16 @@ $overall_percentage_completed_activitiesA = round($total_avg_activities_complete
 //JOB GRADES -ONLY ->$unique_posts_data
 // POSTS-VACANT, FILLED, MALE,FEMALE->$overall_post_status_distribution
 
+// foreach ($overall_post_status_distribution as $key => $value) {
+//     if ($value['post'] == 'INT-I' || $value['post'] == 'INT-II') {
+
+//         echo 'intern';
+//         unset($overall_post_status_distribution[$key]);
+//     }
+// }
+
+// var_dump($overall_office_budget_distribution);
+
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
     , "totalprojects" => $total_projects
@@ -1615,7 +1672,6 @@ $processed_divisiondata['Unep'] = array(
 
 "pctgdurationused" => $d_avg_project_pctgtimetaken_a,
 "pctcompletedactivities" => $d_percentage_completed_activitiesA,
-
 
 "hrpostsfilledmale" => $d_post_filled_male,
 "hrpostsfilledfemale" => $d_post_filled_female,
