@@ -875,15 +875,19 @@ include_once 'dynamic_algo.php';
                         <div class="col-md-12 hrfilled">
                             <div class="row hrstatistics">
                                 <?php
-$totalposts = 0;
-$filledposts = 0;
-$vacantposts = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
-    $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
-    $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
-    $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
-}
-?>
+                                $totalposts = 0;
+                                $filledposts = 0;
+                                $vacantposts = 0;
+                                $maleposts = 0;
+                                $femaleposts = 0;
+                                for ($i = 0; $i < count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
+                                    $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
+                                    $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
+                                    $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
+                                    $maleposts += $processed_divisiondata[$division]["hrpostsmale"][$i];
+                                    $femaleposts += $processed_divisiondata[$division]["hrpostsfemale"][$i];
+                                }
+                                ?>
                                 <div class="col metric1">
                                     <p class="metricvalue">
                                         <?php echo number_format($totalposts, 0, '.', ','); ?>
@@ -904,15 +908,13 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["hrpostsvacant"]); $i
                                 </div>
                                 <div class="col metric4">
                                     <p class="metricvalue">
-                                        <?php
-echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledfemale"])) / count($processed_divisiondata[$division]["hrpostsfilledfemale"]), 0); ?>%
+                                        <?php echo number_format((($femaleposts/$filledposts)*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Female</p>
                                 </div>
                                 <div class="col metric5">
                                     <p class="metricvalue">
-                                        <?php
-echo number_format(abs(array_sum($processed_divisiondata[$division]["hrpostsfilledmale"])) / count($processed_divisiondata[$division]["hrpostsfilledmale"]), 0); ?>%
+                                        <?php echo number_format((($maleposts/$filledposts)*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Male</p>
                                 </div>

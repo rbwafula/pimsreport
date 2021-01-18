@@ -772,10 +772,18 @@ include_once 'totals_algo.php';
                         <div class="col-md-12 hrfilled">
                             <div class="row hrstatistics">
                                 <?php
-                                $totalposts = $processed_divisiondata[$division]["hrpoststotal"];
-                                $filledpostscount = $processed_divisiondata[$division]["hrpostsfilledcount"];
-                                $vacantpostscount = $processed_divisiondata[$division]["hrpostsvacantcount"];
-
+                                $totalposts = 0;
+                                $filledposts = 0;
+                                $vacantposts = 0;
+                                $maleposts = 0;
+                                $femaleposts = 0;
+                                for ($i = 0; $i < count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
+                                    $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
+                                    $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
+                                    $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
+                                    $maleposts += $processed_divisiondata[$division]["hrpostsmale"][$i];
+                                    $femaleposts += $processed_divisiondata[$division]["hrpostsfemale"][$i];
+                                }
                                 ?>
                                 <div class="col metric1">
                                     <p class="metricvalue">
@@ -785,25 +793,25 @@ include_once 'totals_algo.php';
                                 </div>
                                 <div class="col metric3">
                                     <p class="metricvalue">
-                                        <?php echo number_format($vacantpostscount, 0, '.', ','); ?>
+                                        <?php echo number_format($vacantposts, 0, '.', ','); ?>
                                     </p>
                                     <p class="metricdesc">Vacant Posts</p>
                                 </div>
                                 <div class="col metric2">
                                     <p class="metricvalue">
-                                        <?php echo number_format($filledpostscount, 0, '.', ','); ?>
+                                        <?php echo number_format($filledposts, 0, '.', ','); ?>
                                     </p>
                                     <p class="metricdesc">Filled Posts</p>
                                 </div>
                                 <div class="col metric4">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($processed_divisiondata[$division]["hrpostsfilledfemale"]*100)/$filledpostscount),0,'.',',').'%';?>
+                                        <?php echo number_format((($femaleposts/$filledposts)*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Female</p>
                                 </div>
                                 <div class="col metric5">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($processed_divisiondata[$division]["hrpostsfilledmale"]*100)/$filledpostscount),0,'.',',').'%';?>
+                                        <?php echo number_format((($maleposts/$filledposts)*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Male</p>
                                 </div>
@@ -818,7 +826,7 @@ include_once 'totals_algo.php';
                                     },
                                     chart: {
                                         type: 'bar',
-                                        height: 400,
+                                        height: 260,
                                         backgroundColor: 'transparent'
                                     },
                                     title: {
@@ -889,7 +897,7 @@ include_once 'totals_algo.php';
                                 });
                             </script>
                         </div>
-                    </div><?php exit; ?>
+                    </div>
 
                     <div class="row chartrender">
                         <div class="col-md-12 hrgender">
@@ -987,10 +995,10 @@ include_once 'totals_algo.php';
                                     },
                                     series: [{
                                         name: 'Female',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledfemale"]); ?>
+                                        data: <?php echo str_replace('"', '', json_encode($processed_divisiondata[$division]["hrpostsfilledfemale"])); ?>
                                     },{
                                         name: 'Male',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledmale"]); ?>
+                                        data: <?php echo str_replace('"', '', json_encode($processed_divisiondata[$division]["hrpostsfilledmale"])); ?>
                                     }]
                                 });
                             </script>
@@ -998,7 +1006,7 @@ include_once 'totals_algo.php';
                     </div>
                 </div>
                 <p class="quote">Do the difficult things while they are easy and do the great things while they are small. — LAO TZU</p>
-            </div>
+            </div><?php exit; ?>
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 1: Projects Table</h2>
