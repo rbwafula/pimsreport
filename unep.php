@@ -669,7 +669,7 @@ include_once 'totals_algo.php';
                         <div class="col-md-12 projectsbysubprogramme">
                             <div id="projectsbysubprogramme_chart"></div>
                             <script type="text/javascript">
-                                /*Highcharts.chart('projectsbysubprogramme_chart', {
+                                Highcharts.chart('projectsbysubprogramme_chart', {
                                     colors: ['#0077b6'],
                                     credits: {
                                         text: ''
@@ -761,7 +761,7 @@ include_once 'totals_algo.php';
                                         showInLegend: false
 
                                     }]
-                                });*/
+                                });
                             </script>
                         </div>
                     </div>
@@ -1006,7 +1006,11 @@ include_once 'totals_algo.php';
                     </div>
                 </div>
                 <p class="quote">Do the difficult things while they are easy and do the great things while they are small. — LAO TZU</p>
-            </div><?php exit; ?>
+            </div>
+
+
+
+
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 1: Projects Table</h2>
@@ -1015,57 +1019,52 @@ include_once 'totals_algo.php';
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th class="left">Branch</th>
-                                <th width="115px" class="left">Project ID</th>
-                                <th class="left">Project Title</th>
-                                <th class="center">Sub<br/>Programme</th>
-                                <th class="center">Months<br/>Past Due</th>
-                                <th class="left">Project<br/>Manager</th>
-                                <th class="right">Budget</th>
-                                <th class="projectlistinghealth">System Rating <span>(40%)</span></th>
-                                <th class="projectlistinghealth">Management Rating <span>(60%)</span></th>
-                                <th class="projectlistinghealth">Final Rating</th>
-                                <th class="center">Project Rank</th>
-                                <th class="center">Outputs</th>
-                                <th class="center">Completed Activities</th>
+                                <th class="left">Office</th>
+                                <th class="right">Consumable</th>
+                                <th class="right">Consumed</th>
+                                <th class="right">Balance</th>
+                                <th class="right">Total<br/>Posts</th>
+                                <th class="right">Percentage<br/>Vacancy</th>
+                                <th class="right">Average<br/>Post Budget</th>
+                                <th class="right">Total<br/>Projects</th>
+                                <th class="right">Red<br/>Projects</th>
+                                <th class="right">Yellow<br/>Projects</th>
+                                <th class="right">Green<br/>Projects</th>
+                                <th class="right">% Senior<br/>Posts</th>
+                                <th class="right">Reporting<br/>Compliance</th>
+                                <th class="right">Expired<br/>Projects</th>
+                                <th class="right">Average Months<br/>Past Due</th>
+                                <th class="right">Short<br/>Projects %</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++) {
-    echo '<tr>';
-    echo '<td class="right">' . ($i + 1) . '.</td>';
-    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['branch'] . '</td>';
-    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_id'] . '</td>';
-    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_title'] . '</td>';
-    echo '<td class="center">SP ' . $processed_divisiondata[$division]["projectlisting"][$i]['sp_number'] . '</td>';
-
-    if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
-        echo '<td class="center" style="color:#dc3545; font-weight: 500;">' . abs($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining']) . '</td>';
-    } else if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] == 'No Enddate') {
-        echo '<td class="center" style="color:#dc3545; font-weight: 500;">No end date</td>';
-    } else {
-        echo '<td class="center" style="font-weight:500; color:green">&nbsp;</td>';
-    }
-    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_manager'] . '</td>';
-    echo '<td class="right">' . number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'], 0, '.', ',') . '</td>';
-    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']) . '">&nbsp;</p></td>';
-    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['management_rating']) . '">&nbsp;</p></td>';
-    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['final_rating']) . '">&nbsp;</p></td>';
-    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_rank'] . '</td>';
-    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['outputs'] . '</td>';
-    if ($processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] != '' && $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] != '') {
-        echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] . ' / ' . $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] . ' </td>';
-    } else {
-        echo '<td class="center"> - </td>';
-    }
-    echo '</tr>';
-}
-?>
+                            for ($i = 0; $i < count($processed_divisiondata[$division]["divisionlisting"]); $i++) {
+                                echo '<tr>';
+                                echo '<td class="right">'.($i + 1).'.</td>';
+                                echo '<td class="left">'.$processed_divisiondata[$division]["divisionlisting"][$i]['office'].'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['consumable'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['consumed'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['balance'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['total_posts'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['average_post_budget'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['total_projects'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['red_projects'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['yellow_projects'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['green_projects'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['reporting_compliance'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['expired_projects'],0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format(abs($processed_divisiondata[$division]["divisionlisting"][$i]['average_months_past_due']),0,'.',',').'</td>';
+                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting"][$i]['short_projects_percentage'],0,'.',',').'</td>';
+                                echo '</tr>';
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div><?php exit; ?>
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 2: Vacant Positions Table</h2>
@@ -1085,23 +1084,23 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                         </thead>
                         <tbody>
                             <?php
-$j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
-        echo '<tr>';
-        echo '<td>' . ($j + 1) . '.</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
-        echo '</tr>';
-        $j++;
-    }
-}
-?>
+                            $j = 0;
+                            for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
+                                if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
+                                    echo '<tr>';
+                                    echo '<td>' . ($j + 1) . '.</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
+                                    echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
+                                    echo '</tr>';
+                                    $j++;
+                                }
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>

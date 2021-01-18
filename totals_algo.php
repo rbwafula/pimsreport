@@ -1,12 +1,8 @@
 <?php
 /*$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
-
 $activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
-
 $outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
-
 $hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/officestaff_data';
-
 $proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
 
 $page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
@@ -1652,7 +1648,9 @@ $processed_divisiondata['Unep'] = array(
     , "hrpostsfilledfemale" => $overall_post_filled_female
     , "hrpostsvacant" => $overall_post_vacant
     , "hrpostsmale" => $overall_post_male
-    , "hrpostsfemale" => $overall_post_female,
+    , "hrpostsfemale" => $overall_post_female
+    , "projectsubprogramme" => $overall_sp_array
+    , "divisionlisting" => $overall_office_budget_distribution
 
     /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled
