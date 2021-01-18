@@ -1,1 +1,9 @@
-data/
+*data/
+*images/
+*files/
+.DS_Store
+files/
+test*
+*_bk.php
+*.log
+*.json

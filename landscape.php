@@ -6,8 +6,6 @@ if (isset($_GET['office'])) {
     $division = $office[$_GET['office']];
 }
 include_once 'dynamic_algo.php';
-echo '<br/>'.json_encode($processed_divisiondata[$division]["hrpostsmale"]);
-echo '<br/>'.json_encode($processed_divisiondata[$division]["hrpostsfemale"]);
 ?>
 <!DOCTYPE html>
 <html>

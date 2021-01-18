@@ -9,11 +9,12 @@ $hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/offic
 
 $proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
 
-$url = 'http://localhost/sandbox/mpdf/assets/data/final_data.json';
-$activities_url = 'http://localhost/sandbox/mpdf/assets/data/div_activitycount_data.json';
-$outputs_url = 'http://localhost/sandbox/mpdf/assets/data/div_activitycount_data.json';
-$hr_url = 'http://localhost/sandbox/mpdf/assets/data/officestaff_data.json';
-$proj_activity_url = 'http://localhost/sandbox/mpdf/assets/data/div_practivitycount_data.json';
+$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+$url = $page_link.'/assets/data/final_data.json';
+$activities_url = $page_link.'/assets/data/div_activitycount_data.json';
+$outputs_url = $page_link.'/assets/data/div_activitycount_data.json';
+$hr_url = $page_link.'/assets/data/officestaff_data.json';
+$proj_activity_url = $page_link.'/assets/data/div_practivitycount_data.json';
 
 
 $processed_divisiondata = array();
