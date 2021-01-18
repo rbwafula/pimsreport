@@ -1,8 +1,9 @@
 <?php
 $month = Date("M") . ' ' . Date("Y");
-$division = ucwords('Africa');
+$office = array('Europe', 'Economy', 'Disasters and Conflicts', 'Latin America', 'Asia Pacific', 'Law', 'Communication', 'Ecosystems', 'Science', 'Africa', 'West Asia');
+$division = $office[10];
 if (isset($_GET['office'])) {
-    $division = ucwords($_GET['office']);
+    $division = $office[$_GET['office']];
 }
 include_once 'dynamic_algo.php';
 ?>
@@ -29,7 +30,7 @@ include_once 'dynamic_algo.php';
     <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
 </head>
 <body>
-	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 "><!-- shadow -->
         <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="javascript:void(0);">KIRI</a>
         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -70,11 +71,11 @@ include_once 'dynamic_algo.php';
                 <div class="col-md-4 logo">
                     <img class="logo" src="assets/images/pimslogo.png">
                 </div>
-                <div class="col-md-4 title">
+                <div class="col-md-5 title">
                     <h1><?php echo $processed_divisiondata[$division]["entity"]; ?></h1>
                     <h6>Programme Delivery Report</h6>
                 </div>
-                <div class="col-md-4 health">
+                <div class="col-md-3 health">
                     <p class="reportdate">Jan 2021</p>
                     <p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>;">&nbsp;</p>
                     <p class="healthratingdesc">Project Portfolio Rating</p>

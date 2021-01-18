@@ -5,8 +5,6 @@ if (isset($_GET['office'])) {
     $division = ucwords($_GET['office']);
 }
 include_once 'totals_algo.php';
-
-echo json_encode($hrpostscategories);
 ?>
 <!DOCTYPE html>
 <html>
