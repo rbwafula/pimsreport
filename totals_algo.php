@@ -287,6 +287,8 @@ foreach ($hr_data as $key => $value) {
 
 $overall_post_status_distribution = [];
 $overall_office_budget_distribution = [];
+$overall_office_budget_distribution_office = [];
+$overall_office_budget_distribution_region = [];
 
 $t_filled_posts = 0;
 $t_vacant_posts = 0;
@@ -1132,6 +1134,13 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
     //var_dump($d_scatter_points);
 
+    $officelist = array('Economy', 'Disasters and Conflicts', 'Law', 'Communication', 'Ecosystems', 'Science');
+    $divisionlist = array('Europe', 'Latin America', 'Asia Pacific', 'Africa',  'West Asia');
+
+    $officeorder = in_array($dvalue, $officelist) ? 1 : 2;
+
+
+
     $overall_office_budget_distribution[] = [
         'office' => $dvalue,
         'consumable' => $d_consumable_budget,
@@ -1149,7 +1158,51 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         'expired_projects' => $d_past_due_projects,
         'average_months_past_due' => $d_average_overan_months,
         'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
+        'officeorder' => $officeorder
     ];
+
+    if (in_array($dvalue, $officelist)) {
+        $overall_office_budget_distribution_office[] = [
+            'office' => $dvalue,
+            'consumable' => $d_consumable_budget,
+            'consumed' => $d_consumed_budget,
+            'balance' => $d_consumable_budget - $d_consumed_budget,
+            'total_posts' => $d_posts,
+            'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
+            'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
+            'total_projects' => $d_projects,
+            'red_projects' => $d_red_projects,
+            'yellow_projects' => $d_yellow_projects,
+            'green_projects' => $d_green_projects,
+            'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
+            'reporting_compliance' => $d_reporting_percentage,
+            'expired_projects' => $d_past_due_projects,
+            'average_months_past_due' => $d_average_overan_months,
+            'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
+            'officeorder' => $officeorder
+        ];
+    } else {
+        $overall_office_budget_distribution_region[] = [
+            'office' => $dvalue,
+            'consumable' => $d_consumable_budget,
+            'consumed' => $d_consumed_budget,
+            'balance' => $d_consumable_budget - $d_consumed_budget,
+            'total_posts' => $d_posts,
+            'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
+            'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
+            'total_projects' => $d_projects,
+            'red_projects' => $d_red_projects,
+            'yellow_projects' => $d_yellow_projects,
+            'green_projects' => $d_green_projects,
+            'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
+            'reporting_compliance' => $d_reporting_percentage,
+            'expired_projects' => $d_past_due_projects,
+            'average_months_past_due' => $d_average_overan_months,
+            'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
+            'officeorder' => $officeorder
+        ];
+    }
+    
 
     //sort by budget
 
@@ -1647,6 +1700,8 @@ foreach ($o_subprogramme_projects_distribution as $key => $value) {
 }
 
 usort($overall_office_budget_distribution, 'sortByConsumable');
+usort($overall_office_budget_distribution_office, 'sortByConsumable');
+usort($overall_office_budget_distribution_region, 'sortByConsumable');
 
 //sort by consumable
 
@@ -1665,8 +1720,6 @@ usort($overall_office_budget_distribution, 'sortByConsumable');
 //         unset($overall_post_status_distribution[$key]);
 //     }
 // }
-
-var_dump($o_sp_array);
 
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
@@ -1695,6 +1748,8 @@ $processed_divisiondata['Unep'] = array(
     , "hrpostsfemale" => $overall_post_female
     , "projectsubprogramme" => $o_sp_array
     , "divisionlisting" => $overall_office_budget_distribution
+    , "divisionlisting_office" => $overall_office_budget_distribution_office
+    , "divisionlisting_region" => $overall_office_budget_distribution_region
 
     /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled
