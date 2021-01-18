@@ -607,6 +607,8 @@ $overall_sp_array['spnames'] = [];
 $overall_sp_array['spnumbers'] = [];
 $overall_sp_array['projectcount'] = [];
 
+$o_staff_information = [];
+
 foreach ($unique_divisions as $dkey => $dvalue) {
 //CALCULATE DIVISIONAL METRICS
 
@@ -813,6 +815,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     }
 
     usort($d_staff_information, 'sortByOrder');
+
+    foreach ($d_staff_information as $key => $value) {
+        $value['division'] = $dvalue;
+        $o_staff_information[] = $value;
+    }
 
     $d_post_status_distribution = [];
 
@@ -1626,7 +1633,7 @@ $overall_percentage_completed_activitiesA = round($total_avg_activities_complete
 //     }
 // }
 
-// var_dump($overall_office_budget_distribution);
+//var_dump($o_staff_information);
 
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
