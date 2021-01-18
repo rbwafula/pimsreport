@@ -9,12 +9,12 @@ $hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/offic
 
 $proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
 
-$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
-$url = $page_link.'/assets/data/final_data.json';
-$activities_url = $page_link.'/assets/data/div_activitycount_data.json';
-$outputs_url = $page_link.'/assets/data/div_activitycount_data.json';
-$hr_url = $page_link.'/assets/data/officestaff_data.json';
-$proj_activity_url = $page_link.'/assets/data/div_practivitycount_data.json';
+$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
+$url = $page_link . '/assets/data/final_data.json';
+$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
+$outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
+$hr_url = $page_link . '/assets/data/officestaff_data.json';
+$proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
 
 $processed_divisiondata = array();
 
@@ -602,6 +602,11 @@ $total_scatter_points_green = [];
 $total_overan_days = 0;
 $total_project_pctgtimetaken = 0;
 
+$overall_sp_array = [];
+$overall_sp_array['spnames'] = [];
+$overall_sp_array['spnumbers'] = [];
+$overall_sp_array['projectcount'] = [];
+
 foreach ($unique_divisions as $dkey => $dvalue) {
 //CALCULATE DIVISIONAL METRICS
 
@@ -1149,6 +1154,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         $d_sp_array['spnames'][] = ucwords($value['subprogramme']);
         $d_sp_array['spnumbers'][] = 'SP ' . $value['subprogramme_number'];
         $d_sp_array['projectcount'][] = $value['projects'];
+
+        $overall_sp_array['spnames'][] = ucwords($value['subprogramme']);
+        $overall_sp_array['spnumbers'][] = 'SP ' . $value['subprogramme_number'];
+        $overall_sp_array['projectcount'][] = $value['projects'];
 
         // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
     }
