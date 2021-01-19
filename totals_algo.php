@@ -447,11 +447,13 @@ foreach ($division_data as $key => $value) {
         $total_project_health += 0;
     }
 
-    if ($value->days_past_due > 0) {
-        $total_past_due_projects += 1;
-    } else {
-        if ($value->days_past_due > -174) {
-            $total_projects_expiringin6 += 1;
+    if (isset($value->days_past_due)) {
+        if ($value->days_past_due > 0) {
+            $total_past_due_projects += 1;
+        } else {
+            if ($value->days_past_due > -174) {
+                $total_projects_expiringin6 += 1;
+            }
         }
     }
 
@@ -692,6 +694,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     $d_short_projects = 0;
 
+    $d_past_projects = 0;
+
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
             if (!in_array($prvalue->managing_branch, $d_project_branch)) {
@@ -712,10 +716,16 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 $project_months_remaining = 'No Enddate';
             }
 
-            if ($project_days_remaining < 0) {
-                $d_overan_days += $project_days_remaining;
-                $total_overan_days += $project_days_remaining;
+            // if ($project_days_remaining < 0) {
+            //     $d_overan_days += $project_days_remaining;
+            //     $total_overan_days += $project_days_remaining;
 
+            // }
+
+            if (isset($prvalue->days_past_due) && $prvalue->days_past_due > 0) {
+                $d_past_projects += 1;
+                $d_overan_days += $prvalue->days_past_due;
+                $total_overan_days += $prvalue->days_past_due;
             }
 
             if (!$prvalue->final_rating) {
@@ -995,11 +1005,13 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 $d_amount_projects_budget_between0_1 += $value->consumable_budget;
             }
 
-            if ($value->days_past_due > 0) {
-                $d_past_due_projects += 1;
-            } else {
-                if ($value->days_past_due > -174) {
-                    $d_projects_expiringin6 += 1;
+            if (isset($value->days_past_due)) {
+                if ($value->days_past_due > 0) {
+                    $d_past_due_projects += 1;
+                } else {
+                    if ($value->days_past_due > -174) {
+                        $d_projects_expiringin6 += 1;
+                    }
                 }
             }
 
@@ -1048,10 +1060,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     if ($d_overan_days == 0) {
         $d_average_overan_days = 0;
-        $d_average_overan_months = 0;
+        $d_average_overan_monthsA = 0;
     } else {
-        $d_average_overan_days = round($d_overan_days / $d_projects);
-        $d_average_overan_months = ceil($d_average_overan_days / 30);
+        $d_average_overan_days = round($d_overan_days / $d_past_projects);
+        $d_average_overan_monthsA = ceil($d_average_overan_days / 30);
     }
 
     $G_d_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
@@ -1132,14 +1144,21 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     // display the division name its and number of projects
     //echo '<br />_____________' . $dvalue . ' Division/Office ______________<br /><br />';
+
+    // $d_average_overan_days = round($d_overan_days / $d_past_projects);
+    // $d_average_overan_months = ceil($d_average_overan_days / 30);
+
+    // echo $d_overan_days . ' overan days <br />';
+    // echo $d_past_projects . 'overan projects <br />';
+    // echo $d_average_overan_days . ' average days <br />';
+    // echo $d_average_overan_monthsA . ' average months';
+
     //var_dump($d_scatter_points);
 
     $officelist = array('Economy', 'Disasters and Conflicts', 'Law', 'Communication', 'Ecosystems', 'Science');
-    $divisionlist = array('Europe', 'Latin America', 'Asia Pacific', 'Africa',  'West Asia');
+    $divisionlist = array('Europe', 'Latin America', 'Asia Pacific', 'Africa', 'West Asia');
 
     $officeorder = in_array($dvalue, $officelist) ? 1 : 2;
-
-
 
     $overall_office_budget_distribution[] = [
         'office' => $dvalue,
@@ -1156,9 +1175,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
         'reporting_compliance' => $d_reporting_percentage,
         'expired_projects' => $d_past_due_projects,
-        'average_months_past_due' => $d_average_overan_months,
+        'average_months_past_due' => $d_average_overan_monthsA,
         'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
-        'officeorder' => $officeorder
+        'officeorder' => $officeorder,
     ];
 
     if (in_array($dvalue, $officelist)) {
@@ -1177,9 +1196,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
             'reporting_compliance' => $d_reporting_percentage,
             'expired_projects' => $d_past_due_projects,
-            'average_months_past_due' => $d_average_overan_months,
+            'average_months_past_due' => $d_average_overan_monthsA,
             'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
-            'officeorder' => $officeorder
+            'officeorder' => $officeorder,
         ];
     } else {
         $overall_office_budget_distribution_region[] = [
@@ -1197,12 +1216,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
             'reporting_compliance' => $d_reporting_percentage,
             'expired_projects' => $d_past_due_projects,
-            'average_months_past_due' => $d_average_overan_months,
+            'average_months_past_due' => $d_average_overan_monthsA,
             'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
-            'officeorder' => $officeorder
+            'officeorder' => $officeorder,
         ];
     }
-    
 
     //sort by budget
 
@@ -1554,7 +1572,7 @@ echo $b_reporting_percentage . '% projects reported<br />';
 
 //$o_unsorted_posts = $overall_post_status_distribution;
 // $d_post_status_distribution = [];
-
+//var_dump($overall_office_budget_distribution_office);
 foreach ($overall_post_status_distribution as $key => $value) {
     $position = intval(array_search($value['post'], $staff_order_array));
     $overall_post_status_distribution[$key]['order'] = $position;
@@ -1749,7 +1767,7 @@ $processed_divisiondata['Unep'] = array(
     , "projectsubprogramme" => $o_sp_array
     , "divisionlisting" => $overall_office_budget_distribution
     , "divisionlisting_office" => $overall_office_budget_distribution_office
-    , "divisionlisting_region" => $overall_office_budget_distribution_region
+    , "divisionlisting_region" => $overall_office_budget_distribution_region,
 
     /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled
