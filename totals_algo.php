@@ -115,6 +115,9 @@ $proj_data = getdataobjectfromurl($proj_activity_url);
 $staff_order_array = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'GS', 'INT-I', 'INT-II'];
 $staff_order_array_all = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'G-7', 'G-6', 'G-5', 'G-4', 'G-3', 'G-2', 'G-1', 'NO-A', 'NO-B', 'NO-C', 'NO-D', 'INT-I', 'INT-II'];
 
+$divisionlist = array('Economy', 'Disasters and Conflicts', 'Law', 'Communication', 'Ecosystems', 'Science');
+$officelist = array('Europe', 'Latin America', 'Asia Pacific', 'Africa', 'West Asia');
+
 // CALCULATE THE TOTAL METRICS
 $total_projects = 0;
 $total_consumable_budget = 0;
@@ -605,6 +608,8 @@ $total_scatter_points_red = [];
 $total_scatter_points_yellow = [];
 $total_scatter_points_green = [];
 $total_overan_days = 0;
+$total_overan_months = 0;
+
 $total_project_pctgtimetaken = 0;
 
 $overall_sp_array = [];
@@ -615,6 +620,14 @@ $overall_sp_array['projectcount'] = [];
 $o_staff_information = [];
 
 $o_subprogramme_projects_distribution = [];
+
+$t_past_projects = 0;
+
+$divisional_overan_days = 0;
+$divisional_past_projects = 0;
+
+$regional_overan_days = 0;
+$regional_past_projects = 0;
 
 foreach ($unique_divisions as $dkey => $dvalue) {
 //CALCULATE DIVISIONAL METRICS
@@ -724,8 +737,18 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
             if (isset($prvalue->days_past_due) && $prvalue->days_past_due > 0) {
                 $d_past_projects += 1;
+                $t_past_projects += 1;
+
                 $d_overan_days += $prvalue->days_past_due;
                 $total_overan_days += $prvalue->days_past_due;
+
+                if (in_array($dvalue, $officelist)) {
+                    $regional_overan_days += $prvalue->days_past_due;
+                    $regional_past_projects += 1;
+                } else {
+                    $divisional_overan_days += $prvalue->days_past_due;
+                    $divisional_past_projects += 1;
+                }
             }
 
             if (!$prvalue->final_rating) {
@@ -1064,6 +1087,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     } else {
         $d_average_overan_days = round($d_overan_days / $d_past_projects);
         $d_average_overan_monthsA = ceil($d_average_overan_days / 30);
+        $total_overan_months += $d_average_overan_monthsA;
     }
 
     $G_d_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
@@ -1155,10 +1179,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
     //var_dump($d_scatter_points);
 
-    $officelist = array('Economy', 'Disasters and Conflicts', 'Law', 'Communication', 'Ecosystems', 'Science');
-    $divisionlist = array('Europe', 'Latin America', 'Asia Pacific', 'Africa', 'West Asia');
-
-    $officeorder = in_array($dvalue, $officelist) ? 1 : 2;
+    $divisionorder = in_array($dvalue, $divisionlist) ? 1 : 2;
 
     $overall_office_budget_distribution[] = [
         'office' => $dvalue,
@@ -1174,13 +1195,14 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         'green_projects' => $d_green_projects,
         'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
         'reporting_compliance' => $d_reporting_percentage,
+        'total_days_past_due' => $d_overan_days,
         'expired_projects' => $d_past_due_projects,
         'average_months_past_due' => $d_average_overan_monthsA,
         'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
-        'officeorder' => $officeorder,
+        'officeorder' => $divisionorder,
     ];
 
-    if (in_array($dvalue, $officelist)) {
+    if (in_array($dvalue, $divisionlist)) {
         $overall_office_budget_distribution_office[] = [
             'office' => $dvalue,
             'consumable' => $d_consumable_budget,
@@ -1195,10 +1217,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'green_projects' => $d_green_projects,
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
             'reporting_compliance' => $d_reporting_percentage,
+            'total_days_past_due' => $d_overan_days,
             'expired_projects' => $d_past_due_projects,
             'average_months_past_due' => $d_average_overan_monthsA,
             'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
-            'officeorder' => $officeorder,
+            'officeorder' => $divisionorder,
         ];
     } else {
         $overall_office_budget_distribution_region[] = [
@@ -1215,10 +1238,11 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'green_projects' => $d_green_projects,
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
             'reporting_compliance' => $d_reporting_percentage,
+            'total_days_past_due' => $d_overan_days,
             'expired_projects' => $d_past_due_projects,
             'average_months_past_due' => $d_average_overan_monthsA,
             'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
-            'officeorder' => $officeorder,
+            'officeorder' => $divisionorder,
         ];
     }
 
@@ -1680,13 +1704,36 @@ echo $total_reporting_percentage . '% projects reported<br />';
 
 //array_push($processed_divisiondata, ['unep'] =>
 
+// $d_past_projects += 1;
+// $t_past_projects += 1;
+
+// $d_overan_days += $prvalue->days_past_due;
+// $total_overan_days += $prvalue->days_past_due;
+
 if ($total_overan_days == 0) {
     $average_overan_days = 0;
     $average_overan_months = 0;
 } else {
-    $average_overan_days = round($total_overan_days / $total_projects);
+    $average_overan_days = round($total_overan_days / $t_past_projects);
     $average_overan_months = ceil($d_average_overan_days / 30);
 }
+
+$regional_average_overan_days = round($regional_overan_days / $regional_past_projects);
+$regional_average_overan_months = ceil($regional_average_overan_days / 30);
+
+$divisional_average_overan_days = round($divisional_overan_days / $divisional_past_projects);
+$divisional_average_overan_months = ceil($divisional_average_overan_days / 30);
+
+// echo $regional_overan_days . '-' . $regional_past_projects . 'regional <br />';
+
+// echo $divisional_overan_days . '-' . $divisional_past_projects . ' divisional <br />';
+
+// echo $total_overan_days . ' total overan days <br />';
+// echo $t_past_projects . ' total past projects <br />';
+
+// echo $regional_average_overan_months . ' regional avg overan months<br/>';
+// echo $divisional_average_overan_months . ' divisional avg overan months<br/>';
+
 $avg_project_pctgtimetaken_a = round($total_project_pctgtimetaken / $total_projects, 2) * 100;
 
 $overall_percentage_completed_activitiesA = round($total_avg_activities_completed / $total_projects, 2) * 100;
@@ -1738,7 +1785,7 @@ usort($overall_office_budget_distribution_region, 'sortByConsumable');
 //         unset($overall_post_status_distribution[$key]);
 //     }
 // }
-
+$avg_months_past_due = round($total_overan_days / $t_past_projects) / 30;
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
     , "totalprojects" => $total_projects
@@ -1748,7 +1795,8 @@ $processed_divisiondata['Unep'] = array(
     , "healthrating" => $overall_average_project_health
     , "consumablebudget" => $total_consumable_budget
     , "pastdueprojects" => $total_past_due_projects
-    , "avgmonthspastdue" => $average_overan_months
+    //, "avgmonthspastdue" => $average_overan_months
+    , "avgmonthspastdue" => $avg_months_past_due
     , "in6monthexpiry" => $total_projects_expiringin6
     , "reportedprojectspct" => $total_reporting_percentage
     , "scatterpoints" => ["red" => $total_scatter_points_red, "yellow" => $total_scatter_points_yellow, "green" => $total_scatter_points_green]
