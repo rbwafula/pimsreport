@@ -1797,6 +1797,8 @@ $processed_divisiondata['Unep'] = array(
     , "pastdueprojects" => $total_past_due_projects
     //, "avgmonthspastdue" => $average_overan_months
     , "avgmonthspastdue" => $avg_months_past_due
+    , "avgmonthspastdue_region" => $regional_average_overan_months
+    , "avgmonthspastdue_division" => $divisional_average_overan_months
     , "in6monthexpiry" => $total_projects_expiringin6
     , "reportedprojectspct" => $total_reporting_percentage
     , "scatterpoints" => ["red" => $total_scatter_points_red, "yellow" => $total_scatter_points_yellow, "green" => $total_scatter_points_green]
