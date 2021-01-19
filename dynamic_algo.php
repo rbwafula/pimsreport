@@ -9,13 +9,12 @@ $hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/offic
 
 $proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
 
-$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
-$url = $page_link.'/assets/data/final_data.json';
-$activities_url = $page_link.'/assets/data/div_activitycount_data.json';
-$outputs_url = $page_link.'/assets/data/div_activitycount_data.json';
-$hr_url = $page_link.'/assets/data/officestaff_data.json';
-$proj_activity_url = $page_link.'/assets/data/div_practivitycount_data.json';
-
+$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
+$url = $page_link . '/assets/data/final_data.json';
+$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
+$outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
+$hr_url = $page_link . '/assets/data/officestaff_data.json';
+$proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
 
 $processed_divisiondata = array();
 
@@ -690,7 +689,13 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             }
 
             if ($project_days_remaining < 0) {
-                $d_overan_days += $project_days_remaining;
+
+            }
+
+            if (isset($prvalue->days_past_due) && $prvalue->days_past_due > 0) {
+                $d_overan_days += $prvalue->days_past_due;
+                $d_past_due_projects += 1;
+
             }
 
             if (!$prvalue->final_rating) {
@@ -952,7 +957,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             }
 
             if ($value->days_past_due > 0) {
-                $d_past_due_projects += 1;
+                //$d_past_due_projects += 1;
             } else {
                 if ($value->days_past_due > -174) {
                     $d_projects_expiringin6 += 1;
@@ -1006,7 +1011,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         $d_average_overan_days = 0;
         $d_average_overan_months = 0;
     } else {
-        $d_average_overan_days = round($d_overan_days / $d_projects);
+        $d_average_overan_days = round($d_overan_days / $d_past_due_projects);
         $d_average_overan_months = ceil($d_average_overan_days / 30);
     }
 
