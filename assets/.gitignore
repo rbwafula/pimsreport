@@ -3,6 +3,7 @@
 *files/
 .DS_Store
 files/
+docs/
 test*
 *_bk.php
 *.log

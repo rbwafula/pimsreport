@@ -266,6 +266,10 @@ body {
 .hidden {
 	display: none !important;
 }
+.dropdown-item {
+    font-size: 12px;
+    padding: 5px 15px;
+}
 @page { 
 	size: auto;  
 	margin: 0mm; 

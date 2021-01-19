@@ -1,10 +1,9 @@
 <?php
 $month = Date("M") . ' ' . Date("Y");
 $office = array('Europe', 'Economy', 'Disasters and Conflicts', 'Latin America', 'Asia Pacific', 'Law', 'Communication', 'Ecosystems', 'Science', 'Africa', 'West Asia');
-$division = $office[10];
-if (isset($_GET['office'])) {
-    $division = $office[$_GET['office']];
-}
+
+$officeid = (isset($_GET['office'])) ? $_GET['office'] : 10;
+$division = $office[$officeid];
 include_once 'dynamic_algo.php';
 ?>
 <!DOCTYPE html>
@@ -47,20 +46,37 @@ include_once 'dynamic_algo.php';
     <div id="to_export">
 
     <div class="container-fluid printlandscape">
-        <div class="row noprint hidden" data-html2canvas-ignore="true">
+        <div class="row noprint" data-html2canvas-ignore="true">
             <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Division Dashboard</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
-                        <div class="btn-group mr-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="javascript:void(0);">Share</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print();return false;">Export to PDF</button>
-                            <!-- TRIGGER FOR THE HTML TO PDF FUNCTION -->
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="jsp();"> PDF</button>
+                        <div class="dropdown mr-2">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select Office
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="unep.php">UNEP Consolidated</a>
+                                <div class="dropdown-divider"></div>
+                                <?php
+
+                                for ($i=0; $i < count($office); $i++) {
+                                    if ($i == $officeid) {
+                                        echo '<a class="dropdown-item active" href="landscape.php?office='.$i.'">'.$office[$i].'</a>';
+                                    } else {
+                                        echo '<a class="dropdown-item" href="landscape.php?office='.$i.'">'.$office[$i].'</a>';
+                                    }
+                                }
+                                ?>
+                            </div>
                         </div>
-                        <!--<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                            <span data-feather="calendar"></span> This week
-                        </button>-->
+                        <div class="btn-group">
+                            <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="javascript:void(0);">Share</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print();return false;">Export to PDF</button>-->
+                            <!-- TRIGGER FOR THE HTML TO PDF FUNCTION -->
+                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="printdivision.php?office=<?php echo $officeid; ?>">Print PDF</a>
+                            <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="jsp();"> PDF</button>-->
+                        </div>
                     </div>
                 </div>
             </main>
