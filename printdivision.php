@@ -6,7 +6,6 @@ if (isset($_GET['office'])) {
     $division = $office[$_GET['office']];
 }
 include_once 'dynamic_algo.php';
-
 $filename = 'pimsreport - '.$division.'.pdf';
 
 $header = '<!DOCTYPE html>
@@ -235,4 +234,5 @@ $mpdf->Bookmark('Annex 3: Filled Positions');
 $mpdf->WriteHTML($annex3);
 $mpdf->WriteHTML($footer);
 $mpdf->Output('docs/'.$filename, 'F');
+echo 'Done!';
 ?>
