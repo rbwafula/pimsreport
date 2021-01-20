@@ -803,7 +803,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
     $pctbudgetutilized = ($sp_consumed_budget * 100 / $sp_consumable_budget);
 
     $processed_spdata[$spvalue] = array(
-        "sub_programme" => $spvalue,
+        "entity" => $spvalue,
         "totalprojects" => $sp_projects,
         "totalactivities" => $sp_activities,
         "totaloutputs" => $sp_outputs,
@@ -841,10 +841,13 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         "grantfundingcountbygroup" => array($sp_count_projects_budget_between0_1, $sp_count_projects_budget_between1_2, $sp_count_projects_budget_between2_5, $sp_count_projects_budget_between5_10, $sp_count_projects_budget_more10),
         "projectlisting" => $sp_project_information,
         // "stafflisting" => $sp_staff_information,
-        "projectsubprogramme" => $sp_sp_array,
+        "projectsubprogramme" => $sp_division_projects,
         "scatterpoints" => ["red" => $sp_scatter_points_red, "yellow" => $sp_scatter_points_yellow, "green" => $sp_scatter_points_green],
     );
 
+    echo '<pre>';
+    var_dump($sp_division_projects);
+    echo '</pre>';
     ?>
 
 	<?php
@@ -854,7 +857,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
 }
 
 // var_dump($processed_spdata);
-
+/*
 foreach ($processed_spdata as $sp) {
     echo $sp["sub_programme"] . ' - ' . $sp["totalprojects"] . ' projects <br />';
     // foreach ($sp["divisional_projects"] as $dprojects) {
@@ -862,4 +865,4 @@ foreach ($processed_spdata as $sp) {
     // }
 
     echo '--------------------------------------------------------------<br />';
-}
+}*/
