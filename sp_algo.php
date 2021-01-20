@@ -80,7 +80,8 @@ function filter_unique($array, $key)
 
 $page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
 $url = $page_link . '/assets/data/final_data.json';
-$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
+//$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
+$activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';
 $outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
 $hr_url = $page_link . '/assets/data/officestaff_data.json';
 $proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
@@ -577,6 +578,14 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         }
     }
 
+    foreach ($activities_data as $key => $value) {
+        if (strtolower($value->subprogramme) == $spvalue) {
+            $sp_activities += $value->total_activities;
+            $sp_completed_activities += $value->completed_activities;
+            $sp_outputs += $value->total_outputs;
+        }
+    }
+
     foreach ($sp_division_projects as $key => $spp) {
         if ($spp['projects'] < 1) {
             unset($sp_division_projects[$key]);
@@ -807,6 +816,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         "sub_programme" => $spvalue,
         "totalprojects" => $sp_projects,
         "totalactivities" => $sp_activities,
+        "completedactivities" => $sp_completed_activities,
         "totaloutputs" => $sp_outputs,
         "divisional_projects" => $sp_div_array,
         "healthcolor" => gethealthcolor($sp_average_project_health),
