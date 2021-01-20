@@ -457,7 +457,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
     $sp_division_projects_distribution = [];
 
     foreach ($division_data as $prkey => $prvalue) {
-        if ($prvalue->subprogramme == $spvalue) {
+        if (strtolower($prvalue->subprogramme) == $spvalue) {
             if (!in_array($prvalue->managing_branch, $sp_project_branch)) {
                 $sp_project_branch[] = $prvalue->managing_branch;
             }
@@ -496,15 +496,15 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
             $p_completed_activities = 0;
             $p_activities = 0;
 
-            foreach ($proj_data as $pakey => $pavalue) {
-                if ($pavalue->projectID == $prvalue->project_id) {
-                    $p_outputs = $pavalue->total_outputs;
-                    $p_completed_activities = $pavalue->completed_activities;
+            // foreach ($proj_data as $pakey => $pavalue) {
+            //     if ($pavalue->projectID == $prvalue->project_id) {
+            //         $p_outputs = $pavalue->total_outputs;
+            //         $p_completed_activities = $pavalue->completed_activities;
 
-                    $p_activities = $pavalue->total_activities;
+            //         $p_activities = $pavalue->total_activities;
 
-                }
-            }
+            //     }
+            // }
 
             if (!$prvalue->final_rating) {
                 $project_rating = 'N/A';
@@ -516,6 +516,8 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
             }
             //feed into scatter points -> consumable budget, rating
             $sp_scatter_points[] = [intval($prvalue->consumable_budget), $fr];
+
+            // echo $fr;
 
             if ($fr >= 2.5) {
                 //green
@@ -785,29 +787,28 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
     // foreach ($sp_project_information as $key => $value) {
     //     echo $value['project_id'] . ' - ' . $value['final_rating'] . ' - ' . $value['project_rank'] . '<br />';
     // }
-
-    $sp_sp_array = [];
-    $sp_sp_array['spnames'] = [];
-    $sp_sp_array['spnumbers'] = [];
-    $sp_sp_array['projectcount'] = [];
+    $sp_div_projects_distribution = [];
+    $sp_div_array = [];
+    $sp_div_array['division_names'] = [];
+    $sp_div_array['division_projectcounts'] = [];
 
     //CHANGE TO DIVISION
-    // foreach ($sp_subprogramme_projects_distribution as $key => $value) {
-    //     $sp_sp_array['spnames'][] = ucwords($value['subprogramme']);
-    //     $sp_sp_array['spnumbers'][] = 'SP ' . $value['subprogramme_number'];
-    //     $sp_sp_array['projectcount'][] = $value['projects'];
+    foreach ($sp_division_projects as $key => $value) {
+        $sp_div_array['division_names'][] = ucwords($value['division']);
+        $sp_div_array['division_projectcounts'][] = $value['projects'];
 
-    //     // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
-    // }
+        // echo $value['order'] . ' ' . $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
+    }
 
     $pctbudgetutilized = ($sp_consumed_budget * 100 / $sp_consumable_budget);
-
+    // var_dump($sp_division_projects);
+    // echo 'sp proj<br />';
     $processed_spdata[$spvalue] = array(
         "sub_programme" => $spvalue,
         "totalprojects" => $sp_projects,
         "totalactivities" => $sp_activities,
         "totaloutputs" => $sp_outputs,
-        "divisional_projects" => $sp_division_projects,
+        "divisional_projects" => $sp_div_array,
         "healthcolor" => gethealthcolor($sp_average_project_health),
         "healthrating" => $sp_average_project_health,
         "consumablebudget" => $sp_consumable_budget,
@@ -841,7 +842,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         "grantfundingcountbygroup" => array($sp_count_projects_budget_between0_1, $sp_count_projects_budget_between1_2, $sp_count_projects_budget_between2_5, $sp_count_projects_budget_between5_10, $sp_count_projects_budget_more10),
         "projectlisting" => $sp_project_information,
         // "stafflisting" => $sp_staff_information,
-        "projectsubprogramme" => $sp_sp_array,
+        // "projectsubprogramme" => $sp_sp_array,
         "scatterpoints" => ["red" => $sp_scatter_points_red, "yellow" => $sp_scatter_points_yellow, "green" => $sp_scatter_points_green],
     );
 
@@ -856,10 +857,12 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
 // var_dump($processed_spdata);
 
 foreach ($processed_spdata as $sp) {
-    echo $sp["sub_programme"] . ' - ' . $sp["totalprojects"] . ' projects <br />';
+    echo $sp["sub_programme"] . ' - ' . $sp["totalprojects"] . ' projects' . ' - ' . $sp["totalactivities"] . ' activities <br />';
     // foreach ($sp["divisional_projects"] as $dprojects) {
     //     echo $dprojects['division'] . " - " . $dprojects['projects'] . "<br />";
     // }
+
+    var_dump($sp["divisional_projects"]);
 
     echo '--------------------------------------------------------------<br />';
 }
