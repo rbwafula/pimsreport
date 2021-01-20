@@ -1199,10 +1199,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "projectsubprogramme" => $d_sp_array,
         "scatterpoints" => ["red" => $d_scatter_points_red, "yellow" => $d_scatter_points_yellow, "green" => $d_scatter_points_green],
     );
-
-    echo '<pre>';
-    var_dump($d_sp_array);
-    echo '</pre>';
     ?>
 
 	<?php
