@@ -270,6 +270,26 @@ body {
     font-size: 12px;
     padding: 5px 15px;
 }
+
+table thead th,
+table tbody tr.summarytotal td {
+	background-color:  #0077b6;
+	border: 0px !important;
+	color: #fff;
+	/*font-size: 12px;*/
+}
+table.table-striped tbody tr:nth-of-type(2n+1) td {
+    background-color: rgba(0,0,0,.05);
+}
+
+table tbody tr.summary td {
+	background-color: rgba(0,0,0,.05) !important;
+	color: #000;
+	/*font-size: 10px;*/
+	font-weight: bold;
+}
+
+
 @page { 
 	size: auto;  
 	margin: 0mm; 
