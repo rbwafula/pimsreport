@@ -213,7 +213,7 @@ foreach ($division_data as $key => $value) {
 
 sort($unique_divisions);
 
-var_dump($unique_divisions);
+// var_dump($unique_divisions);
 
 //var_dump($unique_subprogrammes);
 $unique_post_groups = [];
@@ -621,7 +621,9 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
                 //red
                 $sp_scatter_points_red[] = [$fr, intval($prvalue->consumable_budget)];
             }
+            // var_dump($unique_divisions);
 
+            $sporder = array_search(strtolower($prvalue->managing_division), $unique_divisions) + 1;
             $sp_project_information[] = [
                 'project_id' => $prvalue->project_id,
                 'project_title' => $prvalue->project_title,
@@ -641,10 +643,12 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
                 'total_activities' => $p_activities,
                 'days_remaining' => $project_days_remaining,
                 'months_remaining' => $project_months_remaining,
-                'order' => array_search($prvalue->managing_division, $unique_divisions),
+                'order' => $sporder,
             ];
         }
     }
+    usort($sp_project_information, 'sortByOrder');
+
     // var_dump($sp_project_division);
     //DIVISIONAL STAFF INFORMATION
     $sp_staff_information = [];
@@ -673,8 +677,9 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         }
     }
 
-    usort($sp_project_information, 'sortByOrder');
     usort($sp_staff_information, 'sortByOrder');
+
+    var_dump($sp_project_information);
 
     $sp_post_status_distribution = [];
 
