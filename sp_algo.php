@@ -537,6 +537,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
                 'subprogramme' => $prvalue->subprogramme,
                 'sp_number' => $prvalue->sp_number,
                 'branch' => $prvalue->managing_branch,
+                'division' => $prvalue->managing_division,
                 'budget' => $prvalue->consumable_budget,
                 'system_rating' => $prvalue->system_rating,
                 'management_rating' => $prvalue->manager_rating,
@@ -841,7 +842,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         "grantfundingbygroup" => array($sp_amount_projects_budget_between0_1, $sp_amount_projects_budget_between1_2, $sp_amount_projects_budget_between2_5, $sp_amount_projects_budget_between5_10, $sp_amount_projects_budget_more10),
         "grantfundingcountbygroup" => array($sp_count_projects_budget_between0_1, $sp_count_projects_budget_between1_2, $sp_count_projects_budget_between2_5, $sp_count_projects_budget_between5_10, $sp_count_projects_budget_more10),
         "projectlisting" => $sp_project_information,
-        // "stafflisting" => $sp_staff_information,
+        "stafflisting" => array(),//$sp_staff_information,
         "projectsubprogramme" => $sp_div_array,
         "scatterpoints" => ["red" => $sp_scatter_points_red, "yellow" => $sp_scatter_points_yellow, "green" => $sp_scatter_points_green],
     );

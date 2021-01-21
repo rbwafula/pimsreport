@@ -73,7 +73,7 @@ include_once 'dynamic_algo.php';
                             <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="javascript:void(0);">Share</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print();return false;">Export to PDF</button>-->
                             <!-- TRIGGER FOR THE HTML TO PDF FUNCTION -->
-                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="printdivision.php?office=<?php echo $officeid; ?>">Print PDF</a>
+                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="table.php?office=<?php echo $officeid; ?>">Print PDF</a>
                             <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="jsp();"> PDF</button>-->
                         </div>
                     </div>
