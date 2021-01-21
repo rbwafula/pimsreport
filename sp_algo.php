@@ -638,11 +638,11 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
                 'total_activities' => $p_activities,
                 'days_remaining' => $project_days_remaining,
                 'months_remaining' => $project_months_remaining,
-                'order' => array_search($prvalue->managing_division, $sp_project_division) + array_search($prvalue->managing_branch, $sp_project_branch),
+                'order' => array_search($prvalue->managing_division, $sp_project_division),
             ];
         }
     }
-
+    var_dump($sp_project_division);
     //DIVISIONAL STAFF INFORMATION
     $sp_staff_information = [];
     foreach ($hr_data as $hkey => $hvalue) {
