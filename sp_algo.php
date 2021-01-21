@@ -532,6 +532,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
     //DIVISION PROJECT INFORMATION
     $sp_project_information = [];
     $sp_project_branch = [''];
+    $sp_project_division = [''];
     $sp_scatter_points = [];
     $sp_scatter_points_red = [];
     $sp_scatter_points_yellow = [];
@@ -541,9 +542,13 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
 
     foreach ($division_data as $prkey => $prvalue) {
         if (strtolower($prvalue->subprogramme) == $spvalue) {
+            if (!in_array($prvalue->managing_division, $sp_project_division)) {
+                $sp_project_division[] = $prvalue->managing_division;
+            }
             if (!in_array($prvalue->managing_branch, $sp_project_branch)) {
                 $sp_project_branch[] = $prvalue->managing_branch;
             }
+
             $endDater = strtotime($prvalue->EndDate);
             $startDater = time();
             $datediffr = $endDater - $startDater;
@@ -632,7 +637,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
                 'total_activities' => $p_activities,
                 'days_remaining' => $project_days_remaining,
                 'months_remaining' => $project_months_remaining,
-                'order' => array_search($prvalue->managing_branch, $sp_project_branch),
+                'order' => array_search($prvalue->managing_division, $sp_project_division) + array_search($prvalue->managing_branch, $sp_project_branch),
             ];
         }
     }
@@ -1050,7 +1055,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         "grantfundingbygroup" => array($sp_amount_projects_budget_between0_1, $sp_amount_projects_budget_between1_2, $sp_amount_projects_budget_between2_5, $sp_amount_projects_budget_between5_10, $sp_amount_projects_budget_more10),
         "grantfundingcountbygroup" => array($sp_count_projects_budget_between0_1, $sp_count_projects_budget_between1_2, $sp_count_projects_budget_between2_5, $sp_count_projects_budget_between5_10, $sp_count_projects_budget_more10),
         "projectlisting" => $sp_project_information,
-        // "stafflisting" => $sp_staff_information,
+        "stafflisting" => $sp_staff_information,
         // "projectsubprogramme" => $sp_sp_array,
         "scatterpoints" => ["red" => $sp_scatter_points_red, "yellow" => $sp_scatter_points_yellow, "green" => $sp_scatter_points_green],
     );
@@ -1072,7 +1077,7 @@ foreach ($processed_spdata as $sp) {
     //     echo $dprojects['division'] . " - " . $dprojects['projects'] . "<br />";
     // }
 
-    var_dump($sp["hrpostscategories"]);
+    // var_dump($sp["stafflisting"]);
 
     echo '--------------------------------------------------------------<br />';
 }
