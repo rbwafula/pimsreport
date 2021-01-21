@@ -80,9 +80,10 @@ function filter_unique($array, $key)
 
 $page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
 $url = $page_link . '/assets/data/final_data.json';
-$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
+//$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
+$activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';
 $outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
-$hr_url = $page_link . '/assets/data/officestaff_data.json';
+$hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/officestaff_data';
 $proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
 
 // GET PROJECTS DATA
@@ -96,6 +97,14 @@ $outputs_data = getdataobjectfromurl($outputs_url);
 
 //GET HR DATA
 $hr_data_uf = getdataobjectfromurl($hr_url);
+$hr_data = [];
+$unique_posids = [];
+foreach ($hr_data_uf as $h) {
+    if (!in_array($h->pos_id, $unique_posids)) {
+        $hr_data[] = $h;
+        $unique_posids[] = $h->pos_id;
+    }
+}
 
 //INITIALIZE VALUES
 // STAFF ORDER BY SENIORITY FOR REFERENCE
@@ -204,9 +213,83 @@ foreach ($division_data as $key => $value) {
 rsort($unique_final_ratings);
 
 //var_dump($unique_subprogrammes);
-
+$unique_post_groups = [];
 //inserted start
 //USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
+foreach ($hr_data as $key => $value) {
+
+    if (!in_array($value->pos_ps_group, $unique_post_groups)) {
+
+        if ($value->gender == 'male') {
+
+        } else {
+
+        }
+
+        if ($value->pers_no > 0) {
+            if ($value->gender == 'Male') {
+                $male = 1;
+                $female = 0;
+            } elseif ($value->gender == 'Female') {
+                $male = 0;
+                $female = 1;
+            }
+
+            $unique_posts_data[] = ["post" => $value->pos_ps_group, "vacant" => 0, "filled" => 1, "filled_male" => $male, "filled_female" => $female, "sps_post_vacant" => [], "sps_post_filled" => [$value->subprogramme]];
+            $total_filled_posts += 1;
+            $overall_filled_posts[array_search($value->pos_ps_group, $staff_order_array)] = $value->pos_ps_group;
+
+        } else {
+            $unique_posts_data[] = ["post" => $value->pos_ps_group, "vacant" => 1, "filled" => 0, "filled_male" => 0, "filled_female" => 0, "sps_post_vacant" => [$value->subprogramme], "sps_post_filled" => []];
+            $total_vacant_posts += 1;
+            $overall_vacant_posts[array_search($value->pos_ps_group, $staff_order_array)] = $value->pos_ps_group;
+
+        }
+
+        $unique_post_groups[] = $value->pos_ps_group;
+    } else {
+        foreach ($unique_posts_data as $pkey => $pvalue) {
+            if ($value->pos_ps_group == $pvalue['post']) {
+                if ($value->pers_no > 0) {
+                    if ($value->gender == 'Male') {
+                        $unique_posts_data[$pkey]['filled_male'] += 1;
+
+                    } elseif ($value->gender == 'Female') {
+                        $unique_posts_data[$pkey]['filled_female'] += 1;
+                    }
+
+                    $unique_posts_data[$pkey]['filled'] += 1;
+                    $unique_posts_data[$pkey]['sps_post_filled'][] = $value->subprogramme;
+                    $total_filled_posts += 1;
+                    $overall_filled_posts[] = $value->pos_ps_group;
+
+                } else {
+                    $unique_posts_data[$pkey]['vacant'] += 1;
+                    $unique_posts_data[$pkey]['sps_post_vacant'][] = $value->subprogramme;
+                    $total_vacant_posts += 1;
+                    $overall_vacant_posts[] = $value->pos_ps_group;
+
+                }
+            }
+        }
+    }
+    $total_posts += 1;
+
+}
+
+// var_dump($unique_posts_data);
+
+foreach ($hr_data as $key => $value) {
+    if ($value->pers_no > 0) {
+        $overall_filled_posts[] = $value;
+        $total_filled_posts += 1;
+
+    } else {
+        $overall_vacant_posts[] = $value;
+        $total_vacant_posts += 1;
+    }
+    // $total_posts += 1;
+}
 
 $overall_post_status_distribution = [];
 
@@ -225,11 +308,11 @@ foreach ($unique_posts_data as $pkey => $pvalue) {
         $t_filled_male = 0;
         $t_filled_female = 0;
 
-        foreach ($pvalue['offices_post_filled'] as $okey => $ovalue) {
+        foreach ($pvalue['sps_post_filled'] as $okey => $ovalue) {
             $t_filled_count += 1;
         }
 
-        foreach ($pvalue['offices_post_vacant'] as $okey => $ovalue) {
+        foreach ($pvalue['sps_post_vacant'] as $okey => $ovalue) {
             $t_vacant_count += 1;
         }
         $t_filled_male += $pvalue['filled_male'];
@@ -555,6 +638,90 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         }
     }
 
+    //DIVISIONAL STAFF INFORMATION
+    $sp_staff_information = [];
+    foreach ($hr_data as $hkey => $hvalue) {
+        if (strtolower($hvalue->subprogramme) == $spvalue) {
+            if ($hvalue->pers_no > 0) {
+                $p_status = 'FILLED';
+            } else {
+                $p_status = 'VACANT';
+            }
+            $sp_staff_information[] = [
+                'grade' => $hvalue->pos_ps_group,
+                'position_title' => $hvalue->pos_title,
+                'position_number' => $hvalue->pos_id,
+                'duty_station' => $hvalue->duty_station,
+                'position_status' => $p_status,
+                'staff_name' => $hvalue->first_name . ' ' . $hvalue->last_name,
+                'fund_key' => $hvalue->fund_key,
+                'fund_description' => $hvalue->fund_description,
+                'category' => $hvalue->category,
+                'org_code' => $hvalue->org_unit,
+                'org_unit_description' => $hvalue->org_unit_desc,
+                'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
+
+            ];
+        }
+    }
+
+    usort($sp_staff_information, 'sortByOrder');
+
+    $sp_post_status_distribution = [];
+
+    foreach ($unique_posts_data as $pkey => $pvalue) {
+
+        if ($pvalue['post'] !== '') {
+            $sp_filled_count = 0;
+            $sp_vacant_count = 0;
+            $sp_filled_male = 0;
+            $sp_filled_female = 0;
+
+            foreach ($pvalue['sps_post_filled'] as $okey => $ovalue) {
+
+                if (strtolower($ovalue) == $spvalue) {
+                    $sp_filled_count += 1;
+
+                }
+
+            }
+
+            foreach ($pvalue['sps_post_vacant'] as $okey => $ovalue) {
+                if (strtolower($ovalue) == $spvalue) {
+                    $sp_vacant_count += 1;
+                }
+
+            }
+
+            foreach ($hr_data as $hkey => $hvalue) {
+                # code...
+                if (strtolower($hvalue->subprogramme) == $spvalue && $hvalue->pos_ps_group == $pvalue['post']) {
+                    if ($hvalue->pers_no > 0) {
+                        if ($hvalue->gender == 'Male') {
+                            $sp_filled_male += 1;
+                        } elseif ($hvalue->gender == 'Female') {
+
+                            $sp_filled_female += 1;
+
+                        }
+                    } else {
+
+                    }
+                }
+            }
+
+            $sp_post_status_distribution[] = ["post" => $pvalue['post'], "filled" => $sp_filled_count, "filled_male" => $sp_filled_male, "filled_female" => $sp_filled_female, "vacant" => $sp_vacant_count];
+
+            $sp_filled_posts += $sp_filled_count;
+            $sp_vacant_posts += $sp_vacant_count;
+
+            $sp_filled_male_count += $sp_filled_male;
+            $sp_filled_female_count += $sp_filled_female;
+
+            $sp_posts += $sp_filled_count + $sp_vacant_count;
+        }
+    }
+
     $sp_division_projects = [];
     foreach ($unique_divisions as $div) {
         foreach ($unique_subprogramme_data as $skey => $svalue) {
@@ -575,6 +742,14 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
             //     var_dump($unique_subprogramme_data[$skey]["divisions"]);
             //     echo '<br />';
             // }
+        }
+    }
+
+    foreach ($activities_data as $key => $value) {
+        if (strtolower($value->subprogramme) == $spvalue) {
+            $sp_activities += $value->total_activities;
+            $sp_completed_activities += $value->completed_activities;
+            $sp_outputs += $value->total_outputs;
         }
     }
 
@@ -746,12 +921,27 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         $sp_average_overan_months = ceil($sp_average_overan_days / 30);
     }
 
-    $G_d_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
+    $G_sp_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
 
-    $sp_post_status_distribution[] = $G_d_staff_distribution;
+    foreach ($sp_post_status_distribution as $key => $value) {
+        if ($value['filled'] == 0 && $value['vacant'] == 0) {
+            unset($sp_post_status_distribution[$key]);
+        }
+
+        $firstCharacter = $value['post'][0];
+        if ($firstCharacter == 'G' || $firstCharacter == 'N') {
+            $G_sp_staff_distribution['filled'] += $value['filled'];
+            $G_sp_staff_distribution['filled_male'] += $value['filled_male'];
+            $G_sp_staff_distribution['filled_female'] += $value['filled_female'];
+            $G_sp_staff_distribution['vacant'] += $value['vacant'];
+            unset($sp_post_status_distribution[$key]);
+        }
+    }
+
+    $sp_post_status_distribution[] = $G_sp_staff_distribution;
 
     $unsorted_posts = $sp_post_status_distribution;
-    // $sp_post_status_distribution = [];
+// $sp_post_status_distribution = [];
 
     foreach ($sp_post_status_distribution as $key => $value) {
         $position = intval(array_search($value['post'], $staff_order_array));
@@ -778,6 +968,24 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
     // foreach ($sp_subprogramme_projects_distribution as $key => $value) {
     //     echo $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
     // }
+
+    foreach ($sp_post_status_distribution as $key => $value) {
+        array_push($sp_post_categories, $value['post']);
+        array_push($sp_post_filled, $value['filled']);
+        if ($value['filled'] != 0 && $value['filled_male'] != 0) {
+            array_push($sp_post_filled_male, (1 * (100 * $value['filled_male'] / $value['filled'])));
+        } else {
+            array_push($sp_post_filled_male, 0);
+        }
+        if ($value['filled'] != 0 && $value['filled_female'] != 0) {
+            array_push($sp_post_filled_female, (-1 * (100 * $value['filled_female'] / $value['filled'])));
+        } else {
+            array_push($sp_post_filled_female, 0);
+        }
+        array_push($sp_post_vacant, $value['vacant']);
+        array_push($sp_post_male, $value['filled_male']);
+        array_push($sp_post_female, $value['filled_female']);
+    }
 
     usort($sp_project_information, 'sortByOrder');
 
@@ -808,6 +1016,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         "entity" => $spvalue,
         "totalprojects" => $sp_projects,
         "totalactivities" => $sp_activities,
+        "completedactivities" => $sp_completed_activities,
         "totaloutputs" => $sp_outputs,
         "divisional_projects" => $sp_div_array,
         "healthcolor" => gethealthcolor($sp_average_project_health),
@@ -846,9 +1055,10 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         "projectsubprogramme" => $sp_div_array,
         "scatterpoints" => ["red" => $sp_scatter_points_red, "yellow" => $sp_scatter_points_yellow, "green" => $sp_scatter_points_green],
     );
+
     ?>
 
-	<?php
+    <?php
 
 //SWITCHING TO DIVISIONAL CALCULATIONS
 
@@ -863,7 +1073,7 @@ foreach ($processed_spdata as $sp) {
     //     echo $dprojects['division'] . " - " . $dprojects['projects'] . "<br />";
     // }
 
-    //var_dump($sp["divisional_projects"]);
+    //var_dump($sp["hrpostscategories"]);
 
     //echo '--------------------------------------------------------------<br />';
 }
