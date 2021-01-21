@@ -548,7 +548,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
 
     $sp_unique_final_ratings = [];
     foreach ($division_data as $key => $value) {
-        if (strtolower($prvalue->subprogramme) == $spvalue) {
+        if (strtolower($value->subprogramme) == $spvalue) {
             if (!$value->final_rating) {
                 $f_rating = 0;
             } else {
