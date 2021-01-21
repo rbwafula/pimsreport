@@ -605,7 +605,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
                 $fr = 0;
             } else {
                 $f_rating = $prvalue->final_rating;
-                $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
+                $project_rating = array_search($f_rating, $unique_final_ratings);
                 $fr = floatval(number_format((float) $prvalue->final_rating, 2, '.', ''));
             }
             //feed into scatter points -> consumable budget, rating
@@ -1092,7 +1092,8 @@ foreach ($processed_spdata as $sp) {
     //     echo $dprojects['division'] . " - " . $dprojects['projects'] . "<br />";
     // }
 
-    //var_dump($sp["hrpostscategories"]);
+    // var_dump($sp["projectlisting"]);
+    // echo '----------------------------------------------<br />';
 
     //echo '--------------------------------------------------------------<br />';
 }
