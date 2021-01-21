@@ -213,7 +213,7 @@ foreach ($division_data as $key => $value) {
 
 sort($unique_divisions);
 
-// var_dump($unique_divisions);
+var_dump($unique_divisions);
 
 //var_dump($unique_subprogrammes);
 $unique_post_groups = [];
@@ -673,6 +673,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         }
     }
 
+    usort($sp_project_information, 'sortByOrder');
     usort($sp_staff_information, 'sortByOrder');
 
     $sp_post_status_distribution = [];
