@@ -546,8 +546,25 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
     $sp_overan_days = 0;
     $sp_division_projects_distribution = [];
 
+    $sp_unique_final_ratings = [];
+    foreach ($division_data as $key => $value) {
+        if (strtolower($prvalue->subprogramme) == $spvalue) {
+            if (!$value->final_rating) {
+                $f_rating = 0;
+            } else {
+                $f_rating = $value->final_rating;
+            }
+
+            if (!in_array($f_rating, $sp_unique_final_ratings)) {
+                $sp_unique_final_ratings[] = $f_rating;
+            }
+        }
+    }
+    rsort($sp_unique_final_ratings);
+
     foreach ($division_data as $prkey => $prvalue) {
         if (strtolower($prvalue->subprogramme) == $spvalue) {
+
             if (!in_array($prvalue->managing_division, $sp_project_division)) {
                 $sp_project_division[] = $prvalue->managing_division;
             }
@@ -605,7 +622,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
                 $fr = 0;
             } else {
                 $f_rating = $prvalue->final_rating;
-                $project_rating = array_search($f_rating, $unique_final_ratings) + 1;
+                $project_rating = array_search($f_rating, $sp_unique_final_ratings) + 1;
                 $fr = floatval(number_format((float) $prvalue->final_rating, 2, '.', ''));
             }
             //feed into scatter points -> consumable budget, rating
