@@ -213,7 +213,7 @@ foreach ($division_data as $key => $value) {
         $unique_final_ratings[] = $f_rating;
     }
 }
-
+rsort($unique_final_ratings);
 sort($unique_divisions);
 
 // var_dump($unique_divisions);
