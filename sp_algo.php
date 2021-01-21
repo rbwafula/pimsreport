@@ -97,6 +97,9 @@ $outputs_data = getdataobjectfromurl($outputs_url);
 
 //GET HR DATA
 $hr_data_uf = getdataobjectfromurl($hr_url);
+
+$proj_data = getdataobjectfromurl($proj_activity_url);
+
 $hr_data = [];
 $unique_posids = [];
 foreach ($hr_data_uf as $h) {
@@ -587,15 +590,15 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
             $p_completed_activities = 0;
             $p_activities = 0;
 
-            // foreach ($proj_data as $pakey => $pavalue) {
-            //     if ($pavalue->projectID == $prvalue->project_id) {
-            //         $p_outputs = $pavalue->total_outputs;
-            //         $p_completed_activities = $pavalue->completed_activities;
+            foreach ($proj_data as $pakey => $pavalue) {
+                if ($pavalue->projectID == $prvalue->project_id) {
+                    $p_outputs = $pavalue->total_outputs;
+                    $p_completed_activities = $pavalue->completed_activities;
 
-            //         $p_activities = $pavalue->total_activities;
+                    $p_activities = $pavalue->total_activities;
 
-            //     }
-            // }
+                }
+            }
 
             if (!$prvalue->final_rating) {
                 $project_rating = 'N/A';
@@ -624,6 +627,9 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
             // var_dump($unique_divisions);
 
             $sporder = array_search(strtolower($prvalue->managing_division), $unique_divisions) + 1;
+
+            //echo $p_completed_activities . '/' . $p_activities . ' activities - ' . $p_outputs . ' outputs <br />';
+
             $sp_project_information[] = [
                 'project_id' => $prvalue->project_id,
                 'project_title' => $prvalue->project_title,
