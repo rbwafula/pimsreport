@@ -678,8 +678,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
     }
 
     usort($sp_staff_information, 'sortByOrder');
-
-    var_dump($sp_project_information);
+    // var_dump($sp_project_information);
 
     $sp_post_status_distribution = [];
 
