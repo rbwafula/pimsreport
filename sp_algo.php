@@ -1064,6 +1064,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
 }
 
 // var_dump($processed_spdata);
+//THE LATESRT
 
 foreach ($processed_spdata as $sp) {
     echo $sp["sub_programme"] . ' - ' . $sp["totalprojects"] . ' projects' . ' - ' . $sp["totalactivities"] . ' activities <br />';
