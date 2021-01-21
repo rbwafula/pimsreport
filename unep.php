@@ -70,11 +70,11 @@ include_once 'totals_algo.php';
                 <div class="col-md-4 logo">
                     <img class="logo" src="assets/images/pimslogo.png">
                 </div>
-                <div class="col-md-4 title">
-                    <h1><?php echo $processed_divisiondata[$division]["entity"]; ?></h1>
+                <div class="col-md-6 title">
+                    <h1><?php echo $processed_divisiondata[$division]["entity"]; ?> Programme</h1>
                     <h6>Programme Delivery Report</h6>
                 </div>
-                <div class="col-md-4 health">
+                <div class="col-md-2 health">
                     <p class="reportdate">Jan 2021</p>
                     <p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>;">&nbsp;</p>
                     <p class="healthratingdesc">Project Portfolio Rating</p>
