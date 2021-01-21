@@ -805,13 +805,13 @@ include_once 'totals_algo.php';
                                 </div>
                                 <div class="col metric4">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($femaleposts/$filledposts)*100),0); ?>%
+                                        <?php echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Female</p>
                                 </div>
                                 <div class="col metric5">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($maleposts/$filledposts)*100),0); ?>%
+                                        <?php echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Male</p>
                                 </div>

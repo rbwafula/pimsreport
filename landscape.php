@@ -1,8 +1,7 @@
 <?php
 $month = Date("M") . ' ' . Date("Y");
 $office = array('Europe', 'Economy', 'Disasters and Conflicts', 'Latin America', 'Asia Pacific', 'Law', 'Communication', 'Ecosystems', 'Science', 'Africa', 'West Asia');
-
-$officeid = (isset($_GET['office'])) ? $_GET['office'] : 10;
+$officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
 $division = $office[$officeid];
 include_once 'dynamic_algo.php';
 ?>
@@ -74,7 +73,7 @@ include_once 'dynamic_algo.php';
                             <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="javascript:void(0);">Share</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print();return false;">Export to PDF</button>-->
                             <!-- TRIGGER FOR THE HTML TO PDF FUNCTION -->
-                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="printdivision.php?office=<?php echo $officeid; ?>">Print PDF</a>
+                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="table.php?office=<?php echo $officeid; ?>">Print PDF</a>
                             <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="jsp();"> PDF</button>-->
                         </div>
                     </div>
@@ -924,13 +923,13 @@ include_once 'dynamic_algo.php';
                                 </div>
                                 <div class="col metric4">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($femaleposts/$filledposts)*100),0); ?>%
+                                        <?php echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Female</p>
                                 </div>
                                 <div class="col metric5">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($maleposts/$filledposts)*100),0); ?>%
+                                        <?php echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Male</p>
                                 </div>

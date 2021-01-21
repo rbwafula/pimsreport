@@ -625,6 +625,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
                 'subprogramme' => $prvalue->subprogramme,
                 'sp_number' => $prvalue->sp_number,
                 'branch' => $prvalue->managing_branch,
+                'division' => $prvalue->managing_division,
                 'budget' => $prvalue->consumable_budget,
                 'system_rating' => $prvalue->system_rating,
                 'management_rating' => $prvalue->manager_rating,
@@ -1017,7 +1018,7 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
     // var_dump($sp_division_projects);
     // echo 'sp proj<br />';
     $processed_spdata[$spvalue] = array(
-        "sub_programme" => $spvalue,
+        "entity" => $spvalue,
         "totalprojects" => $sp_projects,
         "totalactivities" => $sp_activities,
         "completedactivities" => $sp_completed_activities,
@@ -1056,13 +1057,13 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
         "grantfundingcountbygroup" => array($sp_count_projects_budget_between0_1, $sp_count_projects_budget_between1_2, $sp_count_projects_budget_between2_5, $sp_count_projects_budget_between5_10, $sp_count_projects_budget_more10),
         "projectlisting" => $sp_project_information,
         "stafflisting" => $sp_staff_information,
-        // "projectsubprogramme" => $sp_sp_array,
+        "projectsubprogramme" => $sp_div_array,
         "scatterpoints" => ["red" => $sp_scatter_points_red, "yellow" => $sp_scatter_points_yellow, "green" => $sp_scatter_points_green],
     );
 
     ?>
 
-	<?php
+    <?php
 
 //SWITCHING TO DIVISIONAL CALCULATIONS
 
@@ -1072,12 +1073,12 @@ foreach ($unique_subprogrammes as $dkey => $spvalue) {
 //THE LATESRT
 
 foreach ($processed_spdata as $sp) {
-    echo $sp["sub_programme"] . ' - ' . $sp["totalprojects"] . ' projects' . ' - ' . $sp["totalactivities"] . ' activities <br />';
+    //echo $sp["sub_programme"] . ' - ' . $sp["totalprojects"] . ' projects' . ' - ' . $sp["totalactivities"] . ' activities <br />';
     // foreach ($sp["divisional_projects"] as $dprojects) {
     //     echo $dprojects['division'] . " - " . $dprojects['projects'] . "<br />";
     // }
 
-    // var_dump($sp["stafflisting"]);
+    //var_dump($sp["hrpostscategories"]);
 
-    echo '--------------------------------------------------------------<br />';
+    //echo '--------------------------------------------------------------<br />';
 }
