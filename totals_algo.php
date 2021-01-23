@@ -1191,6 +1191,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         'vacant_posts' => $d_vacant_posts,
         'total_outputs' => $d_outputs,
         'total_activities' => $d_activities,
+        'completed_activities' => $d_completed_activities,
         'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
         'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
         'total_projects' => $d_projects,
