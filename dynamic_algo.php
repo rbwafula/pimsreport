@@ -786,6 +786,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'org_code' => $hvalue->org_unit,
                 'org_unit_description' => $hvalue->org_unit_desc,
                 'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
+
             ];
         }
     }
