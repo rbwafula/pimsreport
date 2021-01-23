@@ -1,1 +1,8 @@
 assets/data/
+assets/fonts/
+assets/vendor
+docs/
+files/
+*_bk.php
+*test*
+*old.php

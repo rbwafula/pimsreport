@@ -48,7 +48,7 @@ include_once 'sp_algo.php';
         <div class="row noprint" data-html2canvas-ignore="true">
             <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Division Dashboard</h1>
+                    <h1 class="h2">Subprogramme Dashboard</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="dropdown mr-2">
                             <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -73,7 +73,7 @@ include_once 'sp_algo.php';
                             <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="javascript:void(0);">Share</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print();return false;">Export to PDF</button>-->
                             <!-- TRIGGER FOR THE HTML TO PDF FUNCTION -->
-                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="printdivision.php?office=<?php echo $officeid; ?>">Print PDF</a>
+                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="printsubprogramme.php?id=<?php echo $spid; ?>">Print PDF</a>
                             <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="jsp();"> PDF</button>-->
                         </div>
                     </div>
@@ -1133,7 +1133,7 @@ include_once 'sp_algo.php';
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th class="left">Office .,</th>
+                                <th class="left">Office</th>
                                 <th class="left">Branch</th>
                                 <th width="115px" class="left">Project ID</th>
                                 <th class="left">Project Title</th>
