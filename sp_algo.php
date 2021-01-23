@@ -177,6 +177,7 @@ $unique_subprogrammes = [];
 $unique_subprogramme_data = [];
 $unique_final_ratings = [0];
 
+$unique_managers = [];
 //GET THE UNIQUE SUBPROGRAMMES
 //USE DATA FROM API TO FEED THE UNIQUE SUBPROGRAMMES AND FINAL RATINGS ARRAY
 $x = 2;
@@ -212,6 +213,11 @@ foreach ($division_data as $key => $value) {
     if (!in_array($f_rating, $unique_final_ratings)) {
         $unique_final_ratings[] = $f_rating;
     }
+
+    if (array_search($value->project_manager, $unique_managers) < 1 && $value->project_manager !== '') {
+        $unique_managers[] = $value->project_manager;
+    }
+
 }
 rsort($unique_final_ratings);
 sort($unique_divisions);
@@ -1114,3 +1120,9 @@ foreach ($processed_spdata as $sp) {
 
     //echo '--------------------------------------------------------------<br />';
 }
+
+var_dump($unique_managers);
+echo '<br />' . count($unique_managers) . ' total managers <br />';
+echo '<br />---------------------------------------------------------------<br />';
+echo $total_projects . ' total projects';
+echo '<br />' . $total_projects / count($unique_managers) . ' average projects per manager';

@@ -786,6 +786,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'org_code' => $hvalue->org_unit,
                 'org_unit_description' => $hvalue->org_unit_desc,
                 'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
+
             ];
         }
     }
@@ -1166,6 +1167,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "healthrating" => $d_average_project_health,
         "consumablebudget" => $d_consumable_budget,
         "pastdueprojects" => $d_past_due_projects,
+        "pctgpastdueprojects" => round($d_past_due_projects / $d_projects, 2) * 100,
         "avgmonthspastdue" => $d_average_overan_months,
         "in6monthexpiry" => $d_projects_expiringin6,
         "pctconsumablebudget" => $d_percentage_consumable_budget,
