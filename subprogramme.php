@@ -1,9 +1,9 @@
 <?php
 $month = Date("M") . ' ' . Date("Y");
-$office = array('Europe', 'Economy', 'Disasters and Conflicts', 'Latin America', 'Asia Pacific', 'Law', 'Communication', 'Ecosystems', 'Science', 'Africa', 'West Asia');
-$officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
-$division = $office[$officeid];
-include_once 'dynamic_algo.php';
+$subprogramme = array('environmental governance', 'climate change', 'resource efficiency', 'resilience to disasters and conflicts', 'chemicals, waste and air quality', 'healthy and productive ecosystems', 'environment under review', 'corporate projects - executive direction and management');
+$spid = (isset($_GET['id'])) ? $_GET['id'] : 0;
+$division = $subprogramme[$spid];
+include_once 'sp_algo.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -52,18 +52,18 @@ include_once 'dynamic_algo.php';
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="dropdown mr-2">
                             <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Select Office
+                            Select Subprogramme
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="unep.php">UNEP Consolidated</a>
                                 <div class="dropdown-divider"></div>
                                 <?php
 
-                                for ($i=0; $i < count($office); $i++) {
-                                    if ($i == $officeid) {
-                                        echo '<a class="dropdown-item active" href="landscape.php?office='.$i.'">'.$office[$i].'</a>';
+                                for ($i=0; $i < count($subprogramme); $i++) {
+                                    if ($i == $spid) {
+                                        echo '<a class="dropdown-item active" href="subprogramme.php?id='.$i.'">'.ucwords($subprogramme[$i]).'</a>';
                                     } else {
-                                        echo '<a class="dropdown-item" href="landscape.php?office='.$i.'">'.$office[$i].'</a>';
+                                        echo '<a class="dropdown-item" href="subprogramme.php?id='.$i.'">'.ucwords($subprogramme[$i]).'</a>';
                                     }
                                 }
                                 ?>
@@ -73,7 +73,7 @@ include_once 'dynamic_algo.php';
                             <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="javascript:void(0);">Share</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print();return false;">Export to PDF</button>-->
                             <!-- TRIGGER FOR THE HTML TO PDF FUNCTION -->
-                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="table.php?office=<?php echo $officeid; ?>">Print PDF</a>
+                            <a class="btn btn-sm btn-outline-secondary" target="_new" href="printdivision.php?office=<?php echo $officeid; ?>">Print PDF</a>
                             <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="jsp();"> PDF</button>-->
                         </div>
                     </div>
@@ -87,12 +87,12 @@ include_once 'dynamic_algo.php';
                     <img class="logo" src="assets/images/pimslogo.png">
                 </div>
                 <div class="col-md-6 title">
-                    <h1><?php echo $processed_divisiondata[$division]["entity"]; ?></h1>
+                    <h1><?php echo ucwords($processed_spdata[$division]["entity"]); ?></h1>
                     <h6>Programme Delivery Report</h6>
                 </div>
                 <div class="col-md-2 health">
                     <p class="reportdate">Jan 2021</p>
-                    <p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>;">&nbsp;</p>
+                    <p class="healthrating_box" style="background-color:<?php echo $processed_spdata[$division]["healthcolor"]; ?>;">&nbsp;</p>
                     <p class="healthratingdesc">Project Portfolio Rating</p>
                 </div>
             </div>
@@ -103,43 +103,43 @@ include_once 'dynamic_algo.php';
                     <div class="row summarystatistics">
                         <div class="col metric1">
                             <p class="metricvalue">
-                                <?php echo number_format($processed_divisiondata[$division]["totalprojects"], 0, '.', ','); ?>
+                                <?php echo number_format($processed_spdata[$division]["totalprojects"], 0, '.', ','); ?>
                             </p>
                             <p class="metricdesc">Total<br/>Projects</p>
                         </div>
                         <div class="col metric2">
                             <p class="metricvalue">
-                                <?php echo number_format($processed_divisiondata[$division]["totaloutputs"], 0, '.', ','); ?>
+                                <?php echo number_format($processed_spdata[$division]["totaloutputs"], 0, '.', ','); ?>
                             </p>
                             <p class="metricdesc">Total<br/>Outputs</p>
                         </div>
                         <div class="col metric3">
                             <p class="metricvalue">
-                                <?php echo number_format($processed_divisiondata[$division]["totalactivities"], 0, '.', ','); ?>
+                                <?php echo number_format($processed_spdata[$division]["totalactivities"], 0, '.', ','); ?>
                             </p>
                             <p class="metricdesc">Total<br/>Activities</p>
                         </div>
                         <div class="col metric4">
                             <p class="metricvalue">
-                                <?php echo number_format($processed_divisiondata[$division]["pastdueprojects"], 0, '.', ','); ?>
+                                <?php echo number_format($processed_spdata[$division]["pastdueprojects"], 0, '.', ','); ?>
                             </p>
                             <p class="metricdesc">Expired<br/>Projects</p>
                         </div>
                         <div class="col metric4">
                             <p class="metricvalue">
-                                <?php echo number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]), 0, '.', ','); ?>
+                                <?php echo number_format(abs($processed_spdata[$division]["avgmonthspastdue"]), 0, '.', ','); ?>
                             </p>
                             <p class="metricdesc">Avg Months<br/>Past Due</p>
                         </div>
-                        <?php $complianceclass = ($processed_divisiondata[$division]["reportedprojectspct"] < 80) ? 'metric4' : 'metric5';?>
+                        <?php $complianceclass = ($processed_spdata[$division]["reportedprojectspct"] < 80) ? 'metric4' : 'metric5';?>
                         <div class="col <?php echo $complianceclass; ?>">
                             <p class="metricvalue">
-                                <?php echo number_format($processed_divisiondata[$division]["reportedprojectspct"], 0); ?>%
+                                <?php echo number_format($processed_spdata[$division]["reportedprojectspct"], 0); ?>%
                             </p>
                             <p class="metricdesc">Reporting<br/>Compliance</p>
                         </div>
                     </div>
-                    <p class="summarytext">The dashboard captured financial data of <strong><?php echo $processed_divisiondata[$division]["totalprojects"]; ?> projects</strong> for the <?php echo $division; ?> Office. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_divisiondata[$division]["consumablebudget"], 0, '.', ','); ?>)</strong>, capturing a rolling total of the cash received over time.</p>
+                    <p class="summarytext">The dashboard captured financial data of <strong><?php echo $processed_spdata[$division]["totalprojects"]; ?> projects</strong> for the <?php echo ucwords($division); ?> subprogramme. The overall budget recorded for this portfolio as of 2020 was <strong>(USD. <?php echo number_format($processed_spdata[$division]["consumablebudget"], 0, '.', ','); ?>)</strong>, capturing a rolling total of the cash received over time.</p>
                     <div class="row chartrender">
                         <div class="col-md-12 budgetsize">
                             <div id="budgetsize_chart"></div>
@@ -233,7 +233,7 @@ include_once 'dynamic_algo.php';
                                     },
                                     series: [{
                                         name: 'Rating',
-                                        data: [<?php echo count($processed_divisiondata[$division]["scatterpoints"]["red"]); ?>,<?php echo count($processed_divisiondata[$division]["scatterpoints"]["yellow"]); ?>,<?php echo count($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>],
+                                        data: [<?php echo count($processed_spdata[$division]["scatterpoints"]["red"]); ?>,<?php echo count($processed_spdata[$division]["scatterpoints"]["yellow"]); ?>,<?php echo count($processed_spdata[$division]["scatterpoints"]["green"]); ?>],
                                         showInLegend: false
 
                                     }]
@@ -326,17 +326,17 @@ include_once 'dynamic_algo.php';
                                     series: [{
                                         name: 'Red',
                                         color: 'rgba(220, 53, 69, .9)',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["red"]); ?>
+                                        data: <?php echo json_encode($processed_spdata[$division]["scatterpoints"]["red"]); ?>
 
                                     }, {
                                         name: 'Yellow',
                                         color: 'rgba(255, 193, 7, .9)',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["yellow"]); ?>
+                                        data: <?php echo json_encode($processed_spdata[$division]["scatterpoints"]["yellow"]); ?>
 
                                     }, {
                                         name: 'Green',
                                         color: 'rgba(40, 167, 69, .9)',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["scatterpoints"]["green"]); ?>
+                                        data: <?php echo json_encode($processed_spdata[$division]["scatterpoints"]["green"]); ?>
 
                                     }]
                                 });*/
@@ -436,9 +436,9 @@ include_once 'dynamic_algo.php';
                                     series: [{
                                          name: 'Current Yr',
                                         data: [
-                                            <?php echo $processed_divisiondata[$division]["consumablebudget"] / 1000000; ?>,
-                                            <?php echo $processed_divisiondata[$division]["totalconsumedbudget"] / 1000000; ?>,
-                                            <?php echo ($processed_divisiondata[$division]["consumablebudget"] - $processed_divisiondata[$division]["totalconsumedbudget"]) / 1000000; ?>],
+                                            <?php echo $processed_spdata[$division]["consumablebudget"] / 1000000; ?>,
+                                            <?php echo $processed_spdata[$division]["totalconsumedbudget"] / 1000000; ?>,
+                                            <?php echo ($processed_spdata[$division]["consumablebudget"] - $processed_spdata[$division]["totalconsumedbudget"]) / 1000000; ?>],
                                         showInLegend: false
                                     }]
                                 });
@@ -480,7 +480,7 @@ include_once 'dynamic_algo.php';
                                     enabled: false
                                 },
                                 title: {
-                                    text: '<?php echo number_format($processed_divisiondata[$division]["pctbudgetutilized"], 0, '.', ','); ?>%',
+                                    text: '<?php echo number_format($processed_spdata[$division]["pctbudgetutilized"], 0, '.', ','); ?>%',
                                     align: 'center',
                                     verticalAlign: 'bottom',
                                     y: 15,
@@ -525,10 +525,10 @@ include_once 'dynamic_algo.php';
                                     name: 'Avg. Time Taken',
                                     innerSize: '70%',
                                     data: [
-                                        ['Time Taken', <?php echo $processed_divisiondata[$division]["pctbudgetutilized"]; ?> ],
+                                        ['Time Taken', <?php echo $processed_spdata[$division]["pctbudgetutilized"]; ?> ],
                                         {
                                             name: '',
-                                            y: <?php echo (100 - $processed_divisiondata[$division]["pctbudgetutilized"]); ?>,
+                                            y: <?php echo (100 - $processed_spdata[$division]["pctbudgetutilized"]); ?>,
                                             dataLabels: {
                                                 enabled: false
                                             }
@@ -556,7 +556,7 @@ include_once 'dynamic_algo.php';
                                     enabled: false
                                 },
                                 title: {
-                                    text: '<?php echo number_format($processed_divisiondata[$division]["pctgdurationused"], 0, '.', ','); ?>%',
+                                    text: '<?php echo number_format($processed_spdata[$division]["pctgdurationused"], 0, '.', ','); ?>%',
                                     align: 'center',
                                     verticalAlign: 'bottom',
                                     y: 15,
@@ -594,10 +594,10 @@ include_once 'dynamic_algo.php';
                                     name: 'Activities Completed',
                                     innerSize: '70%',
                                     data: [
-                                        ['Time Taken', <?php echo $processed_divisiondata[$division]["pctgdurationused"]; ?> ],
+                                        ['Time Taken', <?php echo $processed_spdata[$division]["pctgdurationused"]; ?> ],
                                         {
                                             name: '',
-                                            y: <?php echo (100 - $processed_divisiondata[$division]["pctgdurationused"]); ?>,
+                                            y: <?php echo (100 - $processed_spdata[$division]["pctgdurationused"]); ?>,
                                             dataLabels: {
                                                 enabled: false
                                             }
@@ -624,7 +624,7 @@ include_once 'dynamic_algo.php';
                                     enabled: false
                                 },
                                 title: {
-                                    text: '<?php echo number_format($processed_divisiondata[$division]["avgactivitiescompleted"], 0, '.', ','); ?>%',
+                                    text: '<?php echo number_format($processed_spdata[$division]["avgactivitiescompleted"], 0, '.', ','); ?>%',
                                     align: 'center',
                                     verticalAlign: 'bottom',
                                     y: 15,
@@ -662,10 +662,10 @@ include_once 'dynamic_algo.php';
                                     name: 'Activities Completed',
                                     innerSize: '70%',
                                     data: [
-                                        ['Time Taken', <?php echo $processed_divisiondata[$division]["avgactivitiescompleted"]; ?> ],
+                                        ['Time Taken', <?php echo $processed_spdata[$division]["avgactivitiescompleted"]; ?> ],
                                         {
                                             name: '',
-                                            y: <?php echo (100 - $processed_divisiondata[$division]["avgactivitiescompleted"]); ?>,
+                                            y: <?php echo (100 - $processed_spdata[$division]["avgactivitiescompleted"]); ?>,
                                             dataLabels: {
                                                 enabled: false
                                             }
@@ -773,7 +773,7 @@ include_once 'dynamic_algo.php';
                                     },
                                     series: [{
                                         name: 'Project Age',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["projectage"]); ?>,
+                                        data: <?php echo json_encode($processed_spdata[$division]["projectage"]); ?>,
                                         color: '#4e90e0',
                                         showInLegend: false
 
@@ -798,7 +798,7 @@ include_once 'dynamic_algo.php';
                                         height: 250
                                     },
                                     title: {
-                                        text: 'Figure 4: Projects by Sub-Programme',
+                                        text: 'Figure 4: Projects by Division',
                                         floating: false,
                                         align: 'left',
                                         verticalAlign: 'top',
@@ -815,7 +815,7 @@ include_once 'dynamic_algo.php';
                                         y: 0
                                     },
                                     xAxis: {
-                                        categories: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["spnumbers"]); ?>,
+                                        categories: <?php echo json_encode($processed_spdata[$division]["projectsubprogramme"]["division_names"]); ?>,
                                         labels: {
                                             style: {
                                                 fontSize: '0.25cm',
@@ -875,7 +875,7 @@ include_once 'dynamic_algo.php';
                                     },
                                     series: [{
                                         name: 'Subprogramme',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["projectsubprogramme"]["projectcount"]); ?>,
+                                        data: <?php echo json_encode($processed_spdata[$division]["projectsubprogramme"]["division_projectcounts"]); ?>,
                                         showInLegend: false
 
                                     }]
@@ -895,12 +895,12 @@ include_once 'dynamic_algo.php';
                                 $vacantposts = 0;
                                 $maleposts = 0;
                                 $femaleposts = 0;
-                                for ($i = 0; $i < count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
-                                    $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
-                                    $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
-                                    $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
-                                    $maleposts += $processed_divisiondata[$division]["hrpostsmale"][$i];
-                                    $femaleposts += $processed_divisiondata[$division]["hrpostsfemale"][$i];
+                                for ($i = 0; $i < count($processed_spdata[$division]["hrpostsvacant"]); $i++) {
+                                    $vacantposts += $processed_spdata[$division]["hrpostsvacant"][$i];
+                                    $filledposts += $processed_spdata[$division]["hrpostsfilled"][$i];
+                                    $totalposts += ($processed_spdata[$division]["hrpostsvacant"][$i] + $processed_spdata[$division]["hrpostsfilled"][$i]);
+                                    $maleposts += $processed_spdata[$division]["hrpostsmale"][$i];
+                                    $femaleposts += $processed_spdata[$division]["hrpostsfemale"][$i];
                                 }
                                 ?>
                                 <div class="col metric1">
@@ -923,13 +923,13 @@ include_once 'dynamic_algo.php';
                                 </div>
                                 <div class="col metric4">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%
+                                        <?php echo number_format((($femaleposts/ max($filledposts,1))*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Female</p>
                                 </div>
                                 <div class="col metric5">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%
+                                        <?php echo number_format((($maleposts/max($filledposts,1) )*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Male</p>
                                 </div>
@@ -965,7 +965,7 @@ include_once 'dynamic_algo.php';
                                         y: 0
                                     },
                                     xAxis: {
-                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
+                                        categories: <?php echo json_encode($processed_spdata[$division]["hrpostscategories"]); ?>,
                                         labels: {
                                             style: {
                                                 fontSize: '0.2cm'
@@ -1005,11 +1005,11 @@ include_once 'dynamic_algo.php';
                                     },
                                     series: [{
                                         name: 'Vacant',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsvacant"]); ?>,
+                                        data: <?php echo json_encode($processed_spdata[$division]["hrpostsvacant"]); ?>,
                                         showInLegend: true
                                     }, {
                                         name: 'Filled',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilled"]); ?>,
+                                        data: <?php echo json_encode($processed_spdata[$division]["hrpostsfilled"]); ?>,
                                         showInLegend: true
                                     }]
                                 });
@@ -1061,7 +1061,7 @@ include_once 'dynamic_algo.php';
                                         enabled: false
                                     },
                                     xAxis: [{
-                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
+                                        categories: <?php echo json_encode($processed_spdata[$division]["hrpostscategories"]); ?>,
                                         reversed: true,
                                         labels: {
                                             style: {
@@ -1072,7 +1072,7 @@ include_once 'dynamic_algo.php';
                                     }, { // mirror axis on right side
                                         opposite: true,
                                         reversed: true,
-                                        categories: <?php echo json_encode($processed_divisiondata[$division]["hrpostscategories"]); ?>,
+                                        categories: <?php echo json_encode($processed_spdata[$division]["hrpostscategories"]); ?>,
                                         linkedTo: 0,
                                         labels: {
                                             style: {
@@ -1113,10 +1113,10 @@ include_once 'dynamic_algo.php';
                                     },
                                     series: [{
                                         name: 'Female',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledfemale"]); ?>
+                                        data: <?php echo json_encode($processed_spdata[$division]["hrpostsfilledfemale"]); ?>
                                     },{
                                         name: 'Male',
-                                        data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledmale"]); ?>
+                                        data: <?php echo json_encode($processed_spdata[$division]["hrpostsfilledmale"]); ?>
                                     }]
                                 });
                             </script>
@@ -1133,10 +1133,10 @@ include_once 'dynamic_algo.php';
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
+                                <th class="left">Office .,</th>
                                 <th class="left">Branch</th>
                                 <th width="115px" class="left">Project ID</th>
                                 <th class="left">Project Title</th>
-                                <th class="center">Sub<br/>Programme</th>
                                 <th class="center">Months<br/>Past Due</th>
                                 <th class="left">Project<br/>Manager</th>
                                 <th class="right">Budget</th>
@@ -1150,30 +1150,29 @@ include_once 'dynamic_algo.php';
                         </thead>
                         <tbody>
                             <?php
-for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++) {
+for ($i = 0; $i < count($processed_spdata[$division]["projectlisting"]); $i++) {
     echo '<tr>';
     echo '<td class="right">' . ($i + 1) . '.</td>';
-    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['branch'] . '</td>';
-    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_id'] . '</td>';
-    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_title'] . '</td>';
-    echo '<td class="center">SP ' . $processed_divisiondata[$division]["projectlisting"][$i]['sp_number'] . '</td>';
-
-    if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
-        echo '<td class="center" style="color:#dc3545; font-weight: 500;">' . abs($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining']) . '</td>';
-    } else if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] == 'No Enddate') {
+    echo '<td class="left">' . $processed_spdata[$division]["projectlisting"][$i]['division'] . '</td>';
+    echo '<td class="left">' . $processed_spdata[$division]["projectlisting"][$i]['branch'] . '</td>';
+    echo '<td class="left">' . $processed_spdata[$division]["projectlisting"][$i]['project_id'] . '</td>';
+    echo '<td class="left">' . $processed_spdata[$division]["projectlisting"][$i]['project_title'] . '</td>';
+    if ($processed_spdata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
+        echo '<td class="center" style="color:#dc3545; font-weight: 500;">' . abs($processed_spdata[$division]["projectlisting"][$i]['months_remaining']) . '</td>';
+    } else if ($processed_spdata[$division]["projectlisting"][$i]['months_remaining'] == 'No Enddate') {
         echo '<td class="center" style="color:#dc3545; font-weight: 500;">No end date</td>';
     } else {
         echo '<td class="center" style="font-weight:500; color:green">&nbsp;</td>';
     }
-    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_manager'] . '</td>';
-    echo '<td class="right">' . number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'], 0, '.', ',') . '</td>';
-    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']) . '">&nbsp;</p></td>';
-    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['management_rating']) . '">&nbsp;</p></td>';
-    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['final_rating']) . '">&nbsp;</p></td>';
-    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_rank'] . '</td>';
-    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['outputs'] . '</td>';
-    if ($processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] != '' && $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] != '') {
-        echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] . ' / ' . $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] . ' </td>';
+    echo '<td class="left">' . $processed_spdata[$division]["projectlisting"][$i]['project_manager'] . '</td>';
+    echo '<td class="right">' . number_format($processed_spdata[$division]["projectlisting"][$i]['budget'], 0, '.', ',') . '</td>';
+    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_spdata[$division]["projectlisting"][$i]['system_rating']) . '">&nbsp;</p></td>';
+    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_spdata[$division]["projectlisting"][$i]['management_rating']) . '">&nbsp;</p></td>';
+    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_spdata[$division]["projectlisting"][$i]['final_rating']) . '">&nbsp;</p></td>';
+    echo '<td class="center">' . $processed_spdata[$division]["projectlisting"][$i]['project_rank'] . '</td>';
+    echo '<td class="center">' . $processed_spdata[$division]["projectlisting"][$i]['outputs'] . '</td>';
+    if ($processed_spdata[$division]["projectlisting"][$i]['completed_activities'] != '' && $processed_spdata[$division]["projectlisting"][$i]['total_activities'] != '') {
+        echo '<td class="center">' . $processed_spdata[$division]["projectlisting"][$i]['completed_activities'] . ' / ' . $processed_spdata[$division]["projectlisting"][$i]['total_activities'] . ' </td>';
     } else {
         echo '<td class="center"> - </td>';
     }
@@ -1204,17 +1203,17 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                         <tbody>
                             <?php
 $j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
+for ($i = 0; $i < count($processed_spdata[$division]["stafflisting"]); $i++) {
+    if ($processed_spdata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
         echo '<tr>';
         echo '<td>' . ($j + 1) . '.</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['grade'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['position_title'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['position_number'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['category'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['org_code'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
         echo '</tr>';
         $j++;
     }
@@ -1245,18 +1244,18 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                         <tbody>
                             <?php
 $j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
+for ($i = 0; $i < count($processed_spdata[$division]["stafflisting"]); $i++) {
+    if ($processed_spdata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
         echo '<tr>';
         echo '<td>' . ($j + 1) . '.</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        //echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['grade'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['position_title'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['position_number'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
+        //echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['fund'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['org_code'] . '</td>';
+        echo '<td>' . $processed_spdata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
         echo '</tr>';
         $j++;
     }
@@ -1276,7 +1275,7 @@ function jsp(){
     var element = document.getElementById('toprint');
     var opt = {
         margin: 0,
-        filename: '<?php echo $processed_divisiondata[$division]["entity"]; ?> pimsreport.pdf',
+        filename: '<?php echo $processed_spdata[$division]["entity"]; ?> pimsreport.pdf',
         image: { type: 'jpeg', quality: 75 },
         //html2canvas:  {​​ scale: 0.8 }​​,
         html2canvas:{dpi:600, letterRendering:true},
