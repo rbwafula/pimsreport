@@ -1180,6 +1180,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     //var_dump($d_scatter_points);
 
     $divisionorder = in_array($dvalue, $divisionlist) ? 1 : 2;
+    $filled_posts = $d_posts - $d_vacant_posts;
 
     $overall_office_budget_distribution[] = [
         'office' => $dvalue,
@@ -1187,7 +1188,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         'consumed' => $d_consumed_budget,
         'balance' => $d_consumable_budget - $d_consumed_budget,
         'total_posts' => $d_posts,
-        'filled_posts' => ($d_posts - $d_vacant_posts),
+        'filled_posts' => $filled_posts,
+        'budget_staff_ratio' => round($d_consumable_budget / $filled_posts, 0),
         'vacant_posts' => $d_vacant_posts,
         'total_outputs' => $d_outputs,
         'total_activities' => $d_activities,
