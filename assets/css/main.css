@@ -405,11 +405,13 @@ table tbody tr.summary td {
 		margin-top: 18px !important;
 	}
 
-
-
-
-
-
+	.section2 table {
+		border: 0px solid #CCC;
+    	border-collapse: collapse;
+	}
+	.section2 table td {
+		border: none;
+	}
 }
 
 
