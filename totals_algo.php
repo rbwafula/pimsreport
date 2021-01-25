@@ -657,6 +657,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_project_days = 0;
     $d_project_health = 0;
 
+    $d_final_ratings = 0;
+
     $d_count_projects_budget_between0_1 = 0;
     $d_count_projects_budget_between1_2 = 0;
     $d_count_projects_budget_between2_5 = 0;
@@ -925,6 +927,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             $d_filled_female_count += $d_filled_female;
 
             $d_posts += $d_filled_count + $d_vacant_count;
+
         }
     }
     $d_subprogramme_projects_distribution = [];
@@ -978,6 +981,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             }
 
             $d_projects += 1;
+            $d_final_ratings += $value->final_rating;
+
             $d_consumable_budget += $value->consumable_budget;
             $d_consumed_budget += $value->consumed_budget;
             $d_percentage_budget_utilized += round($value->percentage_budget_utilized, 2);
@@ -1196,12 +1201,15 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $divisionorder = in_array($dvalue, $divisionlist) ? 1 : 2;
     $filled_posts = $d_posts - $d_vacant_posts;
 
+    echo $d_projects;
+
     $overall_office_budget_distribution[] = [
         'office' => $dvalue,
         'consumable' => $d_consumable_budget,
         'consumed' => $d_consumed_budget,
         'balance' => $d_consumable_budget - $d_consumed_budget,
         'total_posts' => $d_posts,
+
         'filled_posts' => $filled_posts,
         'budget_staff_ratio' => round($d_consumable_budget / $filled_posts, 0),
         'vacant_posts' => $d_vacant_posts,
@@ -1211,6 +1219,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
         'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
         'total_projects' => $d_projects,
+        'o_ratings' => $d_final_ratings,
         'red_projects' => $d_red_projects,
         'yellow_projects' => $d_yellow_projects,
         'green_projects' => $d_green_projects,
@@ -1237,11 +1246,12 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'completed_activities' => $d_completed_activities,
             'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
             'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
-            'total_projects' => $d_projects,
+            'o_projects' => $d_projects,
             'red_projects' => $d_red_projects,
             'yellow_projects' => $d_yellow_projects,
             'green_projects' => $d_green_projects,
             'total_projects' => $total_projects,
+            'o_ratings' => $d_final_ratings,
             'total_health' => $total_project_health,
             'final_rating' => $d_total_average_final_rating,
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
@@ -1266,7 +1276,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'completed_activities' => $d_completed_activities,
             'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
             'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
-            'total_projects' => $d_projects,
+            'o_projects' => $d_projects,
+            'o_ratings' => $d_final_ratings,
             'red_projects' => $d_red_projects,
             'yellow_projects' => $d_yellow_projects,
             'green_projects' => $d_green_projects,
@@ -1822,6 +1833,10 @@ usort($overall_office_budget_distribution_region, 'sortByConsumable');
 //         unset($overall_post_status_distribution[$key]);
 //     }
 // }
+
+foreach ($overall_office_budget_distribution_office as $office) {
+    echo $office['o_projects'] . ' projects - ' . $office['o_ratings'] . ' total ratings';
+}
 $avg_months_past_due = round($total_overan_days / $t_past_projects) / 30;
 $processed_divisiondata['Unep'] = array(
     "entity" => 'UN Environment'
