@@ -1020,23 +1020,27 @@ include_once 'totals_algo.php';
                             <tr>
                                 <th>&nbsp;</th>
                                 <th class="left">Office</th>
-                                <th class="right">Consumable</th>
-                                <th class="right">Consumed</th>
-                                <th class="right">Balance</th>
-                                <th class="right">Total<br/>Posts</th>
-                                <th class="right">Filled<br/>Posts</th>
-                                <th class="right">Vacant<br/>Posts</th>
+                                <th class="center">Consumable</th>
+                                <th class="center">Consumed</th>
+                                <th class="center">Balance</th>
+                                <th class="center">Budget to<br/>Staff Ratio</th>
+
+                                <th class="center">Total<br/>Posts</th>
+                                <th class="center">Filled<br/>Posts</th>
+                                <th class="center">Vacant<br/>Posts</th>
                                 <th class="center">%<br/>Vacancy</th>
                                 <!--<th class="right">% Senior<br/>Posts<br/>(D2,D1,P5)</th>
                                 <th class="right">Average<br/>Post Budget</th>-->
                                 <th class="center">Total<br/>Projects</th>
                                 <th class="center">Expired<br/>Projects</th>
                                 <th class="center">% of Expired<br/>Projects</th>
-                                <th class="right">Avg. Months<br/>Past Due</th>
-                                <th class="right">Red<br/>Projects</th>
-                                <th class="right">Yellow<br/>Projects</th>
-                                <th class="right">Green<br/>Projects</th>
-                                <th class="right">Reporting<br/>Compliance</th>
+                                <th class="center">Avg.<br/>Months<br/>Past Due</th>
+                                <th class="center">Red<br/>Projects</th>
+                                <th class="center">Yellow<br/>Projects</th>
+                                <th class="center">Green<br/>Projects</th>
+                                <th class="center">Reporting<br/>Compliance</th>
+                                <th class="center">Total<br/>Outputs</th>
+                                <th class="center">Completed<br/>Activities</th>
                                 
                                 <!--<th class="right">Short<br/>Projects %</th>-->
                             </tr>
@@ -1062,31 +1066,37 @@ include_once 'totals_algo.php';
                             $office_totalexpired = 0;
                             $office_totalmonthspastdue = 0;
                             $office_count = count($processed_divisiondata[$division]["divisionlisting_office"]);
+                            $office_totaloutputs = 0;
+                            $office_totalactivities = 0;
+                            $office_completedactivities = 0;
 
                             for ($i = 0; $i < $office_count; $i++) {
                                 echo '<tr>';
                                 echo '<td class="right">'.($i + 1).'.</td>';
                                 echo '<td class="left">'.$processed_divisiondata[$division]["divisionlisting_office"][$i]['office'].'</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable'],0,'.',',').'</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed'],0,'.',',').'</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['balance'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'],0,'.',',').'</td>';
+                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable']/1000000,1,'.',',').' M</td>';
+                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed']/1000000,1,'.',',').' M</td>';
+                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['balance']/1000000,1,'.',',').' M</td>';
+                                echo '<td class="right">$ '.number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable']/$processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'])/1000000,1,'.',',').' M</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'],0,'.',',').'</td>';
 
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['vacant_posts'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['vacant_posts'],0,'.',',').'</td>';
 
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
                                 //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
                                 //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_post_budget'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects']*100/$processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects']),0,'.',',').'%</td>';
-                                echo '<td class="right">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due']),0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects']*100/$processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects']),0,'.',',').'%</td>';
+                                echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due']),0,'.',',').'</td>';
 
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['red_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['yellow_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['green_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'],0,'.',',').'%</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['red_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['yellow_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['green_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'],0,'.',',').'%</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_outputs'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'],0,'.',',').' / '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'],0,'.',',').'</td>';
                                 
                                 //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
                                 echo '</tr>';
@@ -1107,30 +1117,41 @@ include_once 'totals_algo.php';
                                 $office_totalreportingcompliance += $processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'];
                                 $office_totalexpired += $processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'];
                                 $office_totalmonthspastdue += $processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due'];
+
+                                $office_totaloutputs += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_outputs'];
+                                $office_totalactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'];
+                                $office_completedactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'];
+
                                 $counterlast = $i;
                             }
 
                             echo '<tr style="font-style:italic; font-weight:500;" class="summary">';
                             echo '<td class="right">&nbsp;</td>';
-                            echo '<td class="left">Division Summary</td>';
-                            echo '<td class="right">$ '.number_format($office_totalconsumable,0,'.',',').'</td>';
-                            echo '<td class="right">$ '.number_format($office_totalconsumed,0,'.',',').'</td>';
-                            echo '<td class="right">$ '.number_format($office_totalbalance,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($office_totalposts,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($office_totalfilledposts,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($office_totalvacantposts,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalvacancy/$office_count),0,'.',',').'%</td>';
+                            echo '<td class="left">Office Summary</td>';
+                            echo '<td class="right">$ '.number_format($office_totalconsumable/1000000,1,'.',',').' M</td>';
+                            echo '<td class="right">$ '.number_format($office_totalconsumed/1000000,1,'.',',').' M</td>';
+                            echo '<td class="right">$ '.number_format($office_totalbalance/1000000,1,'.',',').' M</td>';
+
+                            echo '<td class="right">$ '.number_format(($office_totalconsumable/$office_totalfilledposts)/1000000,1,'.',',').' M</td>';
+
+                            echo '<td class="center">'.number_format($office_totalposts,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($office_totalfilledposts,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($office_totalvacantposts,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_totalvacancy/$office_count),0,'.',',').'%</td>';
                             //echo '<td class="right">'.number_format(($office_totalsenior/$office_count),0,'.',',').'%</td>';
                             //echo '<td class="right">'.number_format($office_totalbudget,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($office_totalprojects,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($office_totalexpired,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalexpired*100/$office_totalprojects),0,'.',',').'%</td>';
-                            echo '<td class="right">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_division"]), 0, '.', ',').'</td>';
+                            echo '<td class="center">'.number_format($office_totalprojects,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($office_totalexpired,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_totalexpired*100/$office_totalprojects),0,'.',',').'%</td>';
+                            echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_division"]), 0, '.', ',').'</td>';
 
-                            echo '<td class="right">'.number_format($office_totalredprojects,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($office_totalyellowprojects,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($office_totalgreenprojects,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalreportingcompliance/$office_count),0,'.',',').'%</td>';
+                            echo '<td class="center">'.number_format($office_totalredprojects,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($office_totalyellowprojects,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($office_totalgreenprojects,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_totalreportingcompliance/$office_count),0,'.',',').'%</td>';
+
+                            echo '<td class="center">'.number_format($office_totaloutputs,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($office_completedactivities,0,'.',',').' / '.number_format($office_totalactivities,0,'.',',').'</td>';
                             
                             //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
                             echo '</tr>';
@@ -1154,6 +1175,9 @@ include_once 'totals_algo.php';
                             $region_totalexpired = 0;
                             $region_totalmonthspastdue = 0;
                             $region_count = count($processed_divisiondata[$division]["divisionlisting_region"]);
+                            $region_totaloutputs = 0;
+                            $region_totalactivities = 0;
+                            $region_completedactivities = 0;
 
 
                             
@@ -1162,24 +1186,34 @@ include_once 'totals_algo.php';
                                 echo '<tr>';
                                 echo '<td class="right">'.($i + $counterlast + 2).'.</td>';
                                 echo '<td class="left">'.$processed_divisiondata[$division]["divisionlisting_region"][$i]['office'].'</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable'],0,'.',',').'</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed'],0,'.',',').'</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['balance'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['vacant_posts'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
+                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable']/1000000,1,'.',',').' M</td>';
+                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed']/1000000,1,'.',',').' M</td>';
+                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['balance']/1000000,1,'.',',').' M</td>';
+
+                                echo '<td class="right">$ '.number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable']/$processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'])/1000000,1,'.',',').' M</td>';
+
+
+
+
+
+
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['vacant_posts'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
                                 //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
                                 //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_post_budget'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects']*100/$processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects']),0,'.',',').'%</td>';
-                                echo '<td class="right">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due']),0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects']*100/$processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects']),0,'.',',').'%</td>';
+                                echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due']),0,'.',',').'</td>';
 
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['red_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['yellow_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['green_projects'],0,'.',',').'</td>';
-                                echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'],0,'.',',').'%</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['red_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['yellow_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['green_projects'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'],0,'.',',').'%</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'],0,'.',',').'</td>';
+                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'],0,'.',',').' / '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'],0,'.',',').'</td>';
                                 
                                 //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
                                 echo '</tr>';
@@ -1202,30 +1236,40 @@ include_once 'totals_algo.php';
                                 $region_totalreportingcompliance += $processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'];
                                 $region_totalexpired += $processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'];
                                 $region_totalmonthspastdue += $processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due'];
+                                $region_totaloutputs += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'];
+                                $region_totalactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'];
+                                $region_completedactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'];
                             }
 
                             echo '<tr style="font-style:italic; font-weight:500;" class="summary">';
                             echo '<td class="right">&nbsp;</td>';
                             echo '<td class="left">Regional Summary</td>';
-                            echo '<td class="right">$ '.number_format($region_totalconsumable,0,'.',',').'</td>';
-                            echo '<td class="right">$ '.number_format($region_totalconsumed,0,'.',',').'</td>';
-                            echo '<td class="right">$ '.number_format($region_totalbalance,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($region_totalposts,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($region_totalfilledposts,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($region_totalvacantposts,0,'.',',').'</td>';
+                            echo '<td class="right">$ '.number_format($region_totalconsumable/1000000,1,'.',',').' M</td>';
+                            echo '<td class="right">$ '.number_format($region_totalconsumed/1000000,1,'.',',').' M</td>';
+                            echo '<td class="right">$ '.number_format($region_totalbalance/1000000,1,'.',',').' M</td>';
 
-                            echo '<td class="right">'.number_format(($region_totalvacancy/$region_count),0,'.',',').'%</td>';
+                            echo '<td class="right">$ '.number_format(($region_totalconsumable/$region_totalfilledposts)/1000000,1,'.',',').' M</td>';
+
+
+
+                            echo '<td class="center">'.number_format($region_totalposts,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($region_totalfilledposts,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($region_totalvacantposts,0,'.',',').'</td>';
+
+                            echo '<td class="center">'.number_format(($region_totalvacancy/$region_count),0,'.',',').'%</td>';
                             //echo '<td class="right">'.number_format(($region_totalsenior/$region_count),0,'.',',').'%</td>';
                             //echo '<td class="right">'.number_format($region_totalbudget,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($region_totalprojects,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($region_totalexpired,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($region_totalexpired*100/$region_totalprojects),0,'.',',').'%</td>';
-                            echo '<td class="right">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_region"]), 0, '.', ',').'</td>';
+                            echo '<td class="center">'.number_format($region_totalprojects,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($region_totalexpired,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($region_totalexpired*100/$region_totalprojects),0,'.',',').'%</td>';
+                            echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_region"]), 0, '.', ',').'</td>';
 
-                            echo '<td class="right">'.number_format($region_totalredprojects,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($region_totalyellowprojects,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format($region_totalgreenprojects,0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($region_totalreportingcompliance/$region_count),0,'.',',').'%</td>';
+                            echo '<td class="center">'.number_format($region_totalredprojects,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($region_totalyellowprojects,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($region_totalgreenprojects,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($region_totalreportingcompliance/$region_count),0,'.',',').'%</td>';
+                            echo '<td class="center">'.number_format($region_totaloutputs,0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format($region_completedactivities,0,'.',',').' / '.number_format($region_totalactivities,0,'.',',').'</td>';
                             
                             //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
                             echo '</tr>';
@@ -1233,36 +1277,46 @@ include_once 'totals_algo.php';
                             echo '<tr style="font-style:italic; font-weight:500;" class="summarytotal">';
                             echo '<td class="right">&nbsp;</td>';
                             echo '<td class="left">Total UNEP Summary</td>';
-                            echo '<td class="right">$ '.number_format(($office_totalconsumable+$region_totalconsumable),0,'.',',').'</td>';
-                            echo '<td class="right">$ '.number_format(($office_totalconsumed+$region_totalconsumed),0,'.',',').'</td>';
-                            echo '<td class="right">$ '.number_format(($office_totalbalance+$region_totalbalance),0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalposts+$region_totalposts),0,'.',',').'</td>';
-
-                            echo '<td class="right">'.number_format(($office_totalfilledposts+$region_totalfilledposts),0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalvacantposts+$region_totalvacantposts),0,'.',',').'</td>';
+                            echo '<td class="right">$ '.number_format(($office_totalconsumable+$region_totalconsumable)/1000000,1,'.',',').' M</td>';
+                            echo '<td class="right">$ '.number_format(($office_totalconsumed+$region_totalconsumed)/1000000,1,'.',',').' M</td>';
+                            echo '<td class="right">$ '.number_format(($office_totalbalance+$region_totalbalance)/1000000,1,'.',',').' M</td>';
+                            echo '<td class="right">$ '.number_format((($office_totalconsumable+$region_totalconsumable) / ($office_totalfilledposts+$region_totalfilledposts))/1000000,1,'.',',').' M</td>';
 
 
-                            echo '<td class="right">'.number_format(( (($office_totalvacancy/$office_count) + ($region_totalvacancy/$region_count)) / 2),0,'.',',').'%</td>';
+
+
+
+                            echo '<td class="center">'.number_format(($office_totalposts+$region_totalposts),0,'.',',').'</td>';
+
+                            echo '<td class="center">'.number_format(($office_totalfilledposts+$region_totalfilledposts),0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_totalvacantposts+$region_totalvacantposts),0,'.',',').'</td>';
+
+
+                            echo '<td class="center">'.number_format(( (($office_totalvacancy/$office_count) + ($region_totalvacancy/$region_count)) / 2),0,'.',',').'%</td>';
                             //echo '<td class="right">'.number_format(((($office_totalsenior/$office_count) + ($region_totalsenior/$region_count))/2),0,'.',',').'%</td>';
                             //echo '<td class="right">'.number_format(($office_totalbudget+$region_totalbudget),0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalprojects+$region_totalprojects),0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalexpired+$region_totalexpired),0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_totalprojects+$region_totalprojects),0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_totalexpired+$region_totalexpired),0,'.',',').'</td>';
 
-                            echo '<td class="right">'.number_format((($office_totalexpired+$region_totalexpired)*100/($office_totalprojects+$region_totalprojects)),0,'.',',').'%</td>';
-
-
+                            echo '<td class="center">'.number_format((($office_totalexpired+$region_totalexpired)*100/($office_totalprojects+$region_totalprojects)),0,'.',',').'%</td>';
 
 
 
 
-                            echo '<td class="right">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]), 0, '.', ',').'</td>';
+
+
+                            echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]), 0, '.', ',').'</td>';
 
 
 
-                            echo '<td class="right">'.number_format(($office_totalredprojects+$region_totalredprojects),0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalyellowprojects+$region_totalyellowprojects),0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(($office_totalgreenprojects+$region_totalgreenprojects),0,'.',',').'</td>';
-                            echo '<td class="right">'.number_format(((($office_totalreportingcompliance/$office_count)+($region_totalreportingcompliance/$region_count))/2),0,'.',',').'%</td>';
+                            echo '<td class="center">'.number_format(($office_totalredprojects+$region_totalredprojects),0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_totalyellowprojects+$region_totalyellowprojects),0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_totalgreenprojects+$region_totalgreenprojects),0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(((($office_totalreportingcompliance/$office_count)+($region_totalreportingcompliance/$region_count))/2),0,'.',',').'%</td>';
+
+                            echo '<td class="center">'.number_format(($office_totaloutputs+$region_totaloutputs),0,'.',',').'</td>';
+                            echo '<td class="center">'.number_format(($office_completedactivities+$region_completedactivities),0,'.',',').' / '.number_format(($office_totalactivities+$region_totalactivities),0,'.',',').'</td>';
+
                             
                             //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
                             echo '</tr>';

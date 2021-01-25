@@ -56,6 +56,20 @@ function gethealthcolor($health)
     return $color;
 }
 
+function gethealthimage($health)
+{
+    $color = 'red.png'; //red
+
+    if ($health >= 2.5) {
+        $color = 'green.png'; //green
+
+    } elseif ($health >= 1.5) {
+        $color = 'yellow.png'; // yellow
+    }
+
+    return $color;
+}
+
 function sortByOrder($a, $b)
 {
     return $a['order'] - $b['order'];
@@ -1218,12 +1232,18 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'total_posts' => $d_posts,
             'filled_posts' => ($d_posts - $d_vacant_posts),
             'vacant_posts' => $d_vacant_posts,
+            'total_outputs' => $d_outputs,
+            'total_activities' => $d_activities,
+            'completed_activities' => $d_completed_activities,
             'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
             'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
             'total_projects' => $d_projects,
             'red_projects' => $d_red_projects,
             'yellow_projects' => $d_yellow_projects,
             'green_projects' => $d_green_projects,
+            'total_projects' => $total_projects,
+            'total_health' => $total_project_health,
+            'final_rating' => $d_total_average_final_rating,
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
             'reporting_compliance' => $d_reporting_percentage,
             'total_days_past_due' => $d_overan_days,
@@ -1241,12 +1261,18 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'total_posts' => $d_posts,
             'filled_posts' => ($d_posts - $d_vacant_posts),
             'vacant_posts' => $d_vacant_posts,
+            'total_outputs' => $d_outputs,
+            'total_activities' => $d_activities,
+            'completed_activities' => $d_completed_activities,
             'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
             'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
             'total_projects' => $d_projects,
             'red_projects' => $d_red_projects,
             'yellow_projects' => $d_yellow_projects,
             'green_projects' => $d_green_projects,
+            'total_projects' => $total_projects,
+            'total_health' => $total_final_rating,
+            'final_rating' => $d_total_average_final_rating,
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
             'reporting_compliance' => $d_reporting_percentage,
             'total_days_past_due' => $d_overan_days,

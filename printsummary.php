@@ -58,6 +58,8 @@ $office_totalconsumable = 0;
 $office_totalconsumed = 0;
 $office_totalbalance = 0;
 $office_totalposts = 0;
+$office_totalfilledposts = 0;
+$office_totalvacantposts = 0;
 $office_totalvacancy = 0;
 $office_totalsenior = 0;
 $office_totalbudget= 0;
@@ -69,32 +71,41 @@ $office_totalreportingcompliance = 0;
 $office_totalexpired = 0;
 $office_totalmonthspastdue = 0;
 $office_count = count($processed_divisiondata[$division]["divisionlisting_office"]);
+$office_totaloutputs = 0;
+$office_totalactivities = 0;
+$office_completedactivities = 0;
 
 for ($i = 0; $i < $office_count; $i++) {
     $annex1table .= '<tr>';
     $annex1table .= '<td class="right">'.($i + 1).'.</td>';
     $annex1table .= '<td class="left">'.$processed_divisiondata[$division]["divisionlisting_office"][$i]['office'].'</td>';
-    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['balance'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
-    //$annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
-    //$annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_post_budget'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['red_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['yellow_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['green_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'],0,'.',',').'%</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due']),0,'.',',').'</td>';
-    //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
-    $annex1table .= '</tr>';
+    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable']/1000000,1,'.',',').' M</td>';
+    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed']/1000000,1,'.',',').' M</td>';
+    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['balance']/1000000,1,'.',',').' M</td>';
+    $annex1table .= '<td class="right">$ '.number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable']/$processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'])/1000000,1,'.',',').' M</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['vacant_posts'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects']*100/$processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects']),0,'.',',').'%</td>';
+    $annex1table .= '<td class="center">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due']),0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['red_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['yellow_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['green_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center"><img src="assets/images/'.gethealthimage($processed_divisiondata[$division]["divisionlisting_office"][$i]['final_rating']).' " style="vertical-align:middle; height:12px;"></td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'],0,'.',',').'%</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_outputs'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'],0,'.',',').' / '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'],0,'.',',').'</td>';
+    echo '</tr>';
 
     $office_totalconsumable += $processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable'];
     $office_totalconsumed += $processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed'];
     $office_totalbalance += $processed_divisiondata[$division]["divisionlisting_office"][$i]['balance'];
     $office_totalposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'];
+    $office_totalfilledposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'];
+    $office_totalvacantposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['vacant_posts'];
     $office_totalvacancy += $processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'];
     $office_totalsenior += $processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_senior_posts'];
     $office_totalbudget += $processed_divisiondata[$division]["divisionlisting_office"][$i]['average_post_budget'];
@@ -105,35 +116,47 @@ for ($i = 0; $i < $office_count; $i++) {
     $office_totalreportingcompliance += $processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'];
     $office_totalexpired += $processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'];
     $office_totalmonthspastdue += $processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due'];
+    $office_totaloutputs += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_outputs'];
+    $office_totalactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'];
+    $office_completedactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'];
+
     $counterlast = $i;
 }
 
-$annex1table .= '<tr style="font-style:italic; font-weight:500;" class="summary">';
+$annex1table .= '<tr style="font-style:italic;background-color: #f6f6f6;" class="">';
 $annex1table .= '<td class="right">&nbsp;</td>';
-$annex1table .= '<td class="left" style="font-style:italic;">Division Summary</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">$ '.number_format($office_totalconsumable,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">$ '.number_format($office_totalconsumed,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">$ '.number_format($office_totalbalance,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($office_totalposts,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format(($office_totalvacancy/$office_count),0,'.',',').'%</td>';
-//$annex1table .= '<td class="right" style="font-style:italic;">'.number_format(($office_totalsenior/$office_count),0,'.',',').'%</td>';
-//$annex1table .= '<td class="right">'.number_format($office_totalbudget,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($office_totalprojects,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($office_totalredprojects,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($office_totalyellowprojects,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($office_totalgreenprojects,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format(($office_totalreportingcompliance/$office_count),0,'.',',').'%</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($office_totalexpired,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_division"]), 0, '.', ',').'</td>';
-//echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+$annex1table .= '<td style="font-weight:bold;" class="left">Office Summary</td>';
+$annex1table .= '<td style="font-weight:bold;" class="right">$ '.number_format($office_totalconsumable/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td style="font-weight:bold;" class="right">$ '.number_format($office_totalconsumed/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td style="font-weight:bold;" class="right">$ '.number_format($office_totalbalance/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td style="font-weight:bold;" class="right">$ '.number_format(($office_totalconsumable/$office_totalfilledposts)/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalposts,0,'.',',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalfilledposts,0,'.',',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalvacantposts,0,'.',',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format(($office_totalvacancy/$office_count),0,'.',',').'%</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalprojects,0,'.',',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalexpired,0,'.',',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format(($office_totalexpired*100/$office_totalprojects),0,'.',',').'%</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_division"]), 0, '.', ',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalredprojects,0,'.',',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalyellowprojects,0,'.',',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalgreenprojects,0,'.',',').'</td>';
+
+$annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_health'],0,'.',',').'</td>';
+
+
+
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format(($office_totalreportingcompliance/$office_count),0,'.',',').'%</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totaloutputs,0,'.',',').'</td>';
+$annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_completedactivities,0,'.',',').' / '.number_format($office_totalactivities,0,'.',',').'</td>';
 $annex1table .= '</tr>';
-
-
 
 $region_totalconsumable = 0;
 $region_totalconsumed = 0;
 $region_totalbalance = 0;
 $region_totalposts = 0;
+$region_totalfilledposts = 0;
+$region_totalvacantposts = 0;
 $region_totalvacancy = 0;
 $region_totalsenior = 0;
 $region_totalbudget= 0;
@@ -145,6 +168,9 @@ $region_totalreportingcompliance = 0;
 $region_totalexpired = 0;
 $region_totalmonthspastdue = 0;
 $region_count = count($processed_divisiondata[$division]["divisionlisting_region"]);
+$region_totaloutputs = 0;
+$region_totalactivities = 0;
+$region_completedactivities = 0;
 
 
 
@@ -153,27 +179,33 @@ for ($i=0; $i < count($processed_divisiondata[$division]["divisionlisting_region
     $annex1table .= '<tr>';
     $annex1table .= '<td class="right">'.($i + $counterlast + 2).'.</td>';
     $annex1table .= '<td class="left">'.$processed_divisiondata[$division]["divisionlisting_region"][$i]['office'].'</td>';
-    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['balance'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
-    //$annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
-    //$annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_post_budget'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['red_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['yellow_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['green_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'],0,'.',',').'%</td>';
-    $annex1table .= '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'],0,'.',',').'</td>';
-    $annex1table .= '<td class="right">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due']),0,'.',',').'</td>';
-    //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable']/1000000,1,'.',',').' M</td>';
+    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed']/1000000,1,'.',',').' M</td>';
+    $annex1table .= '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['balance']/1000000,1,'.',',').' M</td>';
+    $annex1table .= '<td class="right">$ '.number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable']/$processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'])/1000000,1,'.',',').' M</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['vacant_posts'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects']*100/$processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects']),0,'.',',').'%</td>';
+    $annex1table .= '<td class="center">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due']),0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['red_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['yellow_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['green_projects'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center"><img src="assets/images/'.gethealthimage($processed_divisiondata[$division]["divisionlisting_region"][$i]['final_rating']).' " style="vertical-align:middle; height:12px;"></td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'],0,'.',',').'%</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'],0,'.',',').'</td>';
+    $annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'],0,'.',',').' / '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'],0,'.',',').'</td>';
     $annex1table .= '</tr>';
 
     $region_totalconsumable += $processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable'];
     $region_totalconsumed += $processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed'];
     $region_totalbalance += $processed_divisiondata[$division]["divisionlisting_region"][$i]['balance'];
     $region_totalposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'];
+    $region_totalfilledposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'];
+    $region_totalvacantposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['vacant_posts'];
     $region_totalvacancy += $processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'];
     $region_totalsenior += $processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_senior_posts'];
     $region_totalbudget += $processed_divisiondata[$division]["divisionlisting_region"][$i]['average_post_budget'];
@@ -184,52 +216,64 @@ for ($i=0; $i < count($processed_divisiondata[$division]["divisionlisting_region
     $region_totalreportingcompliance += $processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'];
     $region_totalexpired += $processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'];
     $region_totalmonthspastdue += $processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due'];
+    $region_totaloutputs += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'];
+    $region_totalactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'];
+    $region_completedactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'];
 }
 
-$annex1table .= '<tr class="summary">';
+$annex1table .= '<tr style="font-style:italic; font-weight:500;" class="summary">';
 $annex1table .= '<td class="right">&nbsp;</td>';
-$annex1table .= '<td class="left" style="font-style:italic;">Regional Summary</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">$ '.number_format($region_totalconsumable,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">$ '.number_format($region_totalconsumed,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">$ '.number_format($region_totalbalance,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($region_totalposts,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format(($region_totalvacancy/$region_count),0,'.',',').'%</td>';
-//$annex1table .= '<td class="right" style="font-style:italic;">'.number_format(($region_totalsenior/$region_count),0,'.',',').'%</td>';
-//$annex1table .= '<td class="right">'.number_format($region_totalbudget,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($region_totalprojects,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($region_totalredprojects,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($region_totalyellowprojects,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($region_totalgreenprojects,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format(($region_totalreportingcompliance/$region_count),0,'.',',').'%</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format($region_totalexpired,0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic;">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_region"]), 0, '.', ',').'</td>';
-//echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+$annex1table .= '<td class="left">Regional Summary</td>';
+$annex1table .= '<td class="right">$ '.number_format($region_totalconsumable/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td class="right">$ '.number_format($region_totalconsumed/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td class="right">$ '.number_format($region_totalbalance/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td class="right">$ '.number_format(($region_totalconsumable/$region_totalfilledposts)/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td class="center">'.number_format($region_totalposts,0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format($region_totalfilledposts,0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format($region_totalvacantposts,0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($region_totalvacancy/$region_count),0,'.',',').'%</td>';
+$annex1table .= '<td class="center">'.number_format($region_totalprojects,0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format($region_totalexpired,0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($region_totalexpired*100/$region_totalprojects),0,'.',',').'%</td>';
+$annex1table .= '<td class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_region"]), 0, '.', ',').'</td>';
+$annex1table .= '<td class="center">'.number_format($region_totalredprojects,0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format($region_totalyellowprojects,0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format($region_totalgreenprojects,0,'.',',').'</td>';
+
+
+$annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['final_rating'],0,'.',',').'</td>';
+
+$annex1table .= '<td class="center">'.number_format(($region_totalreportingcompliance/$region_count),0,'.',',').'%</td>';
+$annex1table .= '<td class="center">'.number_format($region_totaloutputs,0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format($region_completedactivities,0,'.',',').' / '.number_format($region_totalactivities,0,'.',',').'</td>';
 $annex1table .= '</tr>';
 
-$annex1table .= '<tr class="summarytotal">';
-$annex1table .= '<td class="right">&nbsp;</td>';
-$annex1table .= '<td class="left" style="font-style:italic; font-weight:bold;">Total UNEP Summary</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">$ '.number_format(($office_totalconsumable+$region_totalconsumable),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">$ '.number_format(($office_totalconsumed+$region_totalconsumed),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">$ '.number_format(($office_totalbalance+$region_totalbalance),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(($office_totalposts+$region_totalposts),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(( (($office_totalvacancy/$office_count) + ($region_totalvacancy/$region_count)) / 2),0,'.',',').'%</td>';
-//$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(((($office_totalsenior/$office_count) + ($region_totalsenior/$region_count))/2),0,'.',',').'%</td>';
-//$annex1table .= '<td class="right">'.number_format(($office_totalbudget+$region_totalbudget),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(($office_totalprojects+$region_totalprojects),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(($office_totalredprojects+$region_totalredprojects),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(($office_totalyellowprojects+$region_totalyellowprojects),0,'.',',').'</td>';
-$annex1table .= '<td class="right">'.number_format(($office_totalgreenprojects+$region_totalgreenprojects),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(((($office_totalreportingcompliance/$office_count)+($region_totalreportingcompliance/$region_count))/2),0,'.',',').'%</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(($office_totalexpired+$region_totalexpired),0,'.',',').'</td>';
-$annex1table .= '<td class="right" style="font-style:italic; font-weight:bold;">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]), 0, '.', ',').'</td>';
-//echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+$annex1table .= '<tr style="font-style:italic; font-weight:500;" class="summarytotal">';
+$annex1table .= '<td style="border:0px solid red;" class="right">&nbsp;</td>';
+$annex1table .= '<td style="font-weight:500;" class="left">Total UNEP Summary</td>';
+$annex1table .= '<td class="right">$ '.number_format(($office_totalconsumable+$region_totalconsumable)/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td class="right">$ '.number_format(($office_totalconsumed+$region_totalconsumed)/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td class="right">$ '.number_format(($office_totalbalance+$region_totalbalance)/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td class="right">$ '.number_format((($office_totalconsumable+$region_totalconsumable) / ($office_totalfilledposts+$region_totalfilledposts))/1000000,1,'.',',').' M</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totalposts+$region_totalposts),0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totalfilledposts+$region_totalfilledposts),0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totalvacantposts+$region_totalvacantposts),0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(( (($office_totalvacancy/$office_count) + ($region_totalvacancy/$region_count)) / 2),0,'.',',').'%</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totalprojects+$region_totalprojects),0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totalexpired+$region_totalexpired),0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format((($office_totalexpired+$region_totalexpired)*100/($office_totalprojects+$region_totalprojects)),0,'.',',').'%</td>';
+$annex1table .= '<td class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]), 0, '.', ',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totalredprojects+$region_totalredprojects),0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totalyellowprojects+$region_totalyellowprojects),0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totalgreenprojects+$region_totalgreenprojects),0,'.',',').'</td>';
+
+$annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["healthrating"],0,'.',',').'</td>';
+
+
+$annex1table .= '<td class="center">'.number_format(((($office_totalreportingcompliance/$office_count)+($region_totalreportingcompliance/$region_count))/2),0,'.',',').'%</td>';
+$annex1table .= '<td class="center">'.number_format(($office_totaloutputs+$region_totaloutputs),0,'.',',').'</td>';
+$annex1table .= '<td class="center">'.number_format(($office_completedactivities+$region_completedactivities),0,'.',',').' / '.number_format(($office_totalactivities+$region_totalactivities),0,'.',',').'</td>';
 $annex1table .= '</tr>';
-
-
-
-
-
 
 $annex1 = '<div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 1: Projects Table</h2>
@@ -239,21 +283,25 @@ $annex1 = '<div class="row reportbody section2">
                             <tr>
                                 <th>&nbsp;</th>
                                 <th class="left">Office</th>
-                                <th class="right">Consumable</th>
-                                <th class="right">Consumed</th>
-                                <th class="right">Balance</th>
-                                <th class="right">Total Posts</th>
-                                <th class="right">Percentage Vacancy</th>
-                                <!--<th class="right">% Senior Posts (D2,D1,P5)</th>
-                                <th class="right">Average<br/>Post Budget</th>-->
-                                <th class="right">Total Projects</th>
-                                <th class="right">Red Projects</th>
-                                <th class="right">Yellow Projects</th>
-                                <th class="right">Green Projects</th>
-                                <th class="right">Reporting Compliance</th>
-                                <th class="right">Expired Projects</th>
-                                <th class="right">Average Months Past Due</th>
-                                <!--<th class="right">Short<br/>Projects %</th>-->
+                                <th class="center">Consumable</th>
+                                <th class="center">Consumed</th>
+                                <th class="center">Balance</th>
+                                <th class="center">Budget to<br/>Staff Ratio</th>
+                                <th class="center">Total<br/>Posts</th>
+                                <th class="center">Filled<br/>Posts</th>
+                                <th class="center">Vacant<br/>Posts</th>
+                                <th class="center">%<br/>Vacancy</th>
+                                <th class="center">Total<br/>Projects</th>
+                                <th class="center">Expired<br/>Projects</th>
+                                <th class="center">% of Expired<br/>Projects</th>
+                                <th class="center">Avg.<br/>Months<br/>Past Due</th>
+                                <th class="center">Red<br/>Projects</th>
+                                <th class="center">Yellow<br/>Projects</th>
+                                <th class="center">Green<br/>Projects</th>
+                                <th class="center">Final<br/>Rating</th>
+                                <th class="center">Reporting<br/>Compliance</th>
+                                <th class="center">Total<br/>Outputs</th>
+                                <th class="center">Completed<br/>Activities</th>
                             </tr>
                         </thead>
                         <tbody>'.$annex1table.'
@@ -261,92 +309,6 @@ $annex1 = '<div class="row reportbody section2">
                     </table>
                 </div>
             </div>';
-/*
-$annex2table = '';
-$j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
-        $annex2table .= '<tr>';
-        $annex2table .= '<td>' . ($j + 1) . '.</td>';
-        $annex2table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-        $annex2table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-        $annex2table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-        $annex2table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        $annex2table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
-        $annex2table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-        $annex2table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
-        $annex2table .= '</tr>';
-        $j++;
-    }
-}
-
-$annex2 = '<div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 2: Vacant Positions Table</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th class="left">Grade</th>
-                                <th class="left">Position Title</th>
-                                <th class="left">Position Number</th>
-                                <th class="left">Duty Station</th>
-                                <th class="left">Fund</th>
-                                <th class="left">Org Code</th>
-                                <th class="left">Org Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>'.$annex2table.'
-                        </tbody>
-                    </table>
-                </div>
-            </div>';
-
-$annex3table = '';
-$j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
-        $annex3table .= '<tr>';
-        $annex3table .= '<td>' . ($j + 1) . '.</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        //$annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
-        $annex3table .= '</tr>';
-        $j++;
-    }
-}
-
-$annex3 = '<div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 3: Filled Positions Table</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th>Grade</th>
-                                <th>Position Title</th>
-                                <th>Position Number</th>
-                                <th>Duty Station</th>
-                                <!--<th>Fund</th>-->
-                                <th>Staff Name</th>
-                                <th>Org Code</th>
-                                <th>Org Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>'.$annex3table.'
-                        </tbody>
-                    </table>
-                </div>
-            </div>';
-*/
-
-
-
 
 $footer = '</div><!-- End of .toprint -->
     </div><!-- End of .container-fluid -->
