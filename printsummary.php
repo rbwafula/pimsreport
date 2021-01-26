@@ -74,6 +74,9 @@ $office_count = count($processed_divisiondata[$division]["divisionlisting_office
 $office_totaloutputs = 0;
 $office_totalactivities = 0;
 $office_completedactivities = 0;
+$office_completedactivities = 0;
+$office_projects = 0;
+$office_ratings = 0;
 
 for ($i = 0; $i < $office_count; $i++) {
     $annex1table .= '<tr>';
@@ -120,6 +123,8 @@ for ($i = 0; $i < $office_count; $i++) {
     $office_totalactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'];
     $office_completedactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'];
 
+    $office_projects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['o_projects'];
+    $office_ratings += $processed_divisiondata[$division]["divisionlisting_office"][$i]['o_ratings'];
     $counterlast = $i;
 }
 
@@ -141,11 +146,7 @@ $annex1table .= '<td style="font-weight:bold;" class="center">'.number_format(ab
 $annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalredprojects,0,'.',',').'</td>';
 $annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalyellowprojects,0,'.',',').'</td>';
 $annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totalgreenprojects,0,'.',',').'</td>';
-
-$annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_health'],0,'.',',').'</td>';
-
-
-
+$annex1table .= '<td class="center"><img src="assets/images/'.gethealthimage(($office_ratings/$office_projects)).' " style="vertical-align:middle; height:12px;"></td>';
 $annex1table .= '<td style="font-weight:bold;" class="center">'.number_format(($office_totalreportingcompliance/$office_count),0,'.',',').'%</td>';
 $annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_totaloutputs,0,'.',',').'</td>';
 $annex1table .= '<td style="font-weight:bold;" class="center">'.number_format($office_completedactivities,0,'.',',').' / '.number_format($office_totalactivities,0,'.',',').'</td>';
@@ -171,6 +172,8 @@ $region_count = count($processed_divisiondata[$division]["divisionlisting_region
 $region_totaloutputs = 0;
 $region_totalactivities = 0;
 $region_completedactivities = 0;
+$region_projects = 0;
+$region_ratings = 0;
 
 
 
@@ -219,6 +222,9 @@ for ($i=0; $i < count($processed_divisiondata[$division]["divisionlisting_region
     $region_totaloutputs += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'];
     $region_totalactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'];
     $region_completedactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'];
+
+    $region_projects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['o_projects'];
+    $region_ratings += $processed_divisiondata[$division]["divisionlisting_region"][$i]['o_ratings'];
 }
 
 $annex1table .= '<tr style="font-style:italic; font-weight:500;" class="summary">';
@@ -239,9 +245,7 @@ $annex1table .= '<td class="center">'.number_format(abs($processed_divisiondata[
 $annex1table .= '<td class="center">'.number_format($region_totalredprojects,0,'.',',').'</td>';
 $annex1table .= '<td class="center">'.number_format($region_totalyellowprojects,0,'.',',').'</td>';
 $annex1table .= '<td class="center">'.number_format($region_totalgreenprojects,0,'.',',').'</td>';
-
-
-$annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['final_rating'],0,'.',',').'</td>';
+$annex1table .= '<td class="center"><img src="assets/images/'.gethealthimage(($region_ratings/$region_projects)).' " style="vertical-align:middle; height:12px;"></td>';
 
 $annex1table .= '<td class="center">'.number_format(($region_totalreportingcompliance/$region_count),0,'.',',').'%</td>';
 $annex1table .= '<td class="center">'.number_format($region_totaloutputs,0,'.',',').'</td>';
@@ -266,10 +270,7 @@ $annex1table .= '<td class="center">'.number_format(abs($processed_divisiondata[
 $annex1table .= '<td class="center">'.number_format(($office_totalredprojects+$region_totalredprojects),0,'.',',').'</td>';
 $annex1table .= '<td class="center">'.number_format(($office_totalyellowprojects+$region_totalyellowprojects),0,'.',',').'</td>';
 $annex1table .= '<td class="center">'.number_format(($office_totalgreenprojects+$region_totalgreenprojects),0,'.',',').'</td>';
-
-$annex1table .= '<td class="center">'.number_format($processed_divisiondata[$division]["healthrating"],0,'.',',').'</td>';
-
-
+$annex1table .= '<td class="center"><img src="assets/images/'.gethealthimage($processed_divisiondata[$division]["healthrating"]).' " style="vertical-align:middle; height:12px;"></td>';
 $annex1table .= '<td class="center">'.number_format(((($office_totalreportingcompliance/$office_count)+($region_totalreportingcompliance/$region_count))/2),0,'.',',').'%</td>';
 $annex1table .= '<td class="center">'.number_format(($office_totaloutputs+$region_totaloutputs),0,'.',',').'</td>';
 $annex1table .= '<td class="center">'.number_format(($office_completedactivities+$region_completedactivities),0,'.',',').' / '.number_format(($office_totalactivities+$region_totalactivities),0,'.',',').'</td>';
