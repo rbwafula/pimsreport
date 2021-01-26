@@ -1201,7 +1201,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $divisionorder = in_array($dvalue, $divisionlist) ? 1 : 2;
     $filled_posts = $d_posts - $d_vacant_posts;
 
-    echo $d_projects;
+    //echo $d_projects;
 
     $overall_office_budget_distribution[] = [
         'office' => $dvalue,
@@ -1835,7 +1835,7 @@ usort($overall_office_budget_distribution_region, 'sortByConsumable');
 // }
 
 foreach ($overall_office_budget_distribution_office as $office) {
-    echo $office['o_projects'] . ' projects - ' . $office['o_ratings'] . ' total ratings';
+    //echo $office['o_projects'] . ' projects - ' . $office['o_ratings'] . ' total ratings';
 }
 $avg_months_past_due = round($total_overan_days / $t_past_projects) / 30;
 $processed_divisiondata['Unep'] = array(
