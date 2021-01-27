@@ -3,7 +3,7 @@ $month = Date("M") . ' ' . Date("Y");
 /*$office = array('Europe', 'Economy', 'Disasters and Conflicts', 'Latin America', 'Asia Pacific', 'Law', 'Communication', 'Ecosystems', 'Science', 'Africa', 'West Asia');
 $officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
 $division = $office[$officeid];*/
-include_once 'projects_algo.php';
+include_once 'proj_algo.php';
 $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($projectlisting));
 ?>
 <!DOCTYPE html>
@@ -54,7 +54,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Project Dashboard</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
-                       <select class="projectlisting"  name="projectlist" onchange="location=this.value;">
+                       <select class="projectlisting"  name="projectlist" style="max-width: 500px;" onchange="location=this.value;">
                             <?php
                             $projectlisting_keys = array_keys($projectlisting);
                             for ($i=0;$i<count($projectlisting);$i++) {
@@ -103,7 +103,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         </div>
                         <div class="col metric2">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["prodocamount"], 0, '.', ','); ?>
+                                <?php echo 'N/A';//number_format($projectlisting[$projectid]["prodocamount"], 0, '.', ','); ?>
                             </p>
                             <p class="metricdesc">Prodoc<br/>Amount</p>
                         </div>
@@ -127,7 +127,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         </div>
                         <div class="col metric6">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["rank"], 0, '.', ','); ?>
+                                <?php echo $projectlisting[$projectid]["rank"]; //number_format($projectlisting[$projectid]["rank"], 0, '.', ','); ?>
                             </p>
                             <p class="metricdesc">Project<br/>Rank</p>
                         </div>
