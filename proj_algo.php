@@ -25,23 +25,19 @@
 
 // bottom table - what are the outputs
 //BASIC FUNCTIONS
-function getdataobjectfromurl($url)
-{
-// CURL GET DATA FROM URL
+function getdataobjectfromurl($url) {
+    // CURL GET DATA FROM URL
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     $data = curl_exec($ch);
     curl_close($ch);
-
-// DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
+    // DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
     return json_decode($data);
 }
 
-function getdaysbetween($start, $end)
-{
+function getdaysbetween($start, $end) {
     $startDate = strtotime($start);
-
     if ($end) {
         $endDate = strtotime($end);
     } else {
@@ -53,40 +49,30 @@ function getdaysbetween($start, $end)
     return $days_duration;
 }
 
-function gethealthcolor($health)
-{
+function gethealthcolor($health) {
     $color = '#dc3545 !important'; //red
-
     if ($health >= 2.5) {
         $color = '#28a745 !important'; //green
-
     } elseif ($health >= 1.5) {
         $color = '#ffc107 !important'; // yellow
     }
-
     return $color;
 }
-function gethealthimage($health)
-{
+function gethealthimage($health) {
     $color = 'red.png'; //red
-
     if ($health >= 2.5) {
         $color = 'green.png'; //green
-
     } elseif ($health >= 1.5) {
         $color = 'yellow.png'; // yellow
     }
-
     return $color;
 }
 
-function sortByOrder($a, $b)
-{
+function sortByOrder($a, $b) {
     return $a['order'] - $b['order'];
 }
 
-function filter_unique($array, $key)
-{
+function filter_unique($array, $key) {
     $temp_array = [];
     $unique_keys = [];
     foreach ($array as &$v) {
@@ -94,25 +80,35 @@ function filter_unique($array, $key)
         if (!in_array($v[$key], $unique_keys)) {
             $temp_array[$v[$key]] = &$v;
         }
-
     }
     // $array = array_values($temp_array);
     return $array;
-
 }
 
 //FETCH DATA -> CACHED/LIVE
+$version = 'cached'; // live * Choose between: cached and live data here */
+$cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']).'/assets/data/'; // localhost address and folder path to data folder
+$livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
+$page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
+$urlsuffix = ($version == 'cached') ? '.json' : '';
 
-$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
-$url = $page_link . '/assets/data/final_data.json';
-//$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
-$activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';
-$outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
-$hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/officestaff_data';
+$url = $page_link.'final_data'.$urlsuffix;
+$activities_url = $page_link.'div_practivitycount_data'.$urlsuffix;
+$outputs_url = $page_link.'div_activitycount_data'.$urlsuffix;
+$hr_url = $page_link.'officestaff_data'.$urlsuffix;
+//$proj_activity_url = $page_link.'div_practivitycount_data'.$urlsuffix;
+$budget_commitment_url = $page_link.'reportfinancial_data'.$urlsuffix;
+$project_all_activities_url = $page_link.'allactivities_data'.$urlsuffix;
+$project_outputs_url = $page_link.'outputtracking_data'.$urlsuffix;
+
+/*$url = $page_link.'final_data'.$urlsuffix;
+$activities_url = $page_link . 'div_practivitycount_data';
+$outputs_url = $page_link . 'div_activitycount_data.json';
+$hr_url = $page_link . 'officestaff_data';
 $proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
 $budget_commitment_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/reportfinancial_data';
 $project_all_activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/allactivities_data';
-$project_outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/outputtracking_data';
+$project_outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/outputtracking_data';*/
 
 // GET PROJECTS DATA
 $all_projects_data = getdataobjectfromurl($url);
@@ -172,8 +168,6 @@ foreach ($all_projects_data as $key => $value) {
 }
 
 foreach ($all_projects_data as $key => $value) {
-    // var_dump($value);
-
     if (!$value->final_rating) {
         $project_rank = 'N/A';
     } else {
@@ -181,7 +175,7 @@ foreach ($all_projects_data as $key => $value) {
         $project_rank = array_search($f_rating, $unique_final_ratings) + 1;
     }
 
-    $project_id = 'PJ-' . $value->project_id;
+    $project_id = $value->project_id;
     $project_office = $value->managing_division;
     $project_fund_amount = $value->consumable_budget;
     $project_prodoc_amount = 'N/A';
@@ -189,8 +183,7 @@ foreach ($all_projects_data as $key => $value) {
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
 
-/* Simulating budget classes for the respective project */
-
+    /* Simulating budget classes for the respective project */
     $budgetclass_names = array();
     $budgetclass_amounts = array();
     $budgetclass_spent = array();
@@ -216,27 +209,20 @@ foreach ($all_projects_data as $key => $value) {
     foreach ($proj_outputs_data as $output) {
         $output_fundamount = 0;
         if ($output->projectID == $value->project_id) {
-
             foreach ($proj_activities_data as $activity) {
                 if ($activity->op_id == $output->output_id) {
-
-                    ///////
-
                     $activity_id = $activity->activity_no;
                     $activity_title = $activity->activity_title;
                     $activity_startdate = $activity->start_date;
                     $activity_enddate = $activity->end_date;
                     $activity_staff = $activity->resp_staff_email;
                     $activity_office = $activity->resp_division_id;
-
                     $activity_branch = $activity->resp_branch_id;
-
                     $activity_status = $activity->activity_tracking;
                     $activity_tracking_text = $activity->activity_tracking;
                     $activity_tracking_color = $activity->activity_traffic_light;
                     $activity_funded = $activity->funded;
                     $activity_fundamount = $activity->amount_funded;
-
                     // Fill in activity data
                     $activities_list[] = [
                         "id" => $activity_id,
@@ -255,12 +241,9 @@ foreach ($all_projects_data as $key => $value) {
                         "fundamount" => $activity_fundamount,
                     ];
                     $output_fundamount += $activity_fundamount;
-
-                    ////////
                     $activities_count++;
                 }
             }
-
             $outputs_activities[] = [
                 "id" => $output->output_id,
                 "title" => $output->output_name,
@@ -268,7 +251,6 @@ foreach ($all_projects_data as $key => $value) {
                 "fundamount" => $output_fundamount,
             ];
             $outputs_count++;
-
         }
     }
 
