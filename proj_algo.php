@@ -147,7 +147,7 @@ $i = 0;
 foreach ($all_projects_data as $key => $value) {
 
     if ($i == 1) {
-        //    var_dump($value);
+        //var_dump($value);
     }
     $i += 1;
 
@@ -182,6 +182,7 @@ foreach ($all_projects_data as $key => $value) {
     }
 
     $project_id = 'PJ-' . $value->project_id;
+    $project_title = $value->project_title;
     $project_office = $value->managing_division;
     $project_fund_amount = $value->consumable_budget;
     $project_prodoc_amount = 'N/A';
@@ -215,8 +216,10 @@ foreach ($all_projects_data as $key => $value) {
     $activities_count = 0;
 
     foreach ($proj_outputs_data as $output) {
-        $output_fundamount = 0;
+
         if ($output->projectID == $value->project_id) {
+            $output_fundamount = 0;
+            $activities_list = [];
 
             foreach ($proj_activities_data as $activity) {
                 if ($activity->op_id == $output->output_id) {
@@ -275,7 +278,7 @@ foreach ($all_projects_data as $key => $value) {
 
     $projectlisting[$project_id] = [
         "id" => $project_id,
-        "title" => "Example " . $project_id,
+        "title" => $project_title,
         "office" => $project_office,
         "fundamount" => $project_fund_amount,
         "prodocamount" => $project_prodoc_amount,
