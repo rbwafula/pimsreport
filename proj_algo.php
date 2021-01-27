@@ -203,9 +203,10 @@ foreach ($all_projects_data as $key => $value) {
             // Variables needed for budget classes
             $budgetclass_names[] = $budget->commitment_item;
             $budgetclass_amounts[] = $budget->consumable_budget;
-            $budgetclass_spent[] = $budget->consumed_budget;
-            $budgetclass_obligated[] = $budget->commitment_item_detail;
-            $budgetclass_expenditure[] = $budget->percentage_budget_utilized;
+            $budgetclass_spent[] = $budget->actual;
+            $budgetclass_obligated[] = $budget->commitment;
+            $budgetclass_expenditure[] = $budget->consumed_budget;
+
             $budgetclass_balance[] = $budget->consumable_budget - $budget->consumed_budget;
         }
     }
