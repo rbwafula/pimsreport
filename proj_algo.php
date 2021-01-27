@@ -147,7 +147,7 @@ $i = 0;
 foreach ($all_projects_data as $key => $value) {
 
     if ($i == 1) {
-        var_dump($value);
+        //    var_dump($value);
     }
     $i += 1;
 
@@ -193,14 +193,20 @@ foreach ($all_projects_data as $key => $value) {
 
     $budgetclass_names = array();
     $budgetclass_amounts = array();
+    $budgetclass_spent = array();
+    $budgetclass_obligated = array();
+    $budgetclass_expenditure = array();
 
     // BUDGET DATA FROM BUDGET COMMITMENT ENDPOINT
     foreach ($budget_data as $budget) {
         if ($budget->projectID == $value->project_id) {
             // Variables needed for budget classes
-            $budgetclass_names[] = $budget->commitment_item_detail;
+            $budgetclass_names[] = $budget->commitment_item;
             $budgetclass_amounts[] = $budget->consumable_budget;
-
+            $budgetclass_spent[] = $budget->consumed_budget;
+            $budgetclass_obligated[] = $budget->commitment_item_detail;
+            $budgetclass_expenditure[] = $budget->percentage_budget_utilized;
+            $budgetclass_balance[] = $budget->consumable_budget - $budget->consumed_budget;
         }
     }
     $outputs_activities = array();
@@ -208,14 +214,13 @@ foreach ($all_projects_data as $key => $value) {
     $activities_count = 0;
 
     foreach ($proj_outputs_data as $output) {
-
+        $output_fundamount = 0;
         if ($output->projectID == $value->project_id) {
 
             foreach ($proj_activities_data as $activity) {
                 if ($activity->op_id == $output->output_id) {
 
-///////
-                    var_dump($activity);
+                    ///////
 
                     $activity_id = $activity->activity_no;
                     $activity_title = $activity->activity_title;
@@ -253,13 +258,12 @@ foreach ($all_projects_data as $key => $value) {
 
                     ////////
                     $activities_count++;
-                    $outputs_activities[$output->output_id] = $activity;
                 }
             }
 
             $outputs_activities[] = [
-                "id" => $output_id,
-                "title" => $output_title,
+                "id" => $output->output_id,
+                "title" => $output->output_name,
                 "activities" => $activities_list,
                 "fundamount" => $output_fundamount,
             ];
