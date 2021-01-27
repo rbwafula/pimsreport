@@ -25,7 +25,8 @@
 
 // bottom table - what are the outputs
 //BASIC FUNCTIONS
-function getdataobjectfromurl($url) {
+function getdataobjectfromurl($url)
+{
     // CURL GET DATA FROM URL
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -35,7 +36,8 @@ function getdataobjectfromurl($url) {
     // DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
     return json_decode($data);
 }
-function getdaysbetween($start, $end) {
+function getdaysbetween($start, $end)
+{
     $startDate = strtotime($start);
     if ($end) {
         $endDate = strtotime($end);
@@ -47,7 +49,8 @@ function getdaysbetween($start, $end) {
     $days_duration = round($datediff / (60 * 60 * 24));
     return $days_duration;
 }
-function gethealthcolor($health) {
+function gethealthcolor($health)
+{
     $color = '#dc3545 !important'; //red
     if ($health >= 2.5) {
         $color = '#28a745 !important'; //green
@@ -56,7 +59,8 @@ function gethealthcolor($health) {
     }
     return $color;
 }
-function gethealthimage($health) {
+function gethealthimage($health)
+{
     $color = 'red.png'; //red
     if ($health >= 2.5) {
         $color = 'green.png'; //green
@@ -65,10 +69,12 @@ function gethealthimage($health) {
     }
     return $color;
 }
-function sortByOrder($a, $b) {
+function sortByOrder($a, $b)
+{
     return $a['order'] - $b['order'];
 }
-function filter_unique($array, $key) {
+function filter_unique($array, $key)
+{
     $temp_array = [];
     $unique_keys = [];
     foreach ($array as &$v) {
@@ -96,7 +102,6 @@ $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
 $budget_commitment_url = $page_link . 'reportfinancial_data' . $urlsuffix;
 $project_all_activities_url = $page_link . 'allactivities_data' . $urlsuffix;
 $project_outputs_url = $page_link . 'outputtracking_data' . $urlsuffix;
-
 
 $all_projects_data = getdataobjectfromurl($url); // GET PROJECTS DATA
 $activities_data = getdataobjectfromurl($activities_url); // GET ACTIVITIES DATA
@@ -173,6 +178,7 @@ foreach ($all_projects_data as $key => $value) {
     $budgetclass_spent = array();
     $budgetclass_obligated = array();
     $budgetclass_expenditure = array();
+    $budgetclass_balance = array();
 
     // BUDGET DATA FROM BUDGET COMMITMENT ENDPOINT
     foreach ($budget_data as $budget) {
@@ -200,11 +206,13 @@ foreach ($all_projects_data as $key => $value) {
             }
         }
     }
+
+    var_dump($budgetclass_balance[$ckey]);
     $outputs_activities = array();
     $outputs_count = 0;
     $activities_count = 0;
 
-    $activity_status_desc = array ("0" => "Not Defined", "1" => "Not Started", "2" => "In Progress", "3" => "Completed");
+    $activity_status_desc = array("0" => "Not Defined", "1" => "Not Started", "2" => "In Progress", "3" => "Completed");
 
     foreach ($proj_outputs_data as $output) {
         if ($output->projectID == $value->project_id) {
