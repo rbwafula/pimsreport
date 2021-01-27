@@ -188,6 +188,7 @@ foreach ($all_projects_data as $key => $value) {
 
 /* Simulating budget classes for the respective project */
 
+    $budgetclass_keys = array();
     $budgetclass_names = array();
     $budgetclass_amounts = array();
     $budgetclass_spent = array();
@@ -198,12 +199,12 @@ foreach ($all_projects_data as $key => $value) {
     foreach ($budget_data as $budget) {
         if ($budget->projectID == $value->project_id) {
             // Variables needed for budget classes
+            $budgetclass_keys[] = $budget->commitment_item_key;
             $budgetclass_names[] = $budget->commitment_item;
             $budgetclass_amounts[] = $budget->consumable_budget;
             $budgetclass_spent[] = $budget->actual;
             $budgetclass_obligated[] = $budget->commitment;
             $budgetclass_expenditure[] = $budget->consumed_budget;
-
             $budgetclass_balance[] = $budget->consumable_budget - $budget->consumed_budget;
         }
     }
@@ -284,7 +285,7 @@ foreach ($all_projects_data as $key => $value) {
         "rank" => $project_rank,
         "healthrating" => $project_healthrating,
         "healthcolor" => gethealthcolor($project_healthrating),
-        "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts),
+        "budgetclass" => array("keys" => $budgetclass_keys, "names" => $budgetclass_names, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "outputs_activities" => $outputs_activities,
     ];
 

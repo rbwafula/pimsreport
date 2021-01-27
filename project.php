@@ -138,14 +138,17 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                     <!-- -->
                     <h5 class="sectiontitle">Budget Classes</h5>
                     <div class="table-responsive">
-                        <table class="table table-striped table-sm">
+                        <table class="table table-striped table-sm budgetclass">
                             <!--Budget classes table here
                             <hr/>-->
                             <thead>
                                 <tr>
                                     <th></th>
                                     <th>Budget Class</th>
-                                    <th>Amount</th>
+                                    <th>Spent</th>
+                                    <th>Obligated</th>
+                                    <th>Expenditure</th>
+                                    <th>Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -153,8 +156,12 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                 for ($i=0;$i<count($projectlisting[$projectid]["budgetclass"]["names"]);$i++) {
                                     echo '<tr>';
                                     echo '<td>'.($i+1).'</td>';
+                                    //echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
                                     echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
-                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["amounts"][$i],0,'.',',').'</td>';
+                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["spent"][$i],0,'.',',').'</td>';
+                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["obligated"][$i],0,'.',',').'</td>';
+                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["expenditure"][$i],0,'.',',').'</td>';
+                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["balance"][$i],0,'.',',').'</td>';
                                     echo '</tr>';
                                 }
                                 ?>

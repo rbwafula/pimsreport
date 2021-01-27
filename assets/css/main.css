@@ -289,7 +289,12 @@ table tbody tr.summary td {
 	font-weight: bold;
 }
 
-
+table.budgetclass {
+	font-size: 11px;
+}
+table.budgetclass td {
+	padding: 2px 4px !important;
+}
 @page { 
 	size: auto;  
 	margin: 0mm; 
