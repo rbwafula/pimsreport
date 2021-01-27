@@ -110,8 +110,8 @@ $activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-a
 $outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
 $hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/officestaff_data';
 $proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
-$budget_commitment_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/budgetcommitment_data';
-$project_all_activities_url = 'https://projects.unep.org/modules/main/pims3-api/allactivities_data';
+$budget_commitment_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/reportfinancial_data';
+$project_all_activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/allactivities_data';
 $project_outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/outputtracking_data';
 
 // GET PROJECTS DATA
@@ -125,10 +125,10 @@ $outputs_data = getdataobjectfromurl($outputs_url);
 
 //GET HR DATA
 $hr_data_uf = getdataobjectfromurl($hr_url);
-$proj_outputs_data = getdataobjectfromurl($proj_activity_url);
+$proj_outputs_data = getdataobjectfromurl($project_outputs_url);
 
-$proj_activities_data = getdataobjectfromurl($project_outputs_url);
-$commitment_data = getdataobjectfromurl($budget_commitment_url);
+$proj_activities_data = getdataobjectfromurl($project_all_activities_url);
+$budget_data = getdataobjectfromurl($budget_commitment_url);
 
 $hr_data = [];
 $unique_posids = [];
@@ -145,6 +145,7 @@ $unique_final_ratings = [0];
 
 $i = 0;
 foreach ($all_projects_data as $key => $value) {
+
     if ($i == 1) {
         var_dump($value);
     }
@@ -171,29 +172,7 @@ foreach ($all_projects_data as $key => $value) {
 }
 
 foreach ($all_projects_data as $key => $value) {
-    $project_outputs = [];
-    $project_budget_classes = [];
-    $project_classes_amounts = [];
-
-    foreach ($commitment_data as $c) {
-        if ($c->projectID == $value->project_id) {
-            if ($c->commitment_item) {
-                $project_budget_classes[] = $c->commitment_item;
-                $project_classes_amounts[] = $c->consumable_budget;
-            }
-        }
-    }
-    foreach ($proj_activities_data as $output) {
-        if ($output->projectID == $value->project_id) {
-            $project_outputs[] = $output;
-        }
-    }
-
-    if (isset($value->StartDate) && isset($value->EndDate)) {
-        $project_duration = getdaysbetween($value->StartDate, $value->EndDate);
-    } else {
-        $project_duration = 'NO DATE(S)';
-    }
+    // var_dump($value);
 
     if (!$value->final_rating) {
         $project_rank = 'N/A';
@@ -202,22 +181,173 @@ foreach ($all_projects_data as $key => $value) {
         $project_rank = array_search($f_rating, $unique_final_ratings) + 1;
     }
 
-    var_dump($project_budget_classes);
+    $project_id = 'PJ-' . $value->project_id;
+    $project_office = $value->managing_division;
+    $project_fund_amount = $value->consumable_budget;
+    $project_prodoc_amount = 'N/A';
+    $project_duration = getdaysbetween($value->StartDate, $value->EndDate);
+    $project_rank = $project_rank;
+    $project_healthrating = $value->final_rating;
 
-    $processed_spdata[$value->project_id] = [
-        'project_title' => $value->project_title
-        , 'project_fund_amount' => $value->consumable_budget
-        , 'project_prodoc_amount' => 0//$value->consumable_budget,
-        , 'project_outputs_count' => count($project_outputs)
-        , 'project_activities_count' => 0
-        , 'project_duration' => $project_duration
-        , 'project_rank' => $project_rank
-        , 'project_health_rating' => $value->final_rating
-        , 'project_health_rating_color' => gethealthcolor($value->final_rating)
-        , 'project_budget_information' => [$project_budget_classes, $project_classes_amounts],
+/* Simulating budget classes for the respective project */
+
+    $budgetclass_names = array();
+    $budgetclass_amounts = array();
+
+    // BUDGET DATA FROM BUDGET COMMITMENT ENDPOINT
+    foreach ($budget_data as $budget) {
+        if ($budget->projectID == $value->project_id) {
+            // Variables needed for budget classes
+            $budgetclass_names[] = $budget->commitment_item_detail;
+            $budgetclass_amounts[] = $budget->consumable_budget;
+
+        }
+    }
+    $outputs_activities = array();
+    $outputs_count = 0;
+    $activities_count = 0;
+
+    foreach ($proj_outputs_data as $output) {
+
+        if ($output->projectID == $value->project_id) {
+
+            foreach ($proj_activities_data as $activity) {
+                if ($activity->op_id == $output->output_id) {
+
+///////
+                    var_dump($activity);
+
+                    $activity_id = $activity->activity_no;
+                    $activity_title = $activity->activity_title;
+                    $activity_startdate = $activity->start_date;
+                    $activity_enddate = $activity->end_date;
+                    $activity_staff = $activity->resp_staff_email;
+                    $activity_office = $activity->resp_division_id;
+
+                    $activity_branch = $activity->resp_branch_id;
+
+                    $activity_status = $activity->activity_tracking;
+                    $activity_tracking_text = $activity->activity_tracking;
+                    $activity_tracking_color = $activity->activity_traffic_light;
+                    $activity_funded = $activity->funded;
+                    $activity_fundamount = $activity->amount_funded;
+
+                    // Fill in activity data
+                    $activities_list[] = [
+                        "id" => $activity_id,
+                        "title" => $activity_title,
+                        "startdate" => $activity_startdate,
+                        "enddate" => $activity_enddate,
+                        "duration" => getdaysbetween($activity_startdate, $activity_enddate),
+                        "elapsed" => getdaysbetween($activity_startdate, date("d-m-Y", time())),
+                        "staff" => $activity_staff,
+                        "office" => $activity_office,
+                        "branch" => $activity_branch,
+                        "status" => $activity_status,
+                        "trackingtext" => $activity_tracking_text,
+                        "trackingcolor" => $activity_tracking_color,
+                        "funded" => $activity_funded,
+                        "fundamount" => $activity_fundamount,
+                    ];
+                    $output_fundamount += $activity_fundamount;
+
+                    ////////
+                    $activities_count++;
+                    $outputs_activities[$output->output_id] = $activity;
+                }
+            }
+
+            $outputs_activities[] = [
+                "id" => $output_id,
+                "title" => $output_title,
+                "activities" => $activities_list,
+                "fundamount" => $output_fundamount,
+            ];
+            $outputs_count++;
+
+        }
+    }
+
+    $projectlisting[$project_id] = [
+        "id" => $project_id,
+        "title" => "Example " . $project_id,
+        "office" => $project_office,
+        "fundamount" => $project_fund_amount,
+        "prodocamount" => $project_prodoc_amount,
+        "outputscount" => $outputs_count,
+        "activitiescount" => $activities_count,
+        "duration" => $project_duration,
+        "rank" => $project_rank,
+        "healthrating" => $project_healthrating,
+        "healthcolor" => gethealthcolor($project_healthrating),
+        "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts),
+        "outputs_activities" => $outputs_activities,
     ];
 
-    // var_dump($project_outputs);
-    echo '<br/>_________________________________<br />';
-
 }
+
+var_dump($projectlisting);
+// foreach ($all_projects_data as $key => $value) {
+//     $project_outputs = [];
+//     $project_budget_classes = [];
+//     $project_classes_amounts = [];
+
+//     foreach ($commitment_data as $c) {
+//         if ($c->projectID == $value->project_id) {
+//             if ($c->commitment_item) {
+//                 $project_budget_classes[] = $c->commitment_item;
+//                 $project_classes_amounts[] = $c->consumable_budget;
+//             }
+//         }
+//     }
+//     foreach ($proj_activities_data as $output) {
+//         if ($output->projectID == $value->project_id) {
+//             $project_outputs[] = $output;
+//         }
+//     }
+
+//     if (isset($value->StartDate) && isset($value->EndDate)) {
+//         $project_duration = getdaysbetween($value->StartDate, $value->EndDate);
+//     } else {
+//         $project_duration = 'NO DATE(S)';
+//     }
+
+//     if (!$value->final_rating) {
+//         $project_rank = 'N/A';
+//     } else {
+//         $f_rating = $value->final_rating;
+//         $project_rank = array_search($f_rating, $unique_final_ratings) + 1;
+//     }
+
+//     var_dump($project_budget_classes);
+
+//     $processed_spdata[$value->project_id] = [
+
+//         "id" => $project_id,
+//         "title" => $value->project_title,
+//         "office" => $project_office,
+//         "fundamount" => $value->consumable_budget,
+//         "prodocamount" => $project_prodoc_amount,
+//         "outputscount" => count($project_outputs),
+//         "activitiescount" => $activities_count,
+//         "duration" => $project_duration,
+//         "rank" => $project_rank,
+//         "healthrating" => $project_healthrating,
+//         "healthcolor" => gethealthcolor($project_healthrating),
+//         "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts),
+//         "outputs_activities" => $outputs_activities
+
+//         //new project details
+
+//         , 'project_prodoc_amount' => 0//$value->consumable_budget,
+//         , 'project_activities_count' => 0
+//         , 'project_duration' => $project_duration
+//         , 'project_health_rating' => $value->final_rating
+//         , 'project_health_rating_color' => gethealthcolor($value->final_rating)
+//         , 'project_budget_information' => [$project_budget_classes, $project_classes_amounts],
+//     ];
+
+//     // var_dump($project_outputs);
+//     echo '<br/>_________________________________<br />';
+
+// }
