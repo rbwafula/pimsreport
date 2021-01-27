@@ -5,6 +5,9 @@ $officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
 $division = $office[$officeid];*/
 include_once 'proj_algo.php';
 $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($projectlisting));
+echo '<pre>';
+var_dump($projectlisting[$projectid]["budgetclass"]["balance"]);
+echo '</pre>';
 ?>
 <!DOCTYPE html>
 <html>
@@ -136,7 +139,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                 </div>
                 <div class="col-md-6">
                     <!-- -->
-                    <h5 class="sectiontitle">Budget Classes</h5>
+                    <h5 class="sectiontitle">Project Budget</h5>
                     <div class="table-responsive">
                         <table class="table table-striped table-sm budgetclass">
                             <!--Budget classes table here
@@ -144,39 +147,55 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Budget Class</th>
-                                    <th>Spent</th>
-                                    <th>Obligated</th>
-                                    <th>Expenditure</th>
-                                    <th>Balance</th>
+                                    <th class="text-left">Budget Class</th>
+                                    <th class="text-right">Budget</th>
+                                    <th class="text-center">Commitment</th>
+                                    <th class="text-center">Actual</th>
+                                    <th class="text-center">Total<br/>Consumed</th>
+                                    <th class="text-center">Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
+                                $budgetbalance = 0;
                                 for ($i=0;$i<count($projectlisting[$projectid]["budgetclass"]["names"]);$i++) {
                                     echo '<tr>';
-                                    echo '<td>'.($i+1).'</td>';
+                                    echo '<td class="text-right">'.($i+1).'.</td>';
                                     //echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
                                     echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
-                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["spent"][$i],0,'.',',').'</td>';
+                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["amounts"][$i],0,'.',',').'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["obligated"][$i],0,'.',',').'</td>';
+                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["spent"][$i],0,'.',',').'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["expenditure"][$i],0,'.',',').'</td>';
-                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["balance"][$i],0,'.',',').'</td>';
+                                    $balanceclass = ($projectlisting[$projectid]["budgetclass"]["balance"][$i] < 0) ? 'red' : '';
+                                    echo '<td class="text-right '.$balanceclass.'">'. number_format($projectlisting[$projectid]["budgetclass"]["balance"][$i],0,'.',',').'</td>';
                                     echo '</tr>';
+                                    $budgetbalance += $projectlisting[$projectid]["budgetclass"]["balance"][$i];
                                 }
+                                /* Totals */
+                                echo '<tr class="total">';
+                                echo '<td>&nbsp;</td>';
+                                echo '<td>Total</td>';
+                                echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["amounts"]),0,'.',',').'</td>';
+                                echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["obligated"]),0,'.',',').'</td>';
+                                echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["spent"]),0,'.',',').'</td>';
+                                echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["expenditure"]),0,'.',',').'</td>';
+                                echo '<td class="text-right">'.number_format($budgetbalance,0,'.',',').'</td>';
+                                echo '</tr>';
                                 ?>
                             </tbody>
                         </table>
+                        <p class="quote text-right">Finacial data as at: insert date here</p>
                     </div>
                     
                 </div>
-                <p class="quote">Do the difficult things while they are easy and do the great things while they are small. — LAO TZU</p>
+                <p class="quote hidden">Do the difficult things while they are easy and do the great things while they are small. — LAO TZU</p>
             </div>
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 1: Outputs &amp; Activites</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm">
+                    <table class="table table-striped table-sm activitytable">
                         <thead>
                             <tr>
                                 <th class="center">Activity #</th>

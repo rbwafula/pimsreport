@@ -25,8 +25,7 @@
 
 // bottom table - what are the outputs
 //BASIC FUNCTIONS
-function getdataobjectfromurl($url)
-{
+function getdataobjectfromurl($url) {
     // CURL GET DATA FROM URL
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -36,9 +35,7 @@ function getdataobjectfromurl($url)
     // DATA COMES IN AS STRING, CONVERT TO JSON OBJECT
     return json_decode($data);
 }
-
-function getdaysbetween($start, $end)
-{
+function getdaysbetween($start, $end) {
     $startDate = strtotime($start);
     if ($end) {
         $endDate = strtotime($end);
@@ -50,9 +47,7 @@ function getdaysbetween($start, $end)
     $days_duration = round($datediff / (60 * 60 * 24));
     return $days_duration;
 }
-
-function gethealthcolor($health)
-{
+function gethealthcolor($health) {
     $color = '#dc3545 !important'; //red
     if ($health >= 2.5) {
         $color = '#28a745 !important'; //green
@@ -61,8 +56,7 @@ function gethealthcolor($health)
     }
     return $color;
 }
-function gethealthimage($health)
-{
+function gethealthimage($health) {
     $color = 'red.png'; //red
     if ($health >= 2.5) {
         $color = 'green.png'; //green
@@ -71,14 +65,10 @@ function gethealthimage($health)
     }
     return $color;
 }
-
-function sortByOrder($a, $b)
-{
+function sortByOrder($a, $b) {
     return $a['order'] - $b['order'];
 }
-
-function filter_unique($array, $key)
-{
+function filter_unique($array, $key) {
     $temp_array = [];
     $unique_keys = [];
     foreach ($array as &$v) {
@@ -92,7 +82,7 @@ function filter_unique($array, $key)
 }
 
 //FETCH DATA -> CACHED/LIVE
-$version = 'live'; // live * Choose between: cached and live data here */
+$version = 'cached'; // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
 $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
@@ -107,28 +97,12 @@ $budget_commitment_url = $page_link . 'reportfinancial_data' . $urlsuffix;
 $project_all_activities_url = $page_link . 'allactivities_data' . $urlsuffix;
 $project_outputs_url = $page_link . 'outputtracking_data' . $urlsuffix;
 
-/*$url = $page_link.'final_data'.$urlsuffix;
-$activities_url = $page_link . 'div_practivitycount_data';
-$outputs_url = $page_link . 'div_activitycount_data.json';
-$hr_url = $page_link . 'officestaff_data';
-$proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
-$budget_commitment_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/reportfinancial_data';
-$project_all_activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/allactivities_data';
-$project_outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/outputtracking_data';*/
 
-// GET PROJECTS DATA
-$all_projects_data = getdataobjectfromurl($url);
-
-// GET ACTIVITIES DATA
-$activities_data = getdataobjectfromurl($activities_url);
-
-// GET OUTPUTS DATA
-$outputs_data = getdataobjectfromurl($outputs_url);
-
-//GET HR DATA
-$hr_data_uf = getdataobjectfromurl($hr_url);
+$all_projects_data = getdataobjectfromurl($url); // GET PROJECTS DATA
+$activities_data = getdataobjectfromurl($activities_url); // GET ACTIVITIES DATA
+$outputs_data = getdataobjectfromurl($outputs_url); // GET OUTPUTS DATA
+$hr_data_uf = getdataobjectfromurl($hr_url); //GET HR DATA
 $proj_outputs_data = getdataobjectfromurl($project_outputs_url);
-
 $proj_activities_data = getdataobjectfromurl($project_all_activities_url);
 $budget_data = getdataobjectfromurl($budget_commitment_url);
 
@@ -211,21 +185,16 @@ foreach ($all_projects_data as $key => $value) {
                     $budgetclass_spent[] = $budget->actual;
                     $budgetclass_obligated[] = $budget->commitment;
                     $budgetclass_expenditure[] = $budget->consumed_budget;
-
                     $budgetclass_balance[] = $budget->consumable_budget - $budget->consumed_budget;
                 } else {
                     foreach ($budgetclass_names as $ckey => $cvalue) {
-
                         if ($cvalue == $budget->commitment_item) {
                             $budgetclass_amounts[$ckey] = $budgetclass_amounts[$ckey] + $budget->consumable_budget;
                             $budgetclass_spent[$ckey] = $budgetclass_spent[$ckey] + $budget->actual;
                             $budgetclass_obligated[$ckey] = $budgetclass_obligated[$ckey] + $budget->commitment;
                             $budgetclass_expenditure[$ckey] = $budgetclass_expenditure[$ckey] + $budget->consumed_budget;
-
-                            $budgetclass_balance[] = $budgetclass_amounts[$ckey] - $budgetclass_expenditure[$ckey];
-
+                            $budgetclass_balance[$ckey] = $budgetclass_amounts[$ckey] - $budgetclass_expenditure[$ckey];
                         }
-
                     }
                 }
             }
@@ -235,27 +204,23 @@ foreach ($all_projects_data as $key => $value) {
     $outputs_count = 0;
     $activities_count = 0;
 
-    foreach ($proj_outputs_data as $output) {
+    $activity_status_desc = array ("0" => "Not Defined", "1" => "Not Started", "2" => "In Progress", "3" => "Completed");
 
+    foreach ($proj_outputs_data as $output) {
         if ($output->projectID == $value->project_id) {
             $output_fundamount = 0;
             $activities_list = [];
 
             foreach ($proj_activities_data as $activity) {
                 if ($activity->op_id == $output->output_id) {
-
-                    ///////
-
                     $activity_id = $activity->activity_no;
                     $activity_title = $activity->activity_title;
                     $activity_startdate = $activity->start_date;
                     $activity_enddate = $activity->end_date;
                     $activity_staff = $activity->resp_staff_email;
                     $activity_office = $activity->resp_division_id;
-
                     $activity_branch = $activity->resp_branch_id;
-
-                    $activity_status = $activity->activity_tracking;
+                    $activity_status = $activity_status_desc[$activity->status_id];
                     $activity_tracking_text = $activity->activity_tracking;
                     $activity_tracking_color = $activity->activity_traffic_light;
                     $activity_funded = $activity->funded;
@@ -279,8 +244,6 @@ foreach ($all_projects_data as $key => $value) {
                         "fundamount" => $activity_fundamount,
                     ];
                     $output_fundamount += $activity_fundamount;
-
-                    ////////
                     $activities_count++;
                 }
             }
@@ -292,7 +255,6 @@ foreach ($all_projects_data as $key => $value) {
                 "fundamount" => $output_fundamount,
             ];
             $outputs_count++;
-
         }
     }
 
@@ -308,10 +270,9 @@ foreach ($all_projects_data as $key => $value) {
         "rank" => $project_rank,
         "healthrating" => $project_healthrating,
         "healthcolor" => gethealthcolor($project_healthrating),
-        "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts),
+        "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "outputs_activities" => $outputs_activities,
     ];
-
 }
 
 //var_dump($projectlisting);

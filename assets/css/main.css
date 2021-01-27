@@ -291,9 +291,22 @@ table tbody tr.summary td {
 
 table.budgetclass {
 	font-size: 11px;
+	line-height: 1.375;
 }
 table.budgetclass td {
 	padding: 2px 4px !important;
+}
+table.budgetclass td.red {
+	color: #dc3545 !important;
+}
+table.budgetclass .total td {
+	font-weight: bold;
+}
+table.activitytable .output td {
+	font-style: italic;
+}
+table.activitytable .activity td {
+	font-size: 10px;
 }
 @page { 
 	size: auto;  
