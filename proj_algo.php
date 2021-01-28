@@ -140,6 +140,8 @@ $unique_final_ratings = [0];
 
 $i = 0;
 $refresh_date = '2021-01-28';
+$coding_block = '';
+
 foreach ($all_projects_data as $key => $value) {
 
     if ($i == 1) {
@@ -197,7 +199,6 @@ foreach ($all_projects_data as $key => $value) {
 /* Simulating budget classes for the respective project */
 
     $budgetclass_names = array();
-    $budgetclass_codes = array();
     $budgetclass_amounts = array();
     $budgetclass_spent = array();
     $budgetclass_obligated = array();
@@ -219,8 +220,12 @@ foreach ($all_projects_data as $key => $value) {
                     if (!$order) {
                         $order = rand(10, 100);
                     }
+
+                    if ($budget->funded_program_key) {
+                        $coding_block = $budget->funded_program_key;
+                    }
+
                     $budgetclass_names[$order] = $budget->commitment_item;
-                    $budgetclass_codes[$order] = $budget->funded_program_key;
                     $budgetclass_amounts[$order] = $budget->consumable_budget;
                     $budgetclass_spent[$order] = $budget->actual;
                     $budgetclass_obligated[$order] = $budget->commitment;
@@ -241,7 +246,6 @@ foreach ($all_projects_data as $key => $value) {
         }
     }
     sort($budgetclass_names);
-    sort($budgetclass_codes);
     sort($budgetclass_amounts);
     sort($budgetclass_spent);
     sort($budgetclass_obligated);
@@ -324,12 +328,13 @@ foreach ($all_projects_data as $key => $value) {
         "rank" => $project_rank,
         "healthrating" => $project_healthrating,
         "healthcolor" => gethealthcolor($project_healthrating),
-        "budgetclass" => array("names" => $budgetclass_names, "codes" => $budgetclass_codes, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
+        "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
+        "coding_block" => $coding_block,
         "outputs_activities" => $outputs_activities,
         "refresh_date" => $refresh_date,
     ];
     if ($p == 1) {
-        //var_dump($projectlisting[$project_id]);
+        var_dump($projectlisting[$project_id]);
     }
 
     $p++;
