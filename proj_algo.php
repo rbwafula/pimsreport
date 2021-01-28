@@ -331,7 +331,7 @@ foreach ($all_projects_data as $key => $value) {
         "refresh_date" => $refresh_date,
     ];
     if ($p == 1) {
-        var_dump($projectlisting[$project_id]);
+        //var_dump($projectlisting[$project_id]);
     }
 
     $p++;
