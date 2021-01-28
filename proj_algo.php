@@ -241,7 +241,13 @@ foreach ($all_projects_data as $key => $value) {
                         "startdate" => $activity_startdate,
                         "enddate" => $activity_enddate,
                         "duration" => getdaysbetween($activity_startdate, $activity_enddate),
-                        "elapsed" => getdaysbetween($activity_startdate, date("d-m-Y", time())),
+                        if ($activity_status == "In Progress") {
+
+                        } else {
+                            "elapsed" => getdaysbetween($activity_startdate, min(date("Y-m-d",strtotime($activity_enddate)), date("Y-m-d", time()))),
+                        }
+
+                        "elapsed" => getdaysbetween($activity_startdate, min(date("Y-m-d",strtotime($activity_enddate)), date("Y-m-d", time()))),
                         "staff" => $activity_staff,
                         "office" => $activity_office,
                         "branch" => $activity_branch,

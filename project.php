@@ -133,6 +133,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             <p class="metricdesc">Project<br/>Rank</p>
                         </div>
                     </div>
+                    <p class="summarytext projectmanager">Project Manager: <strong>Insert Name Here</strong></p>
                     <p class="summarytext">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum..</p>
                 </div>
                 <div class="col-md-6">
@@ -165,8 +166,11 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["obligated"][$i],0,'.',',').'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["spent"][$i],0,'.',',').'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["expenditure"][$i],0,'.',',').'</td>';
-                                    $balanceclass = ($projectlisting[$projectid]["budgetclass"]["balance"][$i] < 0) ? 'red' : '';
-                                    echo '<td class="text-right '.$balanceclass.'">'. number_format($projectlisting[$projectid]["budgetclass"]["balance"][$i],0,'.',',').'</td>';
+                                    if ($projectlisting[$projectid]["budgetclass"]["balance"][$i] < 0) {
+                                        echo '<td class="text-right red">('. number_format(abs($projectlisting[$projectid]["budgetclass"]["balance"][$i]),0,'.',',').')</td>';
+                                    } else {
+                                        echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["balance"][$i],0,'.',',').'</td>';
+                                    }
                                     echo '</tr>';
                                     $budgetbalance += $projectlisting[$projectid]["budgetclass"]["balance"][$i];
                                 }
@@ -178,12 +182,22 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                 echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["obligated"]),0,'.',',').'</td>';
                                 echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["spent"]),0,'.',',').'</td>';
                                 echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["expenditure"]),0,'.',',').'</td>';
-                                echo '<td class="text-right">'.number_format($budgetbalance,0,'.',',').'</td>';
+                                if ($budgetbalance < 0) {
+                                    echo '<td class="text-right red">('.number_format(abs($budgetbalance),0,'.',',').')</td>';
+                                } else {
+                                    echo '<td class="text-right">'.number_format($budgetbalance,0,'.',',').'</td>';
+                                }
+
+                                
                                 echo '</tr>';
                                 ?>
                             </tbody>
                         </table>
-                        <p class="quote text-right">Financial data as at: insert date here</p>
+                        <div class="row">
+                            <div class="col-md-6"><p class="quote text-left noborder">Coding block: insert coding block here</p></div>
+                            <div class="col-md-6"><p class="quote text-right noborder">Financial data as at: insert date here</p></div>
+                        </div>
+                        
                     </div>
                     
                 </div>
@@ -226,20 +240,17 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
 
                                     $elapsed = $projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["elapsed"];
                                     $duration = $projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["duration"];
-
                                     if ($elapsed != 0 && $duration != 0) {
                                         $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
                                         if ($elapsedtime >= 0 && $elapsedtime <= 100) {
                                             echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
                                         } else {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: '.min($elapsedtime,100).'%;">'.$elapsedtime.'%</span></div></td>';
                                         }
                                     } else {
                                         $elapsedtime = 'N/A';
-                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill" style="width:0%;">'.$elapsedtime.'%</span></div></td>';
+                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
                                     }
-
-                                    //echo '<td class="center">'.number_format(($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["elapsed"]*100/$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["duration"]),0,'.',',').'%</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["staff"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["office"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["branch"].'</td>';

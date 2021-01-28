@@ -116,6 +116,9 @@ body {
 	font-style: italic;
 	padding-top: 5px;
 }
+.reportbody.section1 p.quote.noborder {
+	border-top: 0px;
+}
 .reportbody.section2,
 .reportbody.section3 {
 	margin: 0.8cm 0.4cm 0.4cm;
@@ -136,6 +139,9 @@ body {
 }
 .reportbody.section1 .summary .summarytext {
 	margin: 0.2cm 0cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;
+}
+.reportbody.section1 .summary .summarytext.projectmanager {
+	margin-top: 20px;
 }
 .reportbody.section1 .summarystatistics {
 	margin: 10px 0cm 0.2cm; /* 0.4cm 0cm 0.2cm */
@@ -307,6 +313,7 @@ table tbody tr.summary td {
 table.budgetclass {
 	font-size: 11px;
 	line-height: 1.375;
+	border-bottom: 2px solid #aaa;
 }
 table.budgetclass td {
 	padding: 2px 4px !important;
@@ -350,7 +357,16 @@ table.activitytable .activity td {
 	border-radius: 3px;
 	transition: width 500ms ease-in-out;
 }
-
+.progress-bar-fill.green {
+	background-color: #5cb85c;
+}
+.progress-bar-fill.red {
+	background-color: #d9534f;
+}
+.progress-bar-fill.gray {
+	background-color: #f7f7f7;
+	color: #333;
+}
 
 @page { 
 	size: auto;  
