@@ -253,8 +253,6 @@ foreach ($all_projects_data as $key => $value) {
     $outputs_count = 0;
     $activities_count = 0;
 
-    $activity_status_desc = array("0" => "Not Defined", "1" => "Not Started", "2" => "In Progress", "3" => "Completed");
-
     foreach ($proj_outputs_data as $output) {
         if ($output->projectID == $value->project_id) {
             $output_fundamount = 0;
@@ -302,7 +300,6 @@ foreach ($all_projects_data as $key => $value) {
                     $activities_count++;
                 }
             }
-
             $outputs_activities[] = [
                 "id" => $output->output_id,
                 "title" => $output->output_name,

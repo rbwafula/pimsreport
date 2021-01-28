@@ -134,7 +134,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         </div>
                     </div>
                     <p class="summarytext projectmanager">Project Manager: <strong><?php echo $projectlisting[$projectid]["manager"]; ?></strong></p>
-                    <p class="summarytext">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum..</p>
+                    <p class="summarytext"><?php echo $projectlisting[$projectid]["summary"]; ?></p>
                 </div>
                 <div class="col-md-6">
                     <!-- -->
@@ -196,7 +196,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                     </div>
                     <div class="row">
                         <div class="col-md-6"><p class="quote text-left noborder">Coding block: insert coding block here</p></div>
-                        <div class="col-md-6"><p class="quote text-right noborder">Financial data as at: insert date here</p></div>
+                        <div class="col-md-6"><p class="quote text-right noborder">Financial data as at: <?php echo $projectlisting[$projectid]["refresh_date"] ; ?></p></div>
                     </div>
                     
                 </div>
