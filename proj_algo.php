@@ -94,7 +94,8 @@ $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-ap
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
 $urlsuffix = ($version == 'cached') ? '.json' : '';
 
-$url = $page_link . 'final_data' . $urlsuffix;
+//$url = $page_link . 'final_data' . $urlsuffix;
+$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
 $activities_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
 $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
@@ -138,6 +139,7 @@ $projects_ids = [];
 $unique_final_ratings = [0];
 
 $i = 0;
+$refresh_date = '2021-01-28';
 foreach ($all_projects_data as $key => $value) {
 
     if ($i == 1) {
@@ -163,6 +165,11 @@ foreach ($all_projects_data as $key => $value) {
     if (!in_array($f_rating, $unique_final_ratings)) {
         $unique_final_ratings[] = $f_rating;
     }
+
+    if ($value->data_refreshed) {
+        $refresh_date = $value->data_refreshed;
+    }
+
 }
 
 $p = 0;
@@ -178,6 +185,7 @@ foreach ($all_projects_data as $key => $value) {
 
     $project_id = $value->project_id;
     $project_title = $value->project_title;
+    $project_summary = $value->project_summary;
     $project_office = $value->managing_division;
     $project_fund_amount = $value->consumable_budget;
     $project_prodoc_amount = 0;
@@ -189,6 +197,7 @@ foreach ($all_projects_data as $key => $value) {
 /* Simulating budget classes for the respective project */
 
     $budgetclass_names = array();
+    $budgetclass_codes = array();
     $budgetclass_amounts = array();
     $budgetclass_spent = array();
     $budgetclass_obligated = array();
@@ -199,6 +208,10 @@ foreach ($all_projects_data as $key => $value) {
     foreach ($budget_data as $budget) {
         if ($budget->projectID == $value->project_id) {
             // Variables needed for budget classes
+
+            if ($p == 1) {
+                //  var_dump($budget);
+            }
             if ($budget->commitment_item && $budget->commitment_item !== '') {
                 if (!in_array($budget->commitment_item, $budgetclass_names)) {
 
@@ -207,6 +220,7 @@ foreach ($all_projects_data as $key => $value) {
                         $order = rand(10, 100);
                     }
                     $budgetclass_names[$order] = $budget->commitment_item;
+                    $budgetclass_codes[$order] = $budget->funded_program_key;
                     $budgetclass_amounts[$order] = $budget->consumable_budget;
                     $budgetclass_spent[$order] = $budget->actual;
                     $budgetclass_obligated[$order] = $budget->commitment;
@@ -227,6 +241,7 @@ foreach ($all_projects_data as $key => $value) {
         }
     }
     sort($budgetclass_names);
+    sort($budgetclass_codes);
     sort($budgetclass_amounts);
     sort($budgetclass_spent);
     sort($budgetclass_obligated);
@@ -301,6 +316,7 @@ foreach ($all_projects_data as $key => $value) {
     $projectlisting[$project_id] = [
         "id" => $project_id,
         "title" => $project_title,
+        "summary" => $project_summary,
         "office" => $project_office,
         "manager" => $project_manager,
         "fundamount" => $project_fund_amount,
@@ -311,8 +327,9 @@ foreach ($all_projects_data as $key => $value) {
         "rank" => $project_rank,
         "healthrating" => $project_healthrating,
         "healthcolor" => gethealthcolor($project_healthrating),
-        "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
+        "budgetclass" => array("names" => $budgetclass_names, "codes" => $budgetclass_codes, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "outputs_activities" => $outputs_activities,
+        "refresh_date" => $refresh_date,
     ];
     if ($p == 1) {
         //var_dump($projectlisting[$project_id]);
