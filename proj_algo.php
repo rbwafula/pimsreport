@@ -111,6 +111,19 @@ $proj_outputs_data = getdataobjectfromurl($project_outputs_url);
 $proj_activities_data = getdataobjectfromurl($project_all_activities_url);
 $budget_data = getdataobjectfromurl($budget_commitment_url);
 
+$budget_class_order = [
+    "staff and other personnel costs",
+    "contractual services",
+    "travel",
+    "equipment vehicles and furniture",
+    "operating and other direct costs",
+    "supplies commodities and materials",
+    "transfers and grants issued to implementing partner (ip)",
+    "ip-psc",
+    "grants out",
+    "un-psc",
+];
+
 $hr_data = [];
 $unique_posids = [];
 foreach ($hr_data_uf as $h) {
@@ -152,6 +165,7 @@ foreach ($all_projects_data as $key => $value) {
     }
 }
 
+$p = 0;
 foreach ($all_projects_data as $key => $value) {
     // var_dump($value);
 
@@ -167,9 +181,10 @@ foreach ($all_projects_data as $key => $value) {
     $project_office = $value->managing_division;
     $project_fund_amount = $value->consumable_budget;
     $project_prodoc_amount = 0;
-    $project_duration = getdaysbetween($value->StartDate, $value->EndDate);
+    $project_duration = getdaysbetween($value->StartDate, $value->EndDate) / 30;
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
+    $project_manager = $value->project_manager;
 
 /* Simulating budget classes for the respective project */
 
@@ -186,12 +201,17 @@ foreach ($all_projects_data as $key => $value) {
             // Variables needed for budget classes
             if ($budget->commitment_item && $budget->commitment_item !== '') {
                 if (!in_array($budget->commitment_item, $budgetclass_names)) {
-                    $budgetclass_names[] = $budget->commitment_item;
-                    $budgetclass_amounts[] = $budget->consumable_budget;
-                    $budgetclass_spent[] = $budget->actual;
-                    $budgetclass_obligated[] = $budget->commitment;
-                    $budgetclass_expenditure[] = $budget->consumed_budget;
-                    $budgetclass_balance[] = $budget->consumable_budget - $budget->consumed_budget;
+
+                    $order = array_search(strtolower($budget->commitment_item), $budget_class_order);
+                    if (!$order) {
+                        $order = rand(10, 100);
+                    }
+                    $budgetclass_names[$order] = $budget->commitment_item;
+                    $budgetclass_amounts[$order] = $budget->consumable_budget;
+                    $budgetclass_spent[$order] = $budget->actual;
+                    $budgetclass_obligated[$order] = $budget->commitment;
+                    $budgetclass_expenditure[$order] = $budget->consumed_budget;
+                    $budgetclass_balance[$order] = $budget->consumable_budget - $budget->consumed_budget;
                 } else {
                     foreach ($budgetclass_names as $ckey => $cvalue) {
                         if ($cvalue == $budget->commitment_item) {
@@ -206,6 +226,12 @@ foreach ($all_projects_data as $key => $value) {
             }
         }
     }
+    sort($budgetclass_names);
+    sort($budgetclass_amounts);
+    sort($budgetclass_spent);
+    sort($budgetclass_obligated);
+    sort($budgetclass_expenditure);
+    sort($budgetclass_balance);
 
     //var_dump($budgetclass_balance[$ckey]);
     $outputs_activities = array();
@@ -270,6 +296,7 @@ foreach ($all_projects_data as $key => $value) {
         "id" => $project_id,
         "title" => $project_title,
         "office" => $project_office,
+        "manager" => $project_manager,
         "fundamount" => $project_fund_amount,
         "prodocamount" => $project_prodoc_amount,
         "outputscount" => $outputs_count,
@@ -281,6 +308,11 @@ foreach ($all_projects_data as $key => $value) {
         "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "outputs_activities" => $outputs_activities,
     ];
+    if ($p == 1) {
+        //var_dump($projectlisting[$project_id]);
+    }
+
+    $p++;
 }
 
 //var_dump($projectlisting);
