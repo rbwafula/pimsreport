@@ -5,9 +5,6 @@ $officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
 $division = $office[$officeid];*/
 include_once 'proj_algo.php';
 $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($projectlisting));
-echo '<pre>';
-var_dump($projectlisting[$projectid]["budgetclass"]["balance"]);
-echo '</pre>';
 ?>
 <!DOCTYPE html>
 <html>
@@ -79,7 +76,7 @@ echo '</pre>';
         </div>
 
         <div id="toprint" class="toprint">
-            <div class="row reportheader">
+            <div class="row reportheader projectinfo">
                 <div class="col-md-4 logo">
                     <img class="logo" src="assets/images/pimslogo.png">
                 </div>
@@ -93,6 +90,7 @@ echo '</pre>';
                     <p class="healthratingdesc">Project Rating</p>
                 </div>
             </div>
+
 
             <div class="row reportbody section1">
                 <div class="col-md-6 summary">
@@ -185,7 +183,7 @@ echo '</pre>';
                                 ?>
                             </tbody>
                         </table>
-                        <p class="quote text-right">Finacial data as at: insert date here</p>
+                        <p class="quote text-right">Financial data as at: insert date here</p>
                     </div>
                     
                 </div>
@@ -195,14 +193,14 @@ echo '</pre>';
             <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 1: Outputs &amp; Activites</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm activitytable">
+                    <table class="table table-bordered table-sm activitytable">
                         <thead>
                             <tr>
                                 <th class="center">Activity #</th>
-                                <th class="left">Activity Title</th>
+                                <th class="left" width="400px">Activity Title</th>
                                 <th class="center">Start Date</th>
                                 <th class="center">End Date</th>
-                                <th class="center">Elapsed</th>
+                                <th class="center" width="100px">Elapsed</th>
                                 <th class="center">Responsible Staff</th>
                                 <th class="center">Responsible Office</th>
                                 <th class="center">Responsible Branch</th>
@@ -216,7 +214,7 @@ echo '</pre>';
                             for ($i=0;$i<count($projectlisting[$projectid]["outputs_activities"]); $i++) {
                                 //echo "output ".($i+1)."<br/>";
                                 echo '<tr class="output">';
-                                echo '<td colspan=11>'.$projectlisting[$projectid]["outputs_activities"][$i]["id"].': '.$projectlisting[$projectid]["outputs_activities"][$i]["title"].' <span>'. number_format($projectlisting[$projectid]["outputs_activities"][$i]["fundamount"],0,'.',',').'</span></td>';
+                                echo '<td colspan=11>Output '.$projectlisting[$projectid]["outputs_activities"][$i]["id"].' - '.$projectlisting[$projectid]["outputs_activities"][$i]["title"].' <span>$ '. number_format($projectlisting[$projectid]["outputs_activities"][$i]["fundamount"],0,'.',',').'</span></td>';
                                 echo '</tr>';
 
                                 for ($j=0;$j<count($projectlisting[$projectid]["outputs_activities"][$i]["activities"]);$j++) {
@@ -225,12 +223,42 @@ echo '</pre>';
                                     echo '<td class="left">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["title"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["startdate"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["enddate"].'</td>';
-                                    echo '<td class="center">'.number_format(($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["elapsed"]*100/$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["duration"]),0,'.',',').'%</td>';
+
+                                    $elapsed = $projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["elapsed"];
+                                    $duration = $projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["duration"];
+
+                                    if ($elapsed != 0 && $duration != 0) {
+                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                        if ($elapsedtime >= 0 && $elapsedtime <= 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                        }
+                                    } else {
+                                        $elapsedtime = 'N/A';
+                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill" style="width:0%;">'.$elapsedtime.'%</span></div></td>';
+                                    }
+
+                                    //echo '<td class="center">'.number_format(($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["elapsed"]*100/$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["duration"]),0,'.',',').'%</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["staff"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["office"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["branch"].'</td>';
-                                    echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["status"].'</td>';
-                                    echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"].'</td>';
+                                    if ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["status"] == 'In Progress') {
+                                        $statuscolor = '#ffc107 !important'; // yellow
+                                    } else if ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["status"] == 'Completed') {
+                                        $statuscolor = '#28a745 !important'; //green
+                                    } else {
+                                        $statuscolor = '#dc3545 !important'; //red
+                                    }
+                                    echo '<td class="center" style="font-weight: bold; color:'.$statuscolor.'">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["status"].'</td>';
+                                    if ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"] == 'PM To Watch') {
+                                        $trackingcolor = '#ffc107 !important'; // yellow
+                                    } else if ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"] == 'Completed') {
+                                        $trackingcolor = '#28a745 !important'; //green
+                                    } else {
+                                        $trackingcolor = '#dc3545 !important'; //red
+                                    }
+                                    echo '<td class="center" style="font-weight: bold; color:'.$trackingcolor.'">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"].'</td>';
 
                                     $fundtext = ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["funded"] == 1) ? number_format($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["fundamount"],0,'.',',') : '- No -';
                                     echo '<td class="right">'.$fundtext.'</td>';

@@ -207,7 +207,7 @@ foreach ($all_projects_data as $key => $value) {
         }
     }
 
-    var_dump($budgetclass_balance[$ckey]);
+    //var_dump($budgetclass_balance[$ckey]);
     $outputs_activities = array();
     $outputs_count = 0;
     $activities_count = 0;
@@ -226,9 +226,9 @@ foreach ($all_projects_data as $key => $value) {
                     $activity_startdate = $activity->start_date;
                     $activity_enddate = $activity->end_date;
                     $activity_staff = $activity->resp_staff_email;
-                    $activity_office = $activity->resp_division_id;
-                    $activity_branch = $activity->resp_branch_id;
-                    $activity_status = $activity_status_desc[$activity->status_id];
+                    $activity_office = $activity->managing_division;
+                    $activity_branch = $activity->managing_branch;
+                    $activity_status = $activity->status;
                     $activity_tracking_text = $activity->activity_tracking;
                     $activity_tracking_color = $activity->activity_traffic_light;
                     $activity_funded = $activity->funded;
