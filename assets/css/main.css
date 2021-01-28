@@ -118,6 +118,7 @@ body {
 }
 .reportbody.section1 p.quote.noborder {
 	border-top: 0px;
+	margin-bottom: 0px;
 }
 .reportbody.section2,
 .reportbody.section3 {
@@ -141,7 +142,8 @@ body {
 	margin: 0.2cm 0cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;
 }
 .reportbody.section1 .summary .summarytext.projectmanager {
-	margin-top: 20px;
+	margin-top: 30px;
+	font-size: 14px;
 }
 .reportbody.section1 .summarystatistics {
 	margin: 10px 0cm 0.2cm; /* 0.4cm 0cm 0.2cm */

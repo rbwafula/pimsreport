@@ -260,6 +260,12 @@ foreach ($all_projects_data as $key => $value) {
                     $activity_funded = $activity->funded;
                     $activity_fundamount = $activity->amount_funded;
 
+                    if ($activity_status == "Completed") {
+                        $activity_elapsed = getdaysbetween($activity_startdate, min(date("Y-m-d",strtotime($activity_enddate)), date("Y-m-d", time())));
+                    } else {
+                        $activity_elapsed = getdaysbetween($activity_startdate, date("Y-m-d", time()));
+                    }
+
                     // Fill in activity data
                     $activities_list[] = [
                         "id" => $activity_id,
@@ -267,13 +273,7 @@ foreach ($all_projects_data as $key => $value) {
                         "startdate" => $activity_startdate,
                         "enddate" => $activity_enddate,
                         "duration" => getdaysbetween($activity_startdate, $activity_enddate),
-                        if ($activity_status == "In Progress") {
-
-                        } else {
-                            "elapsed" => getdaysbetween($activity_startdate, min(date("Y-m-d",strtotime($activity_enddate)), date("Y-m-d", time()))),
-                        }
-
-                        "elapsed" => getdaysbetween($activity_startdate, min(date("Y-m-d",strtotime($activity_enddate)), date("Y-m-d", time()))),
+                        "elapsed" => $activity_elapsed,
                         "staff" => $activity_staff,
                         "office" => $activity_office,
                         "branch" => $activity_branch,
