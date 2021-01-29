@@ -118,7 +118,9 @@ body {
 }
 .reportbody.section1 p.quote.noborder {
 	border-top: 0px;
-	margin-bottom: 0px;
+    margin-bottom: 0px;
+    padding: 0;
+    line-height: 1.375;
 }
 .reportbody.section2,
 .reportbody.section3 {

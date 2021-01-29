@@ -1,16 +1,7 @@
 <?php
 $month = Date("M") . ' ' . Date("Y");
-/*$office = array('Europe', 'Economy', 'Disasters and Conflicts', 'Latin America', 'Asia Pacific', 'Law', 'Communication', 'Ecosystems', 'Science', 'Africa', 'West Asia');
-$officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
-$division = $office[$officeid];*/
 include_once 'proj_algo.php';
 $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($projectlisting));
-/*$days = getdaysbetween($projectlisting[$projectid]["startdate"], $projectlisting[$projectid]["enddate"]);
-echo 'Start Date: '.$projectlisting[$projectid]["startdate"].'<br/>';
-echo 'End Date: '.$projectlisting[$projectid]["enddate"].'<br/>';
-echo 'Days: '.$days.'<br/>';
-echo 'Years: '.$days/365.25.'<br/>';
-echo '<hr/>*/
 ?>
 <!DOCTYPE html>
 <html>
@@ -126,9 +117,9 @@ echo '<hr/>*/
                         </div>
                         <div class="col metric4">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["activitiescount"], 0, '.', ','); ?>
+                                <?php echo 'N/A'.' / '.number_format($projectlisting[$projectid]["activitiescount"], 0, '.', ','); ?>
                             </p>
-                            <p class="metricdesc">Total<br/>Activities</p>
+                            <p class="metricdesc">Completed<br/>Activities</p>
                         </div>
                         <div class="col metric5">
                             <p class="metricvalue">
@@ -479,8 +470,9 @@ echo '<hr/>*/
                         </table>
                     </div>
                     <div class="row">
-                        <div class="col-md-6"><p class="quote text-left noborder">Coding block: <?php echo $projectlisting[$projectid]["coding_block"];?></p></div>
-                        <div class="col-md-6"><p class="quote text-right noborder">Financial data as at: <?php echo $projectlisting[$projectid]["refresh_date"]; ?></p></div>
+                        <div class="col-md-4"><p class="quote text-left noborder">Coding block: <?php echo $projectlisting[$projectid]["coding_block"];?></p></div>
+                        <div class="col-md-4"><p class="quote text-left noborder">Grant keys: <?php echo 'N/A';?></p></div>
+                        <div class="col-md-4"><p class="quote text-right noborder">Financial data as<br/>at: <strong><?php echo $projectlisting[$projectid]["refresh_date"]; ?></strong></p></div>
                     </div>
                     
                 </div>
@@ -553,8 +545,7 @@ echo '<hr/>*/
                                         $trackingcolor = '#dc3545 !important'; //red
                                     }
                                     echo '<td class="center" style="font-weight: bold; color:'.$trackingcolor.'">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"].'</td>';
-
-                                    $fundtext = ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["funded"] == 1) ? number_format($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["fundamount"],0,'.',',') : '- No -';
+                                    $fundtext = ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["fundamount"] > 0) ? number_format($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["fundamount"],0,'.',',') : '- No -';
                                     echo '<td class="right">'.$fundtext.'</td>';
                                     echo '</tr>';
                                 }
