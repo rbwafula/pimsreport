@@ -134,6 +134,7 @@ $budget_class_order = [
     "operatingandotherdirectcosts",
     "suppliescommoditiesandmaterials",
     "transfersandgrantsissuedtoimplementingpartner(ip)",
+    "transfersandgrantsissuedtoimplementpartner",
     "ip-psc",
     "grantsout",
     "un-psc",
@@ -207,11 +208,18 @@ foreach ($all_projects_data as $key => $value) {
     $project_prodoc_amount = 0;
     $project_start_date = $value->StartDate;
     $project_end_date = $value->EndDate;
-    $project_duration = ceil(ceil(getdaysbetween($value->StartDate, $value->EndDate) / 30) / 12);
+    $project_duration = ceil(getdaysbetween($value->StartDate, $value->EndDate) / 365.25);
     $project_duration_elapsed = ceil(getdaysbetween($project_start_date, null) / 30);
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
     $project_manager = $value->project_manager;
+
+    $project_pctg_budget_spent = ceil($value->percentage_budget_utilized * 100);
+    $project_pctg_time_used = ceil($value->percentage_time_taken * 100);
+    $project_pctg_activities_completed = ceil($value->percentage_activities_completed * 100);
+
+    $project_start = $value->StartDate;
+    $project_end = $value->EndDate;
 
 /* Simulating budget classes for the respective project */
 
@@ -343,7 +351,12 @@ foreach ($all_projects_data as $key => $value) {
         "prodocamount" => $project_prodoc_amount,
         "outputscount" => $outputs_count,
         "activitiescount" => $activities_count,
+        "start_date" => $project_start,
+        "end_date" => $project_end,
         "duration" => $project_duration,
+        "budget_spent" => $project_pctg_budget_spent,
+        "time_used" => $project_pctg_time_used,
+        "activities_completed" => $project_pctg_activities_completed,
         "duration_elapsed" => $project_duration_elapsed,
         "rank" => $project_rank,
         "healthrating" => $project_healthrating,
@@ -353,8 +366,8 @@ foreach ($all_projects_data as $key => $value) {
         "outputs_activities" => $outputs_activities,
         "refresh_date" => $refresh_date,
     ];
-    if ($project_id == 02033 || $project_id == '02033') {
-        // var_dump($projectlisting[$project_id]);
+    if ($project_id == 00270 || $project_id == '00270') {
+        //var_dump($projectlisting[$project_id]);
     }
 
     $p++;
