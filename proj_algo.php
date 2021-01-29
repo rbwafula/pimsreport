@@ -113,15 +113,16 @@ $proj_activities_data = getdataobjectfromurl($project_all_activities_url);
 $budget_data = getdataobjectfromurl($budget_commitment_url);
 
 $budget_class_order = [
-    "staff and other personnel costs",
-    "contractual services",
+    "N/A",
+    "staffandotherpersonnelcosts",
+    "contractualservices",
     "travel",
-    "equipment vehicles and furniture",
-    "operating and other direct costs",
-    "supplies commodities and materials",
-    "transfers and grants issued to implementing partner (ip)",
+    "equipmentvehiclesandfurniture",
+    "operatingandotherdirectcosts",
+    "suppliescommoditiesandmaterials",
+    "transfersandgrantsissuedtoimplementingpartner(ip)",
     "ip-psc",
-    "grants out",
+    "grantsout",
     "un-psc",
 ];
 
@@ -193,7 +194,7 @@ foreach ($all_projects_data as $key => $value) {
     $project_prodoc_amount = 0;
     $project_start_date = $value->StartDate;
     $project_end_date = $value->EndDate;
-    $project_duration = ceil(getdaysbetween($value->StartDate, $value->EndDate) / 30);
+    $project_duration = ceil(ceil(getdaysbetween($value->StartDate, $value->EndDate) / 30) / 12);
     $project_duration_elapsed = ceil(getdaysbetween($project_start_date, null) / 30);
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
@@ -213,16 +214,15 @@ foreach ($all_projects_data as $key => $value) {
         if ($budget->projectID == $value->project_id) {
             // Variables needed for budget classes
 
-            if ($p == 1) {
-                //  var_dump($budget);
-            }
             if ($budget->commitment_item && $budget->commitment_item !== '') {
                 if (!in_array($budget->commitment_item, $budgetclass_names)) {
 
-                    $order = array_search(strtolower($budget->commitment_item), $budget_class_order);
+                    $order = array_search(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order);
+
                     if (!$order) {
                         $order = rand(10, 100);
                     }
+                    $order += 1;
 
                     if ($budget->funded_program_key) {
                         $coding_block = $budget->funded_program_key;
@@ -248,12 +248,17 @@ foreach ($all_projects_data as $key => $value) {
             }
         }
     }
-    sort($budgetclass_names);
-    sort($budgetclass_amounts);
-    sort($budgetclass_spent);
-    sort($budgetclass_obligated);
-    sort($budgetclass_expenditure);
-    sort($budgetclass_balance);
+
+    ksort($budgetclass_names);
+    ksort($budgetclass_amounts);
+    ksort($budgetclass_spent);
+    ksort($budgetclass_obligated);
+    ksort($budgetclass_expenditure);
+    ksort($budgetclass_balance);
+
+    if ($p == 1) {
+        //var_dump($budgetclass_names);
+    }
 
     //var_dump($budgetclass_balance[$ckey]);
     $outputs_activities = array();
