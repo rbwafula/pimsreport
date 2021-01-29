@@ -113,7 +113,6 @@ $proj_activities_data = getdataobjectfromurl($project_all_activities_url);
 $budget_data = getdataobjectfromurl($budget_commitment_url);
 
 $budget_class_order = [
-    "N/A",
     "staffandotherpersonnelcosts",
     "contractualservices",
     "travel",
@@ -219,10 +218,9 @@ foreach ($all_projects_data as $key => $value) {
 
                     $order = array_search(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order);
 
-                    if (!$order) {
+                    if (!in_array(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order)) {
                         $order = rand(10, 100);
                     }
-                    $order += 1;
 
                     if ($budget->funded_program_key) {
                         $coding_block = $budget->funded_program_key;
@@ -257,7 +255,7 @@ foreach ($all_projects_data as $key => $value) {
     ksort($budgetclass_balance);
 
     if ($p == 1) {
-        //var_dump($budgetclass_names);
+        // var_dump($budgetclass_names);
     }
 
     //var_dump($budgetclass_balance[$ckey]);
