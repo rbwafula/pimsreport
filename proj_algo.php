@@ -270,7 +270,7 @@ foreach ($all_projects_data as $key => $value) {
     $budgetclass_balance = reorder($budgetclass_balance);
 
     if ($p == 1) {
-        var_dump($budgetclass_names);
+        // var_dump($budgetclass_names);
     }
 
     //var_dump($budgetclass_balance[$ckey]);
