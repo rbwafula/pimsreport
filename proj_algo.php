@@ -108,8 +108,8 @@ $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-ap
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
 $urlsuffix = ($version == 'cached') ? '.json' : '';
 
-//$url = $page_link . 'final_data' . $urlsuffix;
-$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
+$url = $page_link . 'final_data' . $urlsuffix;
+//$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
 $activities_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
 $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
@@ -334,6 +334,8 @@ foreach ($all_projects_data as $key => $value) {
     $projectlisting[$project_id] = [
         "id" => $project_id,
         "title" => $project_title,
+        "startdate" => $project_start_date,
+        "enddate" => $project_end_date,
         "summary" => $project_summary,
         "office" => $project_office,
         "manager" => $project_manager,

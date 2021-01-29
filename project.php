@@ -5,6 +5,12 @@ $officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
 $division = $office[$officeid];*/
 include_once 'proj_algo.php';
 $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($projectlisting));
+/*$days = getdaysbetween($projectlisting[$projectid]["startdate"], $projectlisting[$projectid]["enddate"]);
+echo 'Start Date: '.$projectlisting[$projectid]["startdate"].'<br/>';
+echo 'End Date: '.$projectlisting[$projectid]["enddate"].'<br/>';
+echo 'Days: '.$days.'<br/>';
+echo 'Years: '.$days/365.25.'<br/>';
+echo '<hr/>*/
 ?>
 <!DOCTYPE html>
 <html>
@@ -87,7 +93,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                 <div class="col-md-2 health">
                     <p class="reportdate">Jan 2021</p>
                     <p class="healthrating_box" style="background-color:<?php echo $projectlisting[$projectid]["healthcolor"]; ?>;">&nbsp;</p>
-                    <p class="healthratingdesc">Project Rating</p>
+                    <p class="healthratingdesc">Project Rating<?php //echo ': '.$projectlisting[$projectid]["healthrating"];?></p>
                 </div>
             </div>
 
@@ -122,7 +128,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         </div>
                         <div class="col metric5">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["duration"], 0, '.', ','); ?>
+                                <?php echo number_format($projectlisting[$projectid]["duration"], 0, '.', ','); ?><span>Years</span>
                             </p>
                             <p class="metricdesc">Project<br/>Duration</p>
                         </div>
@@ -133,8 +139,264 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             <p class="metricdesc">Project<br/>Rank</p>
                         </div>
                     </div>
-                    <p class="summarytext projectmanager">Project Manager: <strong><?php echo $projectlisting[$projectid]["manager"]; ?></strong></p>
-                    <p class="summarytext"><?php echo $projectlisting[$projectid]["summary"]; ?></p>
+
+                    <div class="row portfoliostatistics individualproject">
+                        <div class="col-md-4 metric1">
+                            <div id="budgetutilized_chart"></div>
+                            <div class="desc">Budget Spent</div>
+                        </div>
+                        <div class="col-md-4 metric2">
+                            <div id="timetaken_chart"></div>
+                            <div class="desc">Time Used</div>
+                        </div>
+                        <div class="col-md-4 metric3">
+                            <div id="activitiescompleted_chart"></div>
+                            <div class="desc">Activities Completed</div>
+                        </div>
+                        <script type="text/javascript">
+                            Highcharts.chart('budgetutilized_chart', {
+                                chart: {
+                                    backgroundColor: 'rgba(0,0,0,0)',
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: 0,
+                                    plotShadow: false,
+                                    margin: [0, 0, -10, 0],
+                                    spacingTop: 0,
+                                    spacingBottom: 0,
+                                    spacingLeft: 0,
+                                    spacingRight: 0,
+                                    height: 130
+                                },
+                                colors: ['#0077b6','#ccc'],
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: '<?php echo 50;//number_format($processed_divisiondata[$division]["pctbudgetutilized"], 0, '.', ','); ?>%',
+                                    align: 'center',
+                                    verticalAlign: 'bottom',
+                                    y: 15,
+                                    style: {
+                                        color: '#0077b6',
+                                        fontWeight: 500
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: false
+                                },
+                                accessibility: {
+                                    point: {
+                                        valueSuffix: '%'
+                                    }
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        size: '100%',
+                                        dataLabels: {
+                                            enabled: false,
+                                            distance: -50,
+                                            style: {
+                                                fontWeight: 'bold',
+                                                color: 'white'
+                                            }
+                                        },
+                                        startAngle: -90,
+                                        endAngle: 90,
+                                        center: ['50%', '100%']
+                                    },
+                                    series: {
+                                        states: {
+                                            hover: {
+                                                enabled: false
+                                            }
+                                        }
+                                    }
+                                },
+                                series: [{
+                                    type: 'pie',
+                                    name: 'Avg. Time Taken',
+                                    innerSize: '70%',
+                                    data: [
+                                        ['Time Taken', <?php echo 50; //$processed_divisiondata[$division]["pctbudgetutilized"]; ?> ],
+                                        {
+                                            name: '',
+                                            y: <?php echo (100 - 50);//$processed_divisiondata[$division]["pctbudgetutilized"]); ?>,
+                                            dataLabels: {
+                                                enabled: false
+                                            }
+                                        }
+                                    ]
+                                }]
+                            });
+
+
+                            Highcharts.chart('timetaken_chart', {
+                                chart: {
+                                    backgroundColor: 'rgba(0,0,0,0)',
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: 0,
+                                    plotShadow: false,
+                                    margin: [0, 0, -10, 0],
+                                    spacingTop: 0,
+                                    spacingBottom: 0,
+                                    spacingLeft: 0,
+                                    spacingRight: 0,
+                                    height: 130
+                                },
+                                colors: ['#d59442','#ccc'],
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: '<?php echo 50;//number_format($processed_divisiondata[$division]["pctgdurationused"], 0, '.', ','); ?>%',
+                                    align: 'center',
+                                    verticalAlign: 'bottom',
+                                    y: 15,
+                                    style: {
+                                        color: '#d59442',
+                                        fontWeight: 500
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: false
+                                },
+                                accessibility: {
+                                    point: {
+                                        valueSuffix: '%'
+                                    }
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        size: '100%',
+                                        dataLabels: {
+                                            enabled: false,
+                                            distance: -50,
+                                            style: {
+                                                fontWeight: 'bold',
+                                                color: 'white'
+                                            }
+                                        },
+                                        startAngle: -90,
+                                        endAngle: 90,
+                                        center: ['50%', '100%']
+                                    }
+                                },
+                                series: [{
+                                    type: 'pie',
+                                    name: 'Activities Completed',
+                                    innerSize: '70%',
+                                    data: [
+                                        ['Time Taken', <?php echo 50;//$processed_divisiondata[$division]["pctgdurationused"]; ?> ],
+                                        {
+                                            name: '',
+                                            y: <?php echo (100 - 50);//$processed_divisiondata[$division]["pctgdurationused"]); ?>,
+                                            dataLabels: {
+                                                enabled: false
+                                            }
+                                        }
+                                    ]
+                                }]
+                            });
+
+                            Highcharts.chart('activitiescompleted_chart', {
+                                chart: {
+                                    backgroundColor: 'rgba(0,0,0,0)',
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: 0,
+                                    plotShadow: false,
+                                    margin: [0, 0, -10, 0],
+                                    spacingTop: 0,
+                                    spacingBottom: 0,
+                                    spacingLeft: 0,
+                                    spacingRight: 0,
+                                    height: 130
+                                },
+                                colors: ['#688753','#ccc'],
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: '<?php echo 50; //number_format($processed_divisiondata[$division]["avgactivitiescompleted"], 0, '.', ','); ?>%',
+                                    align: 'center',
+                                    verticalAlign: 'bottom',
+                                    y: 15,
+                                    style: {
+                                        color: '#688753',
+                                        fontWeight: 500
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: false
+                                },
+                                accessibility: {
+                                    point: {
+                                        valueSuffix: '%'
+                                    }
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        size: '100%',
+                                        dataLabels: {
+                                            enabled: false,
+                                            distance: -50,
+                                            style: {
+                                                fontWeight: 'bold',
+                                                color: 'white'
+                                            }
+                                        },
+                                        startAngle: -90,
+                                        endAngle: 90,
+                                        center: ['50%', '100%']
+                                    }
+                                },
+                                series: [{
+                                    type: 'pie',
+                                    name: 'Activities Completed',
+                                    innerSize: '70%',
+                                    data: [
+                                        ['Time Taken', <?php echo 50; //$processed_divisiondata[$division]["avgactivitiescompleted"]; ?> ],
+                                        {
+                                            name: '',
+                                            y: <?php echo (100 - 50);//$processed_divisiondata[$division]["avgactivitiescompleted"]); ?>,
+                                            dataLabels: {
+                                                enabled: false
+                                            }
+                                        }
+                                    ]
+                                }]
+                            });
+                        </script>
+                    </div>
+
+
+
+                    <table class="projectmanager">
+                        <tbody>
+                            <tr>
+                                <td>Project Manager:</td>
+                                <td><strong><?php echo $projectlisting[$projectid]["manager"]; ?></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Subprogramme:</td>
+                                <td><strong><?php echo 'N/A'; //$projectlisting[$projectid]["subprogramme"]; ?></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p class="summarytext projectmanager"> </p>
+                    <p class="summarytext projectmanager"> </p>
+                    <p class="summarytext">
+                        <?php
+                        $summary = $projectlisting[$projectid]["summary"];
+                        if (strlen($summary) == 0) {
+                            echo 'No summary information.';
+                        } else if (strlen($summary) > 0 && strlen($summary) <= 690) {
+                            echo $summary;
+                        } else {
+                            echo substr($summary, 0, 690).'...';
+                        }
+                        ?>  
+                    </p>
                 </div>
                 <div class="col-md-6">
                     <!-- -->
@@ -157,10 +419,11 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             <tbody>
                                 <?php
                                 $budgetbalance = 0;
+                                //$budgetclass_keys = array_keys($$projectlisting[$projectid]["budgetclass"]["names"]);
+
                                 for ($i=0;$i<count($projectlisting[$projectid]["budgetclass"]["names"]);$i++) {
                                     echo '<tr>';
                                     echo '<td class="text-right">'.($i+1).'.</td>';
-                                    //echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
                                     echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["amounts"][$i],0,'.',',').'</td>';
                                     if ($projectlisting[$projectid]["budgetclass"]["obligated"][$i] < 0) {
@@ -176,21 +439,30 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                         echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["balance"][$i],0,'.',',').'</td>';
                                     }
                                     echo '</tr>';
-                                    $budgetbalance += $projectlisting[$projectid]["budgetclass"]["balance"][$i];
+                                    //$budgetbalance += $projectlisting[$projectid]["budgetclass"]["balance"][$i];
                                 }
                                 /* Totals */
                                 echo '<tr class="total">';
                                 echo '<td>&nbsp;</td>';
                                 echo '<td>Total</td>';
                                 echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["amounts"]),0,'.',',').'</td>';
-                                echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["obligated"]),0,'.',',').'</td>';
-                                echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["spent"]),0,'.',',').'</td>';
+                                if (array_sum($projectlisting[$projectid]["budgetclass"]["obligated"]) < 0) {
+                                    echo '<td class="text-right red">('.number_format(abs(array_sum($projectlisting[$projectid]["budgetclass"]["obligated"])),0,'.',',').')</td>';
+                                } else {
+                                    echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["obligated"]),0,'.',',').'</td>';
+                                }echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["spent"]),0,'.',',').'</td>';
                                 echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["expenditure"]),0,'.',',').'</td>';
-                                if ($budgetbalance < 0) {
+                                if (array_sum($projectlisting[$projectid]["budgetclass"]["balance"]) < 0) {
+                                    echo '<td class="text-right red">('.number_format(abs(array_sum($projectlisting[$projectid]["budgetclass"]["balance"])),0,'.',',').')</td>';
+                                } else {
+                                    echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["balance"]),0,'.',',').'</td>';
+                                }
+                                
+                                /*if ($budgetbalance < 0) {
                                     echo '<td class="text-right red">('.number_format(abs($budgetbalance),0,'.',',').')</td>';
                                 } else {
                                     echo '<td class="text-right">'.number_format($budgetbalance,0,'.',',').'</td>';
-                                }
+                                }*/
 
                                 
                                 echo '</tr>';
