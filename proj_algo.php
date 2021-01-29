@@ -87,6 +87,20 @@ function filter_unique($array, $key)
     return $array;
 }
 
+function reorder($array)
+{
+    ksort($array);
+    $new = [];
+    $i = 0;
+    foreach ($array as $a) {
+        $new[$i] = $a;
+        $i++;
+    }
+
+    return $new;
+
+}
+
 //FETCH DATA -> CACHED/LIVE
 $version = 'cached'; // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
@@ -247,15 +261,15 @@ foreach ($all_projects_data as $key => $value) {
         }
     }
 
-    ksort($budgetclass_names);
-    ksort($budgetclass_amounts);
-    ksort($budgetclass_spent);
-    ksort($budgetclass_obligated);
-    ksort($budgetclass_expenditure);
-    ksort($budgetclass_balance);
+    $budgetclass_names = reorder($budgetclass_names);
+    $budgetclass_amounts = reorder($budgetclass_amounts);
+    $budgetclass_spent = reorder($budgetclass_spent);
+    $budgetclass_obligated = reorder($budgetclass_obligated);
+    $budgetclass_expenditure = reorder($budgetclass_expenditure);
+    $budgetclass_balance = reorder($budgetclass_balance);
 
     if ($p == 1) {
-        // var_dump($budgetclass_names);
+        //var_dump($budgetclass_names);
     }
 
     //var_dump($budgetclass_balance[$ckey]);
@@ -337,8 +351,8 @@ foreach ($all_projects_data as $key => $value) {
         "outputs_activities" => $outputs_activities,
         "refresh_date" => $refresh_date,
     ];
-    if ($p == 1) {
-        //var_dump($projectlisting[$project_id]);
+    if ($project_id == 02033 || $project_id == '02033') {
+        // var_dump($projectlisting[$project_id]);
     }
 
     $p++;
