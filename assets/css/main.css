@@ -376,6 +376,11 @@ table.activitytable .activity td {
 }
 table.projectmanager {
 	margin-top: 30px;
+	font-size: 12px;
+	line-height: 1.375;
+}
+table.projectmanager td strong {
+	margin-left: 10px;
 }
 @page { 
 	size: auto;  

@@ -49,6 +49,16 @@ function getdaysbetween($start, $end)
     $days_duration = round($datediff / (60 * 60 * 24));
     return $days_duration;
 }
+function gettrafficlight($health)
+{
+    $color = '#dc3545 !important'; //red
+    if ($health == 'green') {
+        $color = '#28a745 !important'; //green
+    } elseif ($health == 'yellow') {
+        $color = '#ffc107 !important'; // yellow
+    }
+    return $color;
+}
 function gethealthcolor($health)
 {
     $color = '#dc3545 !important'; //red
@@ -212,7 +222,9 @@ foreach ($all_projects_data as $key => $value) {
     $project_duration_elapsed = ceil(getdaysbetween($project_start_date, null) / 30);
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
+    $project_healthtraffic = $value->system_traffic_light;
     $project_manager = $value->project_manager;
+    $project_subprogramme = $value->subprogramme;
 
     $project_pctg_budget_spent = ceil($value->percentage_budget_utilized * 100);
     $project_pctg_time_used = ceil($value->percentage_time_taken * 100);
@@ -344,6 +356,7 @@ foreach ($all_projects_data as $key => $value) {
         "title" => $project_title,
         "startdate" => $project_start_date,
         "enddate" => $project_end_date,
+        "subprogramme" => $project_subprogramme,
         "summary" => $project_summary,
         "office" => $project_office,
         "manager" => $project_manager,
@@ -360,7 +373,8 @@ foreach ($all_projects_data as $key => $value) {
         "duration_elapsed" => $project_duration_elapsed,
         "rank" => $project_rank,
         "healthrating" => $project_healthrating,
-        "healthcolor" => gethealthcolor($project_healthrating),
+        "trafficlight" => $project_healthtraffic,
+        "healthcolor" => gettrafficlight($project_healthtraffic),
         "budgetclass" => array("names" => $budgetclass_names, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "coding_block" => $coding_block,
         "outputs_activities" => $outputs_activities,

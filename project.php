@@ -104,7 +104,11 @@ echo '<hr/>*/
                     <div class="row summarystatistics">
                         <div class="col metric1">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["fundamount"], 0, '.', ','); ?>
+                                
+
+                                <?php 
+                                echo '$'.number_format((array_sum($projectlisting[$projectid]["budgetclass"]["amounts"])/1000000) ,1,'.',',').'M';
+                                //echo '$'.number_format( ($projectlisting[$projectid]["fundamount"]/1) , 1, '.', ',').'M'; ?>
                             </p>
                             <p class="metricdesc">Fund<br/>Amount</p>
                         </div>
@@ -172,7 +176,7 @@ echo '<hr/>*/
                                     enabled: false
                                 },
                                 title: {
-                                    text: '<?php echo 50;//number_format($processed_divisiondata[$division]["pctbudgetutilized"], 0, '.', ','); ?>%',
+                                    text: '<?php echo number_format($projectlisting[$projectid]["budget_spent"], 0, '.', ','); ?>%',
                                     align: 'center',
                                     verticalAlign: 'bottom',
                                     y: 15,
@@ -217,10 +221,10 @@ echo '<hr/>*/
                                     name: 'Avg. Time Taken',
                                     innerSize: '70%',
                                     data: [
-                                        ['Time Taken', <?php echo 50; //$processed_divisiondata[$division]["pctbudgetutilized"]; ?> ],
+                                        ['Time Taken', <?php echo $projectlisting[$projectid]["budget_spent"]; ?> ],
                                         {
                                             name: '',
-                                            y: <?php echo (100 - 50);//$processed_divisiondata[$division]["pctbudgetutilized"]); ?>,
+                                            y: <?php echo (100 - $projectlisting[$projectid]["budget_spent"]); ?>,
                                             dataLabels: {
                                                 enabled: false
                                             }
@@ -248,7 +252,7 @@ echo '<hr/>*/
                                     enabled: false
                                 },
                                 title: {
-                                    text: '<?php echo 50;//number_format($processed_divisiondata[$division]["pctgdurationused"], 0, '.', ','); ?>%',
+                                    text: '<?php echo number_format($projectlisting[$projectid]["time_used"], 0, '.', ','); ?>%',
                                     align: 'center',
                                     verticalAlign: 'bottom',
                                     y: 15,
@@ -286,10 +290,10 @@ echo '<hr/>*/
                                     name: 'Activities Completed',
                                     innerSize: '70%',
                                     data: [
-                                        ['Time Taken', <?php echo 50;//$processed_divisiondata[$division]["pctgdurationused"]; ?> ],
+                                        ['Time Taken', <?php echo $projectlisting[$projectid]["time_used"]; ?> ],
                                         {
                                             name: '',
-                                            y: <?php echo (100 - 50);//$processed_divisiondata[$division]["pctgdurationused"]); ?>,
+                                            y: <?php echo (100 - $projectlisting[$projectid]["time_used"]); ?>,
                                             dataLabels: {
                                                 enabled: false
                                             }
@@ -316,7 +320,7 @@ echo '<hr/>*/
                                     enabled: false
                                 },
                                 title: {
-                                    text: '<?php echo 50; //number_format($processed_divisiondata[$division]["avgactivitiescompleted"], 0, '.', ','); ?>%',
+                                    text: '<?php echo number_format($projectlisting[$projectid]["activities_completed"], 0, '.', ','); ?>%',
                                     align: 'center',
                                     verticalAlign: 'bottom',
                                     y: 15,
@@ -354,10 +358,10 @@ echo '<hr/>*/
                                     name: 'Activities Completed',
                                     innerSize: '70%',
                                     data: [
-                                        ['Time Taken', <?php echo 50; //$processed_divisiondata[$division]["avgactivitiescompleted"]; ?> ],
+                                        ['Time Taken', <?php echo $projectlisting[$projectid]["activities_completed"]; ?> ],
                                         {
                                             name: '',
-                                            y: <?php echo (100 - 50);//$processed_divisiondata[$division]["avgactivitiescompleted"]); ?>,
+                                            y: <?php echo (100 - $projectlisting[$projectid]["activities_completed"]); ?>,
                                             dataLabels: {
                                                 enabled: false
                                             }
@@ -378,7 +382,11 @@ echo '<hr/>*/
                             </tr>
                             <tr>
                                 <td>Subprogramme:</td>
-                                <td><strong><?php echo 'N/A'; //$projectlisting[$projectid]["subprogramme"]; ?></strong></td>
+                                <td><strong><?php echo $projectlisting[$projectid]["subprogramme"]; ?></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Planned Timeline:</td>
+                                <td><strong><?php echo $projectlisting[$projectid]["startdate"]; ?></strong><strong>-</strong><strong><?php echo $projectlisting[$projectid]["enddate"]; ?></strong></td>
                             </tr>
                         </tbody>
                     </table>
