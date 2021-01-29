@@ -191,7 +191,10 @@ foreach ($all_projects_data as $key => $value) {
     $project_office = $value->managing_division;
     $project_fund_amount = $value->consumable_budget;
     $project_prodoc_amount = 0;
-    $project_duration = getdaysbetween($value->StartDate, $value->EndDate) / 30;
+    $project_start_date = $value->StartDate;
+    $project_end_date = $value->EndDate;
+    $project_duration = ceil(getdaysbetween($value->StartDate, $value->EndDate) / 30);
+    $project_duration_elapsed = ceil(getdaysbetween($project_start_date, null) / 30);
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
     $project_manager = $value->project_manager;
@@ -257,6 +260,8 @@ foreach ($all_projects_data as $key => $value) {
     $outputs_count = 0;
     $activities_count = 0;
 
+    $activity_status_desc = array("0" => "Not Defined", "1" => "Not Started", "2" => "In Progress", "3" => "Completed");
+
     foreach ($proj_outputs_data as $output) {
         if ($output->projectID == $value->project_id) {
             $output_fundamount = 0;
@@ -277,20 +282,14 @@ foreach ($all_projects_data as $key => $value) {
                     $activity_funded = $activity->funded;
                     $activity_fundamount = $activity->amount_funded;
 
-                    if ($activity_status == "Completed") {
-                        $activity_elapsed = getdaysbetween($activity_startdate, min(date("Y-m-d",strtotime($activity_enddate)), date("Y-m-d", time())));
-                    } else {
-                        $activity_elapsed = getdaysbetween($activity_startdate, date("Y-m-d", time()));
-                    }
-
                     // Fill in activity data
                     $activities_list[] = [
                         "id" => $activity_id,
                         "title" => $activity_title,
                         "startdate" => $activity_startdate,
                         "enddate" => $activity_enddate,
-                        "duration" => getdaysbetween($activity_startdate, $activity_enddate),
-                        "elapsed" => $activity_elapsed,
+                        "duration" => ceil(getdaysbetween($activity_startdate, $activity_enddate)),
+                        "elapsed" => ceil(getdaysbetween($activity_startdate, date("d-m-Y", time()))),
                         "staff" => $activity_staff,
                         "office" => $activity_office,
                         "branch" => $activity_branch,
@@ -304,6 +303,7 @@ foreach ($all_projects_data as $key => $value) {
                     $activities_count++;
                 }
             }
+
             $outputs_activities[] = [
                 "id" => $output->output_id,
                 "title" => $output->output_name,
@@ -325,6 +325,7 @@ foreach ($all_projects_data as $key => $value) {
         "outputscount" => $outputs_count,
         "activitiescount" => $activities_count,
         "duration" => $project_duration,
+        "duration_elapsed" => $project_duration_elapsed,
         "rank" => $project_rank,
         "healthrating" => $project_healthrating,
         "healthcolor" => gethealthcolor($project_healthrating),
@@ -334,7 +335,7 @@ foreach ($all_projects_data as $key => $value) {
         "refresh_date" => $refresh_date,
     ];
     if ($p == 1) {
-        var_dump($projectlisting[$project_id]);
+        //var_dump($projectlisting[$project_id]);
     }
 
     $p++;

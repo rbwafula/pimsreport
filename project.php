@@ -163,7 +163,11 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                     //echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
                                     echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["amounts"][$i],0,'.',',').'</td>';
-                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["obligated"][$i],0,'.',',').'</td>';
+                                    if ($projectlisting[$projectid]["budgetclass"]["obligated"][$i] < 0) {
+                                        echo '<td class="text-right red">('. number_format(abs($projectlisting[$projectid]["budgetclass"]["obligated"][$i]),0,'.',',').')</td>';
+                                    } else {
+                                        echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["obligated"][$i],0,'.',',').'</td>';
+                                    }
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["spent"][$i],0,'.',',').'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["expenditure"][$i],0,'.',',').'</td>';
                                     if ($projectlisting[$projectid]["budgetclass"]["balance"][$i] < 0) {
@@ -195,8 +199,8 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         </table>
                     </div>
                     <div class="row">
-                        <div class="col-md-6"><p class="quote text-left noborder">Coding block: insert coding block here</p></div>
-                        <div class="col-md-6"><p class="quote text-right noborder">Financial data as at: <?php echo $projectlisting[$projectid]["refresh_date"] ; ?></p></div>
+                        <div class="col-md-6"><p class="quote text-left noborder">Coding block: <?php echo $projectlisting[$projectid]["coding_block"];?></p></div>
+                        <div class="col-md-6"><p class="quote text-right noborder">Financial data as at: <?php echo $projectlisting[$projectid]["refresh_date"]; ?></p></div>
                     </div>
                     
                 </div>
