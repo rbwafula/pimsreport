@@ -224,8 +224,8 @@ foreach ($all_projects_data as $key => $value) {
     $project_manager = $value->project_manager;
     $project_subprogramme = $value->subprogramme;
 
-    $project_pctg_budget_spent = ceil($value->percentage_budget_utilized * 100);
-    $project_pctg_time_used = ceil($value->percentage_time_taken * 100);
+    $project_pctg_budget_spent = round($value->percentage_budget_utilized * 100);
+    $project_pctg_time_used = round($value->percentage_time_taken * 100);
     $project_pctg_activities_completed = round($value->percentage_activities_completed * 100);
 
     $project_start = $value->StartDate;
