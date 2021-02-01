@@ -56,6 +56,10 @@ body {
 	font-size: 0.3cm;
 	color: #17a2b8;
 }
+.logo .quote {
+	font-size: 11px;
+	margin-bottom: 0;
+}
 .reportheader .title {
 	text-align: center;
 }
@@ -376,13 +380,20 @@ table.activitytable .activity td {
 	background-color: #f7f7f7;
 	color: #333;
 }
-table.projectmanager {
-	margin-top: 30px;
-	font-size: 12px;
+table.projectmanager,
+table.timeline {
+	margin-top: 20px;
+	font-size: 11px;
 	line-height: 1.375;
+	width: 100%;
 }
-table.projectmanager td strong {
-	margin-left: 10px;
+table.timeline {
+	margin-top: 0px;
+	width: auto;
+}
+table.projectmanager td strong,
+table.timeline td strong {
+	margin-left: 0px;
 }
 table.budgetclass_footer {
 	font-size: 11px;
