@@ -118,12 +118,10 @@ $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-ap
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
 $urlsuffix = ($version == 'cached') ? '.json' : '';
 
-$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
-//$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
+$url = $page_link . 'final_data' . $urlsuffix;
 $activities_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
 $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
-//$proj_activity_url = $page_link.'div_practivitycount_data'.$urlsuffix;
 $budget_commitment_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/reportfinancial_data';
 $project_all_activities_url = $page_link . 'allactivities_data' . $urlsuffix;
 $project_outputs_url = $page_link . 'outputtracking_data' . $urlsuffix;
