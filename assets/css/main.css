@@ -66,6 +66,12 @@ body {
 	color: #333;
 	letter-spacing: 0;
 }
+.reportheader.projectinfo .title h1 {
+	font-size: 17px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+
 .reportheader .title h6 {
 	margin: 0;
 	letter-spacing: 0;
@@ -81,8 +87,14 @@ body {
 .reportheader .health .reportdate {
 	margin: 0;font-size: 0.35cm;font-weight: 400; margin-bottom: 0.2cm; margin-right: 30px;
 }
+.reportheader.projectinfo .health .reportdate {
+	margin-right: 7px;
+}
 .reportheader .health .healthrating_box {
 	border-radius: 50%;width: 0.8cm;height: 0.8cm; margin-top: -11px; margin-right:40px; position:absolute; right:15px;
+}
+.reportheader .health .healthrating_box {
+	margin-right: 18px;
 }
 .reportheader .health .healthratingdesc {
 	margin-top: 25px;
@@ -103,6 +115,12 @@ body {
 	font-size: 11px;
 	font-style: italic;
 	padding-top: 5px;
+}
+.reportbody.section1 p.quote.noborder {
+	border-top: 0px;
+    margin-bottom: 0px;
+    padding: 0;
+    line-height: 1.375;
 }
 .reportbody.section2,
 .reportbody.section3 {
@@ -161,6 +179,11 @@ body {
 	font-size: 16px;
 	font-weight: 600;
 }
+.reportbody.section1 .summarystatistics .metricvalue span,
+.reportbody.section1 .hrstatistics .metricvalue span {
+	font-size: 10px;
+	margin-left: 4px;
+}
 .reportbody.section1 .hrstatistics .metric4 .metricvalue,
 .reportbody.section1 .hrstatistics .metric5 .metricvalue {
 	/*font-size: 26px;*/
@@ -176,6 +199,9 @@ body {
 }
 .reportbody.section1 .portfoliostatistics {
 	margin: 0;
+}
+.reportbody.section1 .portfoliostatistics.individualproject {
+	margin-top: 15px;
 }
 .reportbody.section1 .portfoliostatistics .metric1,
 .reportbody.section1 .portfoliostatistics .metric2,
@@ -221,6 +247,9 @@ body {
 	font-size: 10px !important;
 	/*page-break-after:always;*/
 	page-break-inside:auto
+}
+.section2 .table.activitytable {
+	border: 1px solid !important;
 }
 .section2 .table tr,
 .section3 .table tr {
@@ -292,6 +321,8 @@ table tbody tr.summary td {
 table.budgetclass {
 	font-size: 11px;
 	line-height: 1.375;
+	/*border-bottom: 2px solid #aaa;*/
+	border-style: none none double none;
 }
 table.budgetclass td {
 	padding: 2px 4px !important;
@@ -304,10 +335,67 @@ table.budgetclass .total td {
 }
 table.activitytable .output td {
 	font-style: italic;
+	border: 1px solid #dee2e6 !important;
+	background: #eee;
+}
+table.activitytable .output td span {
+	background: #17a2b8;
+	color: #fff;
+	padding: 2px 6px;
+	margin-left: 5px;
+	border-radius: 4px;
 }
 table.activitytable .activity td {
 	font-size: 10px;
+	border: 1px solid #dee2e6 !important;
+	line-height: 1.375;
 }
+.progress-bar {
+	width: 100%;
+	background-color: #e0e0e0;
+	padding: 2px;
+	border-radius: 3px;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
+}
+
+.progress-bar-fill {
+	display: block;
+	/*height: 22px;*/
+	padding: 3px 0;
+	background-color: #659cef;
+	border-radius: 3px;
+	transition: width 500ms ease-in-out;
+}
+.progress-bar-fill.green {
+	background-color: #5cb85c;
+}
+.progress-bar-fill.red {
+	background-color: #d9534f;
+}
+.progress-bar-fill.gray {
+	background-color: #f7f7f7;
+	color: #333;
+}
+table.projectmanager {
+	margin-top: 30px;
+	font-size: 12px;
+	line-height: 1.375;
+}
+table.projectmanager td strong {
+	margin-left: 10px;
+}
+table.budgetclass_footer {
+	font-size: 11px;
+	line-height: 1.375;
+}
+table.budgetclass_footer tr td:first-child {
+	vertical-align: initial;
+}
+table.budgetclass_footer tr td:last-child {
+	padding-left: 5px;
+	font-weight: bold;
+}
+
 @page { 
 	size: auto;  
 	margin: 0mm; 

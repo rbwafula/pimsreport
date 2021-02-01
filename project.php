@@ -1,13 +1,7 @@
 <?php
 $month = Date("M") . ' ' . Date("Y");
-/*$office = array('Europe', 'Economy', 'Disasters and Conflicts', 'Latin America', 'Asia Pacific', 'Law', 'Communication', 'Ecosystems', 'Science', 'Africa', 'West Asia');
-$officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
-$division = $office[$officeid];*/
 include_once 'proj_algo.php';
 $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($projectlisting));
-echo '<pre>';
-var_dump($projectlisting[$projectid]["budgetclass"]["balance"]);
-echo '</pre>';
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,10 +23,10 @@ echo '</pre>';
     <script src="assets/js/main.js"></script>
 
     <!-- HTML TO PDF LIB LOADED -->
-    <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+    <script src="assets/vendor/html2pdf/html2pdf.bundle.js"></script>
 
-    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <link href="assets/vendor/select2/select2.min.css" rel="stylesheet" />
+    <script src="assets/vendor/select2/select2.min.js"></script>
 </head>
 <body>
 	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 hidden "><!-- shadow -->
@@ -79,7 +73,7 @@ echo '</pre>';
         </div>
 
         <div id="toprint" class="toprint">
-            <div class="row reportheader">
+            <div class="row reportheader projectinfo">
                 <div class="col-md-4 logo">
                     <img class="logo" src="assets/images/pimslogo.png">
                 </div>
@@ -90,9 +84,10 @@ echo '</pre>';
                 <div class="col-md-2 health">
                     <p class="reportdate">Jan 2021</p>
                     <p class="healthrating_box" style="background-color:<?php echo $projectlisting[$projectid]["healthcolor"]; ?>;">&nbsp;</p>
-                    <p class="healthratingdesc">Project Rating</p>
+                    <p class="healthratingdesc">Project Rating<?php //echo ': '.$projectlisting[$projectid]["healthrating"];?></p>
                 </div>
             </div>
+
 
             <div class="row reportbody section1">
                 <div class="col-md-6 summary">
@@ -100,7 +95,11 @@ echo '</pre>';
                     <div class="row summarystatistics">
                         <div class="col metric1">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["fundamount"], 0, '.', ','); ?>
+                                
+
+                                <?php 
+                                echo '$'.number_format((array_sum($projectlisting[$projectid]["budgetclass"]["amounts"])/1000000) ,1,'.',',').'M';
+                                //echo '$'.number_format( ($projectlisting[$projectid]["fundamount"]/1) , 1, '.', ',').'M'; ?>
                             </p>
                             <p class="metricdesc">Fund<br/>Amount</p>
                         </div>
@@ -118,28 +117,294 @@ echo '</pre>';
                         </div>
                         <div class="col metric4">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["activitiescount"], 0, '.', ','); ?>
+                                <?php echo number_format($projectlisting[$projectid]["activities_completed_count"], 0, '.', ',').' / '.number_format($projectlisting[$projectid]["activitiescount"], 0, '.', ','); ?>
                             </p>
-                            <p class="metricdesc">Total<br/>Activities</p>
+                            <p class="metricdesc">Completed<br/>Activities</p>
                         </div>
                         <div class="col metric5">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["duration"], 0, '.', ','); ?>
+                                <?php echo number_format($projectlisting[$projectid]["duration"], 0, '.', ','); ?><span>Years</span>
                             </p>
                             <p class="metricdesc">Project<br/>Duration</p>
                         </div>
                         <div class="col metric6">
                             <p class="metricvalue">
-                                <?php echo $projectlisting[$projectid]["rank"]; //number_format($projectlisting[$projectid]["rank"], 0, '.', ','); ?>
+                                <?php echo $projectlisting[$projectid]["rank"]; ?>
                             </p>
                             <p class="metricdesc">Project<br/>Rank</p>
                         </div>
                     </div>
-                    <p class="summarytext">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum..</p>
+
+                    <div class="row portfoliostatistics individualproject">
+                        <div class="col-md-4 metric1">
+                            <div id="budgetutilized_chart"></div>
+                            <div class="desc">Budget Spent</div>
+                        </div>
+                        <div class="col-md-4 metric2">
+                            <div id="timetaken_chart"></div>
+                            <div class="desc">Time Used</div>
+                        </div>
+                        <div class="col-md-4 metric3">
+                            <div id="activitiescompleted_chart"></div>
+                            <div class="desc">Activities Completed</div>
+                        </div>
+                        <script type="text/javascript">
+                            Highcharts.chart('budgetutilized_chart', {
+                                chart: {
+                                    backgroundColor: 'rgba(0,0,0,0)',
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: 0,
+                                    plotShadow: false,
+                                    margin: [0, 0, -10, 0],
+                                    spacingTop: 0,
+                                    spacingBottom: 0,
+                                    spacingLeft: 0,
+                                    spacingRight: 0,
+                                    height: 130
+                                },
+                                colors: ['#0077b6','#ccc'],
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: '<?php echo number_format($projectlisting[$projectid]["budget_spent"], 0, '.', ','); ?>%',
+                                    align: 'center',
+                                    verticalAlign: 'bottom',
+                                    y: 15,
+                                    style: {
+                                        color: '#0077b6',
+                                        fontWeight: 500
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: false
+                                },
+                                accessibility: {
+                                    point: {
+                                        valueSuffix: '%'
+                                    }
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        size: '100%',
+                                        dataLabels: {
+                                            enabled: false,
+                                            distance: -50,
+                                            style: {
+                                                fontWeight: 'bold',
+                                                color: 'white'
+                                            }
+                                        },
+                                        startAngle: -90,
+                                        endAngle: 90,
+                                        center: ['50%', '100%']
+                                    },
+                                    series: {
+                                        states: {
+                                            hover: {
+                                                enabled: false
+                                            }
+                                        }
+                                    }
+                                },
+                                series: [{
+                                    type: 'pie',
+                                    name: 'Avg. Time Taken',
+                                    innerSize: '70%',
+                                    data: [
+                                        ['Time Taken', <?php echo $projectlisting[$projectid]["budget_spent"]; ?> ],
+                                        {
+                                            name: '',
+                                            y: <?php echo (100 - $projectlisting[$projectid]["budget_spent"]); ?>,
+                                            dataLabels: {
+                                                enabled: false
+                                            }
+                                        }
+                                    ]
+                                }]
+                            });
+
+
+                            Highcharts.chart('timetaken_chart', {
+                                chart: {
+                                    backgroundColor: 'rgba(0,0,0,0)',
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: 0,
+                                    plotShadow: false,
+                                    margin: [0, 0, -10, 0],
+                                    spacingTop: 0,
+                                    spacingBottom: 0,
+                                    spacingLeft: 0,
+                                    spacingRight: 0,
+                                    height: 130
+                                },
+                                colors: ['#d59442','#ccc'],
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: '<?php echo number_format($projectlisting[$projectid]["time_used"], 0, '.', ','); ?>%',
+                                    align: 'center',
+                                    verticalAlign: 'bottom',
+                                    y: 15,
+                                    style: {
+                                        color: '#d59442',
+                                        fontWeight: 500
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: false
+                                },
+                                accessibility: {
+                                    point: {
+                                        valueSuffix: '%'
+                                    }
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        size: '100%',
+                                        dataLabels: {
+                                            enabled: false,
+                                            distance: -50,
+                                            style: {
+                                                fontWeight: 'bold',
+                                                color: 'white'
+                                            }
+                                        },
+                                        startAngle: -90,
+                                        endAngle: 90,
+                                        center: ['50%', '100%']
+                                    }
+                                },
+                                series: [{
+                                    type: 'pie',
+                                    name: 'Activities Completed',
+                                    innerSize: '70%',
+                                    data: [
+                                        ['Time Taken', <?php echo $projectlisting[$projectid]["time_used"]; ?> ],
+                                        {
+                                            name: '',
+                                            y: <?php echo (100 - $projectlisting[$projectid]["time_used"]); ?>,
+                                            dataLabels: {
+                                                enabled: false
+                                            }
+                                        }
+                                    ]
+                                }]
+                            });
+
+                            Highcharts.chart('activitiescompleted_chart', {
+                                chart: {
+                                    backgroundColor: 'rgba(0,0,0,0)',
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: 0,
+                                    plotShadow: false,
+                                    margin: [0, 0, -10, 0],
+                                    spacingTop: 0,
+                                    spacingBottom: 0,
+                                    spacingLeft: 0,
+                                    spacingRight: 0,
+                                    height: 130
+                                },
+                                colors: ['#688753','#ccc'],
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: '<?php echo number_format($projectlisting[$projectid]["activities_completed"], 0, '.', ','); ?>%',
+                                    align: 'center',
+                                    verticalAlign: 'bottom',
+                                    y: 15,
+                                    style: {
+                                        color: '#688753',
+                                        fontWeight: 500
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: false
+                                },
+                                accessibility: {
+                                    point: {
+                                        valueSuffix: '%'
+                                    }
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        size: '100%',
+                                        dataLabels: {
+                                            enabled: false,
+                                            distance: -50,
+                                            style: {
+                                                fontWeight: 'bold',
+                                                color: 'white'
+                                            }
+                                        },
+                                        startAngle: -90,
+                                        endAngle: 90,
+                                        center: ['50%', '100%']
+                                    }
+                                },
+                                series: [{
+                                    type: 'pie',
+                                    name: 'Activities Completed',
+                                    innerSize: '70%',
+                                    data: [
+                                        ['Time Taken', <?php echo $projectlisting[$projectid]["activities_completed"]; ?> ],
+                                        {
+                                            name: '',
+                                            y: <?php echo (100 - $projectlisting[$projectid]["activities_completed"]); ?>,
+                                            dataLabels: {
+                                                enabled: false
+                                            }
+                                        }
+                                    ]
+                                }]
+                            });
+                        </script>
+                    </div>
+
+
+
+                    <table class="projectmanager">
+                        <tbody>
+                            <tr>
+                                <td>Project Manager:</td>
+                                <td><strong><?php echo $projectlisting[$projectid]["manager"]; ?></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Subprogramme:</td>
+                                <td><strong><?php echo $projectlisting[$projectid]["subprogramme"]; ?></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Planned Timeline:</td>
+                                <td><strong><?php echo $projectlisting[$projectid]["startdate"]; ?></strong><strong>-</strong><strong><?php echo $projectlisting[$projectid]["enddate"]; ?></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p class="summarytext projectmanager"> </p>
+                    <p class="summarytext projectmanager"> </p>
+                    <p class="summarytext">
+                        <?php
+                        $summary = $projectlisting[$projectid]["summary"];
+                        if (strlen($summary) == 0) {
+                            echo 'No summary information.';
+                        } else if (strlen($summary) > 0 && strlen($summary) <= 690) {
+                            echo $summary;
+                        } else {
+                            echo substr($summary, 0, 690).'...';
+                        }
+                        ?>  
+                    </p>
                 </div>
                 <div class="col-md-6">
-                    <!-- -->
-                    <h5 class="sectiontitle">Project Budget</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="sectiontitle">Project Budget</h5>
+                        </div>
+                        <div class="col-md-6"><p class="quote text-right noborder">Financial data as at: <strong><?php echo $projectlisting[$projectid]["refresh_date"]; ?></strong></p>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-sm budgetclass">
                             <!--Budget classes table here
@@ -158,34 +423,86 @@ echo '</pre>';
                             <tbody>
                                 <?php
                                 $budgetbalance = 0;
+                                //$budgetclass_keys = array_keys($$projectlisting[$projectid]["budgetclass"]["names"]);
+
                                 for ($i=0;$i<count($projectlisting[$projectid]["budgetclass"]["names"]);$i++) {
                                     echo '<tr>';
                                     echo '<td class="text-right">'.($i+1).'.</td>';
-                                    //echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
                                     echo '<td>'.$projectlisting[$projectid]["budgetclass"]["names"][$i].'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["amounts"][$i],0,'.',',').'</td>';
-                                    echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["obligated"][$i],0,'.',',').'</td>';
+                                    if ($projectlisting[$projectid]["budgetclass"]["obligated"][$i] < 0) {
+                                        echo '<td class="text-right red">('. number_format(abs($projectlisting[$projectid]["budgetclass"]["obligated"][$i]),0,'.',',').')</td>';
+                                    } else {
+                                        echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["obligated"][$i],0,'.',',').'</td>';
+                                    }
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["spent"][$i],0,'.',',').'</td>';
                                     echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["expenditure"][$i],0,'.',',').'</td>';
-                                    $balanceclass = ($projectlisting[$projectid]["budgetclass"]["balance"][$i] < 0) ? 'red' : '';
-                                    echo '<td class="text-right '.$balanceclass.'">'. number_format($projectlisting[$projectid]["budgetclass"]["balance"][$i],0,'.',',').'</td>';
+                                    if ($projectlisting[$projectid]["budgetclass"]["balance"][$i] < 0) {
+                                        echo '<td class="text-right red">('. number_format(abs($projectlisting[$projectid]["budgetclass"]["balance"][$i]),0,'.',',').')</td>';
+                                    } else {
+                                        echo '<td class="text-right">'. number_format($projectlisting[$projectid]["budgetclass"]["balance"][$i],0,'.',',').'</td>';
+                                    }
                                     echo '</tr>';
-                                    $budgetbalance += $projectlisting[$projectid]["budgetclass"]["balance"][$i];
+                                    //$budgetbalance += $projectlisting[$projectid]["budgetclass"]["balance"][$i];
                                 }
                                 /* Totals */
                                 echo '<tr class="total">';
                                 echo '<td>&nbsp;</td>';
                                 echo '<td>Total</td>';
                                 echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["amounts"]),0,'.',',').'</td>';
-                                echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["obligated"]),0,'.',',').'</td>';
-                                echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["spent"]),0,'.',',').'</td>';
+                                if (array_sum($projectlisting[$projectid]["budgetclass"]["obligated"]) < 0) {
+                                    echo '<td class="text-right red">('.number_format(abs(array_sum($projectlisting[$projectid]["budgetclass"]["obligated"])),0,'.',',').')</td>';
+                                } else {
+                                    echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["obligated"]),0,'.',',').'</td>';
+                                }echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["spent"]),0,'.',',').'</td>';
                                 echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["expenditure"]),0,'.',',').'</td>';
-                                echo '<td class="text-right">'.number_format($budgetbalance,0,'.',',').'</td>';
+                                if (array_sum($projectlisting[$projectid]["budgetclass"]["balance"]) < 0) {
+                                    echo '<td class="text-right red">('.number_format(abs(array_sum($projectlisting[$projectid]["budgetclass"]["balance"])),0,'.',',').')</td>';
+                                } else {
+                                    echo '<td class="text-right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["balance"]),0,'.',',').'</td>';
+                                }
+                                
+                                /*if ($budgetbalance < 0) {
+                                    echo '<td class="text-right red">('.number_format(abs($budgetbalance),0,'.',',').')</td>';
+                                } else {
+                                    echo '<td class="text-right">'.number_format($budgetbalance,0,'.',',').'</td>';
+                                }*/
+
+                                
                                 echo '</tr>';
                                 ?>
                             </tbody>
                         </table>
-                        <p class="quote text-right">Finacial data as at: insert date here</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <table class="budgetclass_footer">
+                                <tbody>
+                                    <tr>
+                                        <td>Coding block:</td>
+                                        <td><?php echo $projectlisting[$projectid]["coding_block"];?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="budgetclass_footer">
+                                <tbody>
+                                    <tr>
+                                        <td width="60px">Grant keys:</td>
+                                        <td>
+                                            <?php 
+                                            $grantcodes = '';
+                                            foreach(array_unique($projectlisting[$projectid]["budgetclass"]["grants"]) as $value) { 
+                                                $grantcodes .= $value.", "; 
+                                            }
+                                            echo rtrim($grantcodes, ', ');
+                                            ?>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     
                 </div>
@@ -195,14 +512,14 @@ echo '</pre>';
             <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 1: Outputs &amp; Activites</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm activitytable">
+                    <table class="table table-bordered table-sm activitytable">
                         <thead>
                             <tr>
                                 <th class="center">Activity #</th>
-                                <th class="left">Activity Title</th>
+                                <th class="left" width="400px">Activity Title</th>
                                 <th class="center">Start Date</th>
                                 <th class="center">End Date</th>
-                                <th class="center">Elapsed</th>
+                                <th class="center" width="100px">Elapsed</th>
                                 <th class="center">Responsible Staff</th>
                                 <th class="center">Responsible Office</th>
                                 <th class="center">Responsible Branch</th>
@@ -216,7 +533,7 @@ echo '</pre>';
                             for ($i=0;$i<count($projectlisting[$projectid]["outputs_activities"]); $i++) {
                                 //echo "output ".($i+1)."<br/>";
                                 echo '<tr class="output">';
-                                echo '<td colspan=11>'.$projectlisting[$projectid]["outputs_activities"][$i]["id"].': '.$projectlisting[$projectid]["outputs_activities"][$i]["title"].' <span>'. number_format($projectlisting[$projectid]["outputs_activities"][$i]["fundamount"],0,'.',',').'</span></td>';
+                                echo '<td colspan=11>Output '.$projectlisting[$projectid]["outputs_activities"][$i]["id"].' - '.$projectlisting[$projectid]["outputs_activities"][$i]["title"].' <span>$ '. number_format($projectlisting[$projectid]["outputs_activities"][$i]["fundamount"],0,'.',',').'</span></td>';
                                 echo '</tr>';
 
                                 for ($j=0;$j<count($projectlisting[$projectid]["outputs_activities"][$i]["activities"]);$j++) {
@@ -225,14 +542,40 @@ echo '</pre>';
                                     echo '<td class="left">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["title"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["startdate"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["enddate"].'</td>';
-                                    echo '<td class="center">'.number_format(($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["elapsed"]*100/$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["duration"]),0,'.',',').'%</td>';
+
+                                    $elapsed = $projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["elapsed"];
+                                    $duration = $projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["duration"];
+                                    if ($elapsed != 0 && $duration != 0) {
+                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                        if ($elapsedtime >= 0 && $elapsedtime <= 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: '.min($elapsedtime,100).'%;">'.$elapsedtime.'%</span></div></td>';
+                                        }
+                                    } else {
+                                        $elapsedtime = 'N/A';
+                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                    }
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["staff"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["office"].'</td>';
                                     echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["branch"].'</td>';
-                                    echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["status"].'</td>';
-                                    echo '<td class="center">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"].'</td>';
-
-                                    $fundtext = ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["funded"] == 1) ? number_format($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["fundamount"],0,'.',',') : '- No -';
+                                    if ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["status"] == 'In Progress') {
+                                        $statuscolor = '#ffc107 !important'; // yellow
+                                    } else if ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["status"] == 'Completed') {
+                                        $statuscolor = '#28a745 !important'; //green
+                                    } else {
+                                        $statuscolor = '#dc3545 !important'; //red
+                                    }
+                                    echo '<td class="center" style="font-weight: bold; color:'.$statuscolor.'">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["status"].'</td>';
+                                    if ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"] == 'PM To Watch') {
+                                        $trackingcolor = '#ffc107 !important'; // yellow
+                                    } else if ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"] == 'Completed') {
+                                        $trackingcolor = '#28a745 !important'; //green
+                                    } else {
+                                        $trackingcolor = '#dc3545 !important'; //red
+                                    }
+                                    echo '<td class="center" style="font-weight: bold; color:'.$trackingcolor.'">'.$projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["trackingtext"].'</td>';
+                                    $fundtext = ($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["fundamount"] > 0) ? number_format($projectlisting[$projectid]["outputs_activities"][$i]["activities"][$j]["fundamount"],0,'.',',') : '- No -';
                                     echo '<td class="right">'.$fundtext.'</td>';
                                     echo '</tr>';
                                 }
