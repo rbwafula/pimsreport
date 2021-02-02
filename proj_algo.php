@@ -324,7 +324,10 @@ foreach ($all_projects_data as $key => $value) {
     $budgetclass_balance = reorder($budgetclass_balance);
 
     if ($p == 1) {
-        //var_dump($budgetclass_grants_to);
+        var_dump($budgetclass_grants_amount);
+        echo '<br />------------------------------------------------------<br />';
+        var_dump($budgetclass_grants_expired);
+        echo '<br />------------------------------------------------------<br />';
     }
 
     //var_dump($budgetclass_balance[$ckey]);
