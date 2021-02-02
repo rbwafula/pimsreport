@@ -124,7 +124,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             <p class="metricvalue">
                                 <?php echo number_format($projectlisting[$projectid]["duration"], 0, '.', ','); ?><span>Years</span>
                             </p>
-                            <p class="metricdesc">Project<br/>Duration</p>
+                            <p class="metricdesc">Planned<br/>Duration</p>
                         </div>
                         <div class="col metric6">
                             <p class="metricvalue">
@@ -174,7 +174,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                     spacingBottom: 0,
                                     spacingLeft: 0,
                                     spacingRight: 0,
-                                    height: 130
+                                    height: 100
                                 },
                                 colors: ['#0077b6','#ccc'],
                                 credits: {
@@ -250,7 +250,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                     spacingBottom: 0,
                                     spacingLeft: 0,
                                     spacingRight: 0,
-                                    height: 130
+                                    height: 100
                                 },
                                 colors: ['#d59442','#ccc'],
                                 credits: {
@@ -318,7 +318,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                     spacingBottom: 0,
                                     spacingLeft: 0,
                                     spacingRight: 0,
-                                    height: 130
+                                    height: 100
                                 },
                                 colors: ['#688753','#ccc'],
                                 credits: {
@@ -538,7 +538,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                         if ($elapsedtime >= 0 && $elapsedtime <= 100) {
                                             echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
                                         } else {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: '.min($elapsedtime,100).'%;">'.$elapsedtime.'%</span></div></td>';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
                                         }
                                     } else {
                                         $elapsedtime = 'N/A';

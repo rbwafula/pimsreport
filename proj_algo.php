@@ -112,7 +112,7 @@ function reorder($array)
 }
 
 //FETCH DATA -> CACHED/LIVE
-$version = 'live'; // live * Choose between: cached and live data here */
+$version = 'cached'; // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
 $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
@@ -122,7 +122,7 @@ $url = $page_link . 'final_data' . $urlsuffix;
 $activities_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
 $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
-$budget_commitment_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/reportfinancial_data';
+$budget_commitment_url = $page_link . 'reportfinancial_data' . $urlsuffix;
 $project_all_activities_url = $page_link . 'allactivities_data' . $urlsuffix;
 $project_outputs_url = $page_link . 'outputtracking_data' . $urlsuffix;
 
@@ -217,7 +217,7 @@ foreach ($all_projects_data as $key => $value) {
     $project_start_date = $value->StartDate;
     $project_end_date = $value->EndDate;
     $project_duration = ceil(getdaysbetween($value->StartDate, $value->EndDate) / 365.25);
-    $project_duration_elapsed = ceil(getdaysbetween($project_start_date, null) / 30);
+    $project_duration_elapsed = ceil(getdaysbetween($project_start_date, null) / 365.25);
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
     $project_healthtraffic = $value->system_traffic_light;
@@ -329,6 +329,14 @@ foreach ($all_projects_data as $key => $value) {
                     $activity_tracking_color = $activity->activity_traffic_light;
                     $activity_funded = $activity->funded;
                     $activity_fundamount = $activity->amount_funded;
+                    $activity_elapsed_enddate = '';
+                    if ($activity_status == 'Completed') {
+                        $activity_elapsed_enddate = $activity_enddate;
+                    } else if ($activity_status == 'Not Started') {
+                        $activity_elapsed_enddate = $activity_startdate;
+                    } else { 
+                        $activity_elapsed_enddate = date("d-m-Y", time());
+                    }
 
                     // Fill in activity data
                     $activities_list[] = [
@@ -337,7 +345,7 @@ foreach ($all_projects_data as $key => $value) {
                         "startdate" => $activity_startdate,
                         "enddate" => $activity_enddate,
                         "duration" => ceil(getdaysbetween($activity_startdate, $activity_enddate)),
-                        "elapsed" => ceil(getdaysbetween($activity_startdate, date("d-m-Y", time()))),
+                        "elapsed" => ceil(getdaysbetween($activity_startdate, $activity_elapsed_enddate)),
                         "staff" => $activity_staff,
                         "office" => $activity_office,
                         "branch" => $activity_branch,
@@ -386,7 +394,7 @@ foreach ($all_projects_data as $key => $value) {
         "rank" => $project_rank,
         "healthrating" => $project_healthrating,
         "trafficlight" => $project_healthtraffic,
-        "healthcolor" => gettrafficlight($project_healthtraffic),
+        "healthcolor" => gethealthcolor($project_healthrating),//"healthcolor" => gettrafficlight($project_healthtraffic),
         "budgetclass" => array("names" => $budgetclass_names, "grants" => $budgetclass_grants, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "coding_block" => $coding_block,
         "outputs_activities" => $outputs_activities,
