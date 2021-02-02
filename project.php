@@ -76,6 +76,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
             <div class="row reportheader projectinfo">
                 <div class="col-md-4 logo">
                     <img class="logo" src="assets/images/pimslogo.png">
+                    <p class="quote text-left noborder">Financial data as at: <strong><?php echo $projectlisting[$projectid]["refresh_date"]; ?></strong></p>
                 </div>
                 <div class="col-md-6 title">
                     <h1><?php echo $projectlisting[$projectid]["title"]; ?></h1>
@@ -95,11 +96,9 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                     <div class="row summarystatistics">
                         <div class="col metric1">
                             <p class="metricvalue">
-                                
-
                                 <?php 
                                 echo '$'.number_format((array_sum($projectlisting[$projectid]["budgetclass"]["amounts"])/1000000) ,1,'.',',').'M';
-                                //echo '$'.number_format( ($projectlisting[$projectid]["fundamount"]/1) , 1, '.', ',').'M'; ?>
+                                ?>
                             </p>
                             <p class="metricdesc">Fund<br/>Amount</p>
                         </div>
@@ -125,7 +124,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             <p class="metricvalue">
                                 <?php echo number_format($projectlisting[$projectid]["duration"], 0, '.', ','); ?><span>Years</span>
                             </p>
-                            <p class="metricdesc">Project<br/>Duration</p>
+                            <p class="metricdesc">Planned<br/>Duration</p>
                         </div>
                         <div class="col metric6">
                             <p class="metricvalue">
@@ -134,6 +133,21 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             <p class="metricdesc">Project<br/>Rank</p>
                         </div>
                     </div>
+
+                    <table class="projectmanager">
+                        <tbody>
+                            <tr>
+                                <td class="text-right">Project Manager:</td>
+                                <td><strong><?php echo $projectlisting[$projectid]["manager"]; ?></strong></td>
+                                <td class="text-right">Subprogramme:</td>
+                                <td><strong><?php echo $projectlisting[$projectid]["subprogramme"]; ?></strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Planned Timeline:</td>
+                                <td colspan="3"><strong><?php echo $projectlisting[$projectid]["startdate"]; ?></strong><strong> - </strong><strong><?php echo $projectlisting[$projectid]["enddate"]; ?></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <div class="row portfoliostatistics individualproject">
                         <div class="col-md-4 metric1">
@@ -160,7 +174,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                     spacingBottom: 0,
                                     spacingLeft: 0,
                                     spacingRight: 0,
-                                    height: 130
+                                    height: 100
                                 },
                                 colors: ['#0077b6','#ccc'],
                                 credits: {
@@ -236,7 +250,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                     spacingBottom: 0,
                                     spacingLeft: 0,
                                     spacingRight: 0,
-                                    height: 130
+                                    height: 100
                                 },
                                 colors: ['#d59442','#ccc'],
                                 credits: {
@@ -304,7 +318,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                     spacingBottom: 0,
                                     spacingLeft: 0,
                                     spacingRight: 0,
-                                    height: 130
+                                    height: 100
                                 },
                                 colors: ['#688753','#ccc'],
                                 credits: {
@@ -363,25 +377,6 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         </script>
                     </div>
 
-
-
-                    <table class="projectmanager">
-                        <tbody>
-                            <tr>
-                                <td>Project Manager:</td>
-                                <td><strong><?php echo $projectlisting[$projectid]["manager"]; ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Subprogramme:</td>
-                                <td><strong><?php echo $projectlisting[$projectid]["subprogramme"]; ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Planned Timeline:</td>
-                                <td><strong><?php echo $projectlisting[$projectid]["startdate"]; ?></strong><strong>-</strong><strong><?php echo $projectlisting[$projectid]["enddate"]; ?></strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
                     <p class="summarytext projectmanager"> </p>
                     <p class="summarytext projectmanager"> </p>
                     <p class="summarytext">
@@ -398,13 +393,6 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                     </p>
                 </div>
                 <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5 class="sectiontitle">Project Budget</h5>
-                        </div>
-                        <div class="col-md-6"><p class="quote text-right noborder">Financial data as at: <strong><?php echo $projectlisting[$projectid]["refresh_date"]; ?></strong></p>
-                        </div>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-sm budgetclass">
                             <!--Budget classes table here
@@ -550,7 +538,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                         if ($elapsedtime >= 0 && $elapsedtime <= 100) {
                                             echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
                                         } else {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: '.min($elapsedtime,100).'%;">'.$elapsedtime.'%</span></div></td>';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
                                         }
                                     } else {
                                         $elapsedtime = 'N/A';

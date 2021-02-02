@@ -56,6 +56,10 @@ body {
 	font-size: 0.3cm;
 	color: #17a2b8;
 }
+.logo .quote {
+	font-size: 11px;
+	margin-bottom: 0;
+}
 .reportheader .title {
 	text-align: center;
 }
@@ -141,7 +145,7 @@ body {
 	background-color: #f6f6f6;
 }
 .reportbody.section1 .summary .summarytext {
-	margin: 0.2cm 0cm 0.4cm;text-align: justify;font-size: 0.33cm;font-weight: 300;line-height: 0.5cm;
+	margin: 0.2cm 0cm 0.4cm;text-align: justify;font-size: 11px;font-weight: 300;line-height: 1.375;
 }
 .reportbody.section1 .summarystatistics {
 	margin: 10px 0cm 0.2cm; /* 0.4cm 0cm 0.2cm */
@@ -201,7 +205,7 @@ body {
 	margin: 0;
 }
 .reportbody.section1 .portfoliostatistics.individualproject {
-	margin-top: 15px;
+	margin-top: 25px;
 }
 .reportbody.section1 .portfoliostatistics .metric1,
 .reportbody.section1 .portfoliostatistics .metric2,
@@ -325,7 +329,7 @@ table.budgetclass {
 	border-style: none none double none;
 }
 table.budgetclass td {
-	padding: 2px 4px !important;
+	padding: 1px 4px !important;
 }
 table.budgetclass td.red {
 	color: #dc3545 !important;
@@ -376,13 +380,30 @@ table.activitytable .activity td {
 	background-color: #f7f7f7;
 	color: #333;
 }
-table.projectmanager {
-	margin-top: 30px;
-	font-size: 12px;
+table.projectmanager,
+table.timeline {
+	margin-top: 15px;
+	font-size: 11px;
 	line-height: 1.375;
+	width: 100%;
 }
-table.projectmanager td strong {
-	margin-left: 10px;
+table.timeline {
+	margin-top: 0px;
+	width: auto;
+}
+table.projectmanager td {
+	vertical-align: initial;
+}
+table.projectmanager td strong,
+table.timeline td strong {
+	margin-left: 0px;
+}
+.projectmanager td:first-child, 
+.projectmanager td:nth-child(3) {
+    width: 100px;
+}
+.projectmanager td:nth-child(2) {
+    width: 105px;
 }
 table.budgetclass_footer {
 	font-size: 11px;
