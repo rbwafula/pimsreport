@@ -59,6 +59,17 @@ function gettrafficlight($health)
     }
     return $color;
 }
+
+function checkexpired($date)
+{
+    $expired = true;
+    if (!$date) {
+        $expired = 'N/A';
+    } elseif (strtotime($date) > time()) {
+        $expired = false;
+    }
+    return $expired;
+}
 function gethealthcolor($health)
 {
     $color = '#dc3545 !important'; //red
@@ -235,6 +246,10 @@ foreach ($all_projects_data as $key => $value) {
 
     $budgetclass_names = array();
     $budgetclass_grants = array();
+    $budgetclass_grants_from = array();
+    $budgetclass_grants_to = array();
+    $budgetclass_grants_expired = array();
+    $budgetclass_grants_amount = array();
 
     $budgetclass_amounts = array();
     $budgetclass_spent = array();
@@ -264,6 +279,12 @@ foreach ($all_projects_data as $key => $value) {
                     $budgetclass_names[$order] = $budget->commitment_item;
                     $budgetclass_grant[$order] = $budget->grant_key;
 
+                    $budgetclass_grants_from[$order] = $budget->grant_valid_from;
+
+                    $budgetclass_grants_to[$order] = $budget->grant_valid_to;
+                    $budgetclass_grants_expired[$order] = checkexpired($budget->grant_valid_to);
+                    $budgetclass_grants_amount[$order] = $budget->grant_amount;
+
                     $budgetclass_amounts[$order] = $budget->consumable_budget;
                     $budgetclass_spent[$order] = $budget->actual;
                     $budgetclass_obligated[$order] = $budget->commitment;
@@ -277,6 +298,10 @@ foreach ($all_projects_data as $key => $value) {
                             $budgetclass_obligated[$ckey] = $budgetclass_obligated[$ckey] + $budget->commitment;
                             $budgetclass_expenditure[$ckey] = $budgetclass_expenditure[$ckey] + $budget->consumed_budget;
                             $budgetclass_balance[$ckey] = $budgetclass_amounts[$ckey] - $budgetclass_expenditure[$ckey];
+
+                            $budgetclass_grants_expired[$ckey] = checkexpired($budget->grant_valid_to);
+                            $budgetclass_grants_amount[$ckey] = $budgetclass_grants_amount[$ckey] + $budget->grant_amount;
+
                         }
                     }
                 }
@@ -287,6 +312,11 @@ foreach ($all_projects_data as $key => $value) {
     $budgetclass_names = reorder($budgetclass_names);
     $budgetclass_grants = reorder($budgetclass_grant);
 
+    $budgetclass_grants_from = reorder($budgetclass_grants_from);
+    $budgetclass_grants_to = reorder($budgetclass_grants_to);
+    $budgetclass_grants_expired = reorder($budgetclass_grants_expired);
+    $budgetclass_grants_amount = reorder($budgetclass_grants_amount);
+
     $budgetclass_amounts = reorder($budgetclass_amounts);
     $budgetclass_spent = reorder($budgetclass_spent);
     $budgetclass_obligated = reorder($budgetclass_obligated);
@@ -294,7 +324,7 @@ foreach ($all_projects_data as $key => $value) {
     $budgetclass_balance = reorder($budgetclass_balance);
 
     if ($p == 1) {
-        //var_dump($budgetclass_names);
+        //var_dump($budgetclass_grants_to);
     }
 
     //var_dump($budgetclass_balance[$ckey]);
@@ -387,7 +417,11 @@ foreach ($all_projects_data as $key => $value) {
         "healthrating" => $project_healthrating,
         "trafficlight" => $project_healthtraffic,
         "healthcolor" => gettrafficlight($project_healthtraffic),
-        "budgetclass" => array("names" => $budgetclass_names, "grants" => $budgetclass_grants, "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
+        "budgetclass" => array("names" => $budgetclass_names, "grants" => $budgetclass_grants, "grants_from" => $budgetclass_grants_from,
+            "grants_to" => $budgetclass_grants_to,
+            "grants_expired" => $budgetclass_grants_expired,
+            "grants_amount" => $budgetclass_grants_amount,
+            "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "coding_block" => $coding_block,
         "outputs_activities" => $outputs_activities,
         "refresh_date" => $refresh_date,
