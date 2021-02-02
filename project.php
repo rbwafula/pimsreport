@@ -461,6 +461,38 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                 ?>
                             </tbody>
                         </table>
+                        <table class="table table-striped table-sm budgetclass">
+                            <thead>
+                                <tr>
+                                    <th>Grant</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Expired</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                for ($i=0; $i < count($projectlisting[$projectid]["budgetclass"]["grants"]); $i++) {
+                                    echo '<tr>';
+                                    echo '<td>'.$projectlisting[$projectid]["budgetclass"]["grants"][$i].'</td>';
+                                    echo '<td>'.$projectlisting[$projectid]["budgetclass"]["grants_from"][$i].'</td>';
+                                    echo '<td>'.$projectlisting[$projectid]["budgetclass"]["grants_to"][$i].'</td>';
+                                    echo '<td>'.$projectlisting[$projectid]["budgetclass"]["grants_expired"][$i].'</td>';
+                                    echo '<td>'.number_format($projectlisting[$projectid]["budgetclass"]["grants_amount"][$i], 0, '.', ',').'</td>';
+                                    //echo '<td>'..'</td>';
+                                    echo '</tr>';
+                                }
+                                echo '<tr class="total">';
+                                echo '<td>Total</td>';
+                                echo '<td></td>';
+                                echo '<td></td>';
+                                echo '<td></td>';
+                                echo '<td>'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_amount"]), 0, '.', ',').'</td>';
+                                echo '</tr>';
+                                ?>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
