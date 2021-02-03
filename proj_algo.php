@@ -123,14 +123,14 @@ function reorder($array)
 }
 
 //FETCH DATA -> CACHED/LIVE
-$version = 'live'; // live * Choose between: cached and live data here */
+$version = 'cached'; // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
-$livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
+$livedata_link = ''; // live api
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
 $urlsuffix = ($version == 'cached') ? '.json' : '';
 
 $url = $page_link . 'final_data' . $urlsuffix;
-$activities_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
+//$activities_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
 $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
 $budget_commitment_url = $page_link . 'reportfinancial_data' . $urlsuffix;
@@ -138,7 +138,7 @@ $project_all_activities_url = $page_link . 'allactivities_data' . $urlsuffix;
 $project_outputs_url = $page_link . 'outputtracking_data' . $urlsuffix;
 
 $all_projects_data = getdataobjectfromurl($url); // GET PROJECTS DATA
-$activities_data = getdataobjectfromurl($activities_url); // GET ACTIVITIES DATA
+//$activities_data = getdataobjectfromurl($activities_url); // GET ACTIVITIES DATA
 $outputs_data = getdataobjectfromurl($outputs_url); // GET OUTPUTS DATA
 $hr_data_uf = getdataobjectfromurl($hr_url); //GET HR DATA
 $proj_outputs_data = getdataobjectfromurl($project_outputs_url);
@@ -227,20 +227,32 @@ foreach ($all_projects_data as $key => $value) {
     $project_prodoc_amount = 0;
     $project_start_date = $value->StartDate;
     $project_end_date = $value->EndDate;
-    $project_duration = ceil(getdaysbetween($value->StartDate, $value->EndDate) / 365.25);
-    $project_duration_elapsed = ceil(getdaysbetween($project_start_date, null) / 365.25);
+    $project_duration = 'N/A';
+    $project_duration_elapsed = 'N/A';
+    if (!is_null($value->StartDate) && !is_null($value->EndDate)) {
+        $project_duration = number_format(ceil(getdaysbetween($value->StartDate, $value->EndDate) / 365.25),0,'.',',');
+        $project_duration_elapsed = number_format(ceil(getdaysbetween($project_start_date, null) / 365.25),0,'.',',');
+    }    
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
     $project_healthtraffic = $value->system_traffic_light;
     $project_manager = $value->project_manager;
     $project_subprogramme = $value->subprogramme;
-
     $project_pctg_budget_spent = round($value->percentage_budget_utilized * 100);
     $project_pctg_time_used = round($value->percentage_time_taken * 100);
+    $pj_elapsedtime = 0;
+    if (is_null($value->percentage_time_taken)) {
+        //echo $value->project_id.'<br/>';
+        // IF no value from DB for percentage_time_taken, calculate using start & end dates
+        if (!is_null($project_start_date) && !is_null($project_end_date)) {
+            $pj_elapsedtime = (time() > strtotime($project_end_date)) ? strtotime($project_end_date) : time();
+            $project_pctg_time_used = round(((($pj_elapsedtime-strtotime($project_start_date))/max((strtotime($project_end_date)-strtotime($project_start_date)),1))*100));
+        } else {
+            $project_pctg_time_used = 0;
+        }
+        
+    }
     $project_pctg_activities_completed = round($value->percentage_activities_completed * 100);
-
-    $project_start = $value->StartDate;
-    $project_end = $value->EndDate;
 
 /* Simulating budget classes for the respective project */
 
@@ -459,8 +471,6 @@ foreach ($all_projects_data as $key => $value) {
         "prodocamount" => $project_prodoc_amount,
         "outputscount" => $outputs_count,
         "activitiescount" => $activities_count,
-        "start_date" => $project_start,
-        "end_date" => $project_end,
         "duration" => $project_duration,
         "budget_spent" => $project_pctg_budget_spent,
         "time_used" => $project_pctg_time_used,

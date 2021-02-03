@@ -411,6 +411,7 @@ table.budgetclass_footer {
 }
 table.budgetclass_footer tr td:first-child {
 	vertical-align: initial;
+	min-width: 70px;
 }
 table.budgetclass_footer tr td:last-child {
 	padding-left: 5px;

@@ -122,7 +122,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         </div>
                         <div class="col metric5">
                             <p class="metricvalue">
-                                <?php echo number_format($projectlisting[$projectid]["duration"], 0, '.', ','); ?><span>Years</span>
+                                <?php echo $projectlisting[$projectid]["duration"]; ?><span>Years</span>
                             </p>
                             <p class="metricdesc">Planned<br/>Duration</p>
                         </div>
@@ -144,7 +144,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             </tr>
                             <tr>
                                 <td class="text-right">Planned Timeline:</td>
-                                <td colspan="3"><strong><?php echo $projectlisting[$projectid]["startdate"]; ?></strong><strong> - </strong><strong><?php echo $projectlisting[$projectid]["enddate"]; ?></strong></td>
+                                <td colspan="3"><strong><?php echo (!is_null($projectlisting[$projectid]["startdate"])) ? $projectlisting[$projectid]["startdate"] : 'N/A'; ?></strong><strong> - </strong><strong><?php echo (!is_null($projectlisting[$projectid]["enddate"])) ? $projectlisting[$projectid]["enddate"] : 'N/A'; ?></strong></td>
                             </tr>
                         </tbody>
                     </table>
@@ -464,7 +464,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         <table class="table table-striped table-sm budgetclass">
                             <thead>
                                 <tr>
-                                    <th>Grant</th>
+                                    <th>Grant / Donor</th>
                                     <th>From</th>
                                     <th>To</th>
                                     <th>Expired</th>
