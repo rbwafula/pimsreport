@@ -246,6 +246,8 @@ foreach ($all_projects_data as $key => $value) {
 
     $budgetclass_names = array();
     $budgetclass_grants = array();
+    $budgetclass_grants_count = array();
+
     $budgetclass_grants_from = array();
     $budgetclass_grants_to = array();
     $budgetclass_grants_expired = array();
@@ -261,9 +263,19 @@ foreach ($all_projects_data as $key => $value) {
     foreach ($budget_data as $budget) {
         if ($budget->projectID == $value->project_id) {
             // Variables needed for budget classes
+            if ($budget->grant_key) {
+                $budgetclass_grants[] = $budget->grant_key;
+            }
+
+            $budgetclass_grants_from[] = $budget->grant_valid_from;
+
+            $budgetclass_grants_to[] = $budget->grant_valid_to;
+            $budgetclass_grants_expired[] = checkexpired($budget->grant_valid_to);
+            $budgetclass_grants_amount[] = $budget->grant_amount;
 
             // var_dump($budget);
             if ($budget->commitment_item && $budget->commitment_item !== '') {
+
                 if (!in_array($budget->commitment_item, $budgetclass_names)) {
 
                     $order = array_search(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order);
@@ -277,13 +289,8 @@ foreach ($all_projects_data as $key => $value) {
                     }
 
                     $budgetclass_names[$order] = $budget->commitment_item;
-                    $budgetclass_grant[$order] = $budget->grant_key;
 
-                    $budgetclass_grants_from[$order] = $budget->grant_valid_from;
-
-                    $budgetclass_grants_to[$order] = $budget->grant_valid_to;
-                    $budgetclass_grants_expired[$order] = checkexpired($budget->grant_valid_to);
-                    $budgetclass_grants_amount[$order] = $budget->grant_amount;
+                    //echo $budget->grant_key;
 
                     $budgetclass_amounts[$order] = $budget->consumable_budget;
                     $budgetclass_spent[$order] = $budget->actual;
@@ -299,8 +306,8 @@ foreach ($all_projects_data as $key => $value) {
                             $budgetclass_expenditure[$ckey] = $budgetclass_expenditure[$ckey] + $budget->consumed_budget;
                             $budgetclass_balance[$ckey] = $budgetclass_amounts[$ckey] - $budgetclass_expenditure[$ckey];
 
-                            $budgetclass_grants_expired[$ckey] = checkexpired($budget->grant_valid_to);
-                            $budgetclass_grants_amount[$ckey] = $budgetclass_grants_amount[$ckey] + $budget->grant_amount;
+                            // $budgetclass_grants_expired[$ckey] = checkexpired($budget->grant_valid_to);
+                            // $budgetclass_grants_amount[$ckey] = $budgetclass_grants_amount[$ckey] + $budget->grant_amount;
 
                         }
                     }
@@ -310,21 +317,60 @@ foreach ($all_projects_data as $key => $value) {
     }
 
     $budgetclass_names = reorder($budgetclass_names);
-    $budgetclass_grants = reorder($budgetclass_grant);
+    // $budgetclass_grants = reorder($budgetclass_grant);
 
-    $budgetclass_grants_from = reorder($budgetclass_grants_from);
-    $budgetclass_grants_to = reorder($budgetclass_grants_to);
-    $budgetclass_grants_expired = reorder($budgetclass_grants_expired);
-    $budgetclass_grants_amount = reorder($budgetclass_grants_amount);
-
+    // $budgetclass_grants_from = reorder($budgetclass_grants_from);
+    // $budgetclass_grants_to = reorder($budgetclass_grants_to);
+    // $budgetclass_grants_expired = reorder($budgetclass_grants_expired);
+    // $budgetclass_grants_amount = reorder($budgetclass_grants_amount);
+    //var_dump($budgetclass_grants_expired);
     $budgetclass_amounts = reorder($budgetclass_amounts);
     $budgetclass_spent = reorder($budgetclass_spent);
     $budgetclass_obligated = reorder($budgetclass_obligated);
     $budgetclass_expenditure = reorder($budgetclass_expenditure);
     $budgetclass_balance = reorder($budgetclass_balance);
 
+    $unique_grants = [];
+    $unique_grants_count = [];
+    $unique_grants_from = [];
+    $unique_grants_to = [];
+    $unique_grants_expired = [];
+    $unique_grants_amount = [];
+
+    foreach ($budgetclass_grants as $gkey => $gvalue) {
+        $position = array_search($gvalue, $unique_grants);
+        if (!in_array($gvalue, $unique_grants)) {
+
+            $unique_grants[] = $gvalue;
+            $unique_grants_count[] = 1;
+            $unique_grants_from[] = $budgetclass_grants_from[$gkey];
+            $unique_grants_to[] = $budgetclass_grants_to[$gkey];
+            $unique_grants_expired[] = $budgetclass_grants_expired[$gkey];
+            $unique_grants_amount[] = $budgetclass_grants_amount[$gkey];
+
+        }
+        // else {
+        //     $current_amount = $unique_grants_amount[$position];
+        //     $unique_grants_amount[$position] = $current_amount + $budgetclass_grants_amount[$gkey];
+        //     $unique_grants_count[$position] += 1;
+        // }
+
+    }
+
     if ($p == 1) {
-        //var_dump($budgetclass_grants_to);
+        // echo '<br />------------------------------------------------------<br />';
+        // var_dump($unique_grants);
+        // echo '<br />------------------------------------------------------<br />';
+        // var_dump($unique_grants_count);
+        // echo '<br />------------------------------------------------------<br />';
+        // var_dump($unique_grants_amount);
+        // echo '<br />------------------------------------------------------<br />';
+        // var_dump($unique_grants_expired);
+        // echo '<br />------------------------------------------------------<br />';
+        // var_dump($unique_grants_from);
+        // echo '<br />------------------------------------------------------<br />';
+        // var_dump($unique_grants_to);
+        // echo '<br />------------------------------------------------------<br />';
     }
 
     //var_dump($budgetclass_balance[$ckey]);
@@ -425,10 +471,10 @@ foreach ($all_projects_data as $key => $value) {
         "healthrating" => $project_healthrating,
         "trafficlight" => $project_healthtraffic,
         "healthcolor" => gettrafficlight($project_healthtraffic),
-        "budgetclass" => array("names" => $budgetclass_names, "grants" => $budgetclass_grants, "grants_from" => $budgetclass_grants_from,
-            "grants_to" => $budgetclass_grants_to,
-            "grants_expired" => $budgetclass_grants_expired,
-            "grants_amount" => $budgetclass_grants_amount,
+        "budgetclass" => array("names" => $budgetclass_names, "grants" => $unique_grants, "grants_from" => $unique_grants_from,
+            "grants_to" => $unique_grants_to,
+            "grants_expired" => $unique_grants_expired,
+            "grants_amount" => $unique_grants_amount,
             "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "coding_block" => $coding_block,
         "outputs_activities" => $outputs_activities,
