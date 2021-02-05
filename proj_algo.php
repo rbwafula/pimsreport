@@ -123,13 +123,14 @@ function reorder($array)
 }
 
 //FETCH DATA -> CACHED/LIVE
-$version = 'cached'; // live * Choose between: cached and live data here */
+$version = 'live'; // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
-$livedata_link = ''; // live api
+$livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
 $urlsuffix = ($version == 'cached') ? '.json' : '';
 
-$url = $page_link . 'final_data' . $urlsuffix;
+$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
+$consultants_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/consultants_data';
 //$activities_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
 $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
@@ -144,6 +145,7 @@ $hr_data_uf = getdataobjectfromurl($hr_url); //GET HR DATA
 $proj_outputs_data = getdataobjectfromurl($project_outputs_url);
 $proj_activities_data = getdataobjectfromurl($project_all_activities_url);
 $budget_data = getdataobjectfromurl($budget_commitment_url);
+$consultants_data = getdataobjectfromurl($consultants_url);
 
 $budget_class_order = [
     "staffandotherpersonnelcosts",
@@ -168,9 +170,21 @@ foreach ($hr_data_uf as $h) {
     }
 }
 
+// STAFF ORDER BY SENIORITY FOR REFERENCE
+$staff_order_array = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'GS'];
+$staff_order_array_all = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'G-7', 'G-6', 'G-5', 'G-4', 'G-3', 'G-2', 'G-1', 'NO-A', 'NO-B', 'NO-C', 'NO-D'];
+
 $projects_name_id = [];
 $projects_ids = [];
 $unique_final_ratings = [0];
+
+$overall_vacant_posts = [];
+$overall_filled_posts = [];
+$total_vacant_posts = 0;
+$total_filled_posts = 0;
+$total_posts = 0;
+$unique_post_groups = [];
+$unique_posts_data = [];
 
 $i = 0;
 $refresh_date = '2021-01-28';
@@ -208,6 +222,126 @@ foreach ($all_projects_data as $key => $value) {
 
 }
 
+//USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
+foreach ($hr_data as $key => $value) {
+
+    if (!in_array($value->pos_ps_group, $unique_post_groups)) {
+
+        if ($value->gender == 'male') {
+
+        } else {
+
+        }
+
+        if ($value->pers_no > 0) {
+            if ($value->gender == 'Male') {
+                $male = 1;
+                $female = 0;
+            } elseif ($value->gender == 'Female') {
+                $male = 0;
+                $female = 1;
+            }
+
+            $unique_posts_data[] = ["post" => $value->pos_ps_group, "vacant" => 0, "filled" => 1, "filled_male" => $male, "filled_female" => $female, "projects_post_vacant" => [], "projects_post_filled" => [$value->wbse]];
+            $total_filled_posts += 1;
+            $overall_filled_posts[array_search($value->pos_ps_group, $staff_order_array)] = $value->pos_ps_group;
+
+        } else {
+            $unique_posts_data[] = ["post" => $value->pos_ps_group, "vacant" => 1, "filled" => 0, "filled_male" => 0, "filled_female" => 0, "projects_post_vacant" => [$value->wbse], "projects_post_filled" => []];
+            $total_vacant_posts += 1;
+            $overall_vacant_posts[array_search($value->pos_ps_group, $staff_order_array)] = $value->pos_ps_group;
+
+        }
+
+        $unique_post_groups[] = $value->pos_ps_group;
+    } else {
+        foreach ($unique_posts_data as $pkey => $pvalue) {
+            if ($value->pos_ps_group == $pvalue['post']) {
+                if ($value->pers_no > 0) {
+                    if ($value->gender == 'Male') {
+                        $unique_posts_data[$pkey]['filled_male'] += 1;
+
+                    } elseif ($value->gender == 'Female') {
+                        $unique_posts_data[$pkey]['filled_female'] += 1;
+                    }
+
+                    $unique_posts_data[$pkey]['filled'] += 1;
+                    $unique_posts_data[$pkey]['projects_post_filled'][] = $value->wbse;
+                    $total_filled_posts += 1;
+                    $overall_filled_posts[] = $value->pos_ps_group;
+
+                } else {
+                    $unique_posts_data[$pkey]['vacant'] += 1;
+                    $unique_posts_data[$pkey]['projects_post_vacant'][] = $value->wbse;
+                    $total_vacant_posts += 1;
+                    $overall_vacant_posts[] = $value->pos_ps_group;
+
+                }
+            }
+        }
+    }
+    $total_posts += 1;
+
+}
+
+$overall_post_status_distribution = [];
+
+$t_filled_posts = 0;
+$t_vacant_posts = 0;
+$t_posts = 0;
+
+$t_filled_male_count = 0;
+$t_filled_female_count = 0;
+
+foreach ($unique_posts_data as $pkey => $pvalue) {
+
+    if ($pvalue['post'] !== '') {
+        $t_filled_count = 0;
+        $t_vacant_count = 0;
+        $t_filled_male = 0;
+        $t_filled_female = 0;
+
+        foreach ($pvalue['projects_post_filled'] as $okey => $ovalue) {
+            $t_filled_count += 1;
+        }
+
+        foreach ($pvalue['projects_post_vacant'] as $okey => $ovalue) {
+            $t_vacant_count += 1;
+        }
+        $t_filled_male += $pvalue['filled_male'];
+        $t_filled_female += $pvalue['filled_female'];
+
+        $overall_post_status_distribution[] = ["post" => $pvalue['post'], "filled" => $t_filled_count, "filled_male" => $t_filled_male, "filled_female" => $t_filled_female, "vacant" => $t_vacant_count];
+
+        $t_filled_posts += $t_filled_count;
+        $t_vacant_posts += $t_vacant_count;
+        $t_posts += $t_filled_count + $t_vacant_count;
+
+        $t_filled_male_count += $t_filled_male;
+        $t_filled_female_count += $t_filled_female;
+
+    }
+}
+
+$G_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
+
+foreach ($overall_post_status_distribution as $key => $value) {
+    if ($value['filled'] == 0 && $value['vacant'] == 0) {
+        unset($overall_post_status_distribution[$key]);
+    }
+
+    $firstCharacter = $value['post'][0];
+    if ($firstCharacter == 'G' || $firstCharacter == 'N') {
+        $G_staff_distribution['filled'] += $value['filled'];
+        $G_staff_distribution['filled_male'] += $value['filled_male'];
+        $G_staff_distribution['filled_female'] += $value['filled_female'];
+        $G_staff_distribution['vacant'] += $value['vacant'];
+        unset($overall_post_status_distribution[$key]);
+    }
+}
+
+$overall_post_status_distribution[] = $G_staff_distribution;
+
 $p = 0;
 foreach ($all_projects_data as $key => $value) {
     // var_dump($value);
@@ -230,9 +364,9 @@ foreach ($all_projects_data as $key => $value) {
     $project_duration = 'N/A';
     $project_duration_elapsed = 'N/A';
     if (!is_null($value->StartDate) && !is_null($value->EndDate)) {
-        $project_duration = number_format(ceil(getdaysbetween($value->StartDate, $value->EndDate) / 365.25),0,'.',',');
-        $project_duration_elapsed = number_format(ceil(getdaysbetween($project_start_date, null) / 365.25),0,'.',',');
-    }    
+        $project_duration = number_format(ceil(getdaysbetween($value->StartDate, $value->EndDate) / 365.25), 0, '.', ',');
+        $project_duration_elapsed = number_format(ceil(getdaysbetween($project_start_date, null) / 365.25), 0, '.', ',');
+    }
     $project_rank = $project_rank;
     $project_healthrating = $value->final_rating;
     $project_healthtraffic = $value->system_traffic_light;
@@ -246,13 +380,29 @@ foreach ($all_projects_data as $key => $value) {
         // IF no value from DB for percentage_time_taken, calculate using start & end dates
         if (!is_null($project_start_date) && !is_null($project_end_date)) {
             $pj_elapsedtime = (time() > strtotime($project_end_date)) ? strtotime($project_end_date) : time();
-            $project_pctg_time_used = round(((($pj_elapsedtime-strtotime($project_start_date))/max((strtotime($project_end_date)-strtotime($project_start_date)),1))*100));
+            $project_pctg_time_used = round(((($pj_elapsedtime - strtotime($project_start_date)) / max((strtotime($project_end_date) - strtotime($project_start_date)), 1)) * 100));
         } else {
             $project_pctg_time_used = 0;
         }
-        
+
     }
     $project_pctg_activities_completed = round($value->percentage_activities_completed * 100);
+
+    //CONSULTANTS DATA
+    $consultancy_names = [];
+    $consultancy_start_dates = [];
+    $consultancy_end_dates = [];
+    $consultancy_renewals = [];
+
+    foreach ($consultants_data as $consultancy) {
+
+        if ($consultancy->project_id == $project_id) {
+            $consultancy_names[] = $consultancy->supplier_full_name;
+            $consultancy_start_dates[] = $consultancy->latest_contract_start_date;
+            $consultancy_end_dates[] = $consultancy->latest_contract_end_date;
+            $consultancy_renewals = $consultancy->no_of_contract_renewals;
+        }
+    }
 
 /* Simulating budget classes for the respective project */
 
@@ -458,6 +608,153 @@ foreach ($all_projects_data as $key => $value) {
         }
     }
 
+    $p_vacant_posts = [];
+    $p_filled_posts = [];
+    $p_vacant_posts = 0;
+    $p_filled_posts = 0;
+    $p_posts = 0;
+    $p_filled_male_count = 0;
+    $p_filled_female_count = 0;
+
+    //PROJECT STAFF INFORMATION
+    $p_staff_information = [];
+    foreach ($hr_data as $hkey => $hvalue) {
+        if ($hvalue->wbse == $project_id) {
+            if ($hvalue->pers_no > 0) {
+                $p_status = 'FILLED';
+            } else {
+                $p_status = 'VACANT';
+            }
+            $p_staff_information[] = [
+                'grade' => $hvalue->pos_ps_group,
+                'position_title' => $hvalue->pos_title,
+                'position_number' => $hvalue->pos_id,
+                'duty_station' => $hvalue->duty_station,
+                'position_status' => $p_status,
+                'staff_name' => $hvalue->first_name . ' ' . $hvalue->last_name,
+                'fund_key' => $hvalue->fund_key,
+                'fund_description' => $hvalue->fund_description,
+                'category' => $hvalue->category,
+                'org_code' => $hvalue->org_unit,
+                'org_unit_description' => $hvalue->org_unit_desc,
+                'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
+
+            ];
+        }
+    }
+
+    usort($p_staff_information, 'sortByOrder');
+
+    $p_post_status_distribution = [];
+
+    foreach ($unique_posts_data as $pkey => $pvalue) {
+
+        if ($pvalue['post'] !== '') {
+            $p_filled_count = 0;
+            $p_vacant_count = 0;
+            $p_filled_male = 0;
+            $p_filled_female = 0;
+
+            foreach ($pvalue['projects_post_filled'] as $okey => $ovalue) {
+                if ($ovalue == $project_id) {
+                    $p_filled_count += 1;
+                }
+            }
+
+            foreach ($pvalue['projects_post_vacant'] as $okey => $ovalue) {
+                if ($ovalue == $project_id) {
+                    $p_vacant_count += 1;
+                }
+            }
+
+            foreach ($hr_data as $hkey => $hvalue) {
+                # code...
+                if ($hvalue->wbse == $project_id && $hvalue->pos_ps_group == $pvalue['post']) {
+                    if ($hvalue->pers_no > 0) {
+                        if ($hvalue->gender == 'Male') {
+                            $p_filled_male += 1;
+                        } elseif ($hvalue->gender == 'Female') {
+
+                            $p_filled_female += 1;
+
+                        }
+                    } else {
+
+                    }
+                }
+            }
+
+            $p_post_status_distribution[] = ["post" => $pvalue['post'], "filled" => $p_filled_count, "filled_male" => $p_filled_male, "filled_female" => $p_filled_female, "vacant" => $p_vacant_count];
+
+            $p_filled_posts += $p_filled_count;
+            $p_vacant_posts += $p_vacant_count;
+
+            $p_filled_male_count += $p_filled_male;
+            $p_filled_female_count += $p_filled_female;
+
+            $p_posts += $p_filled_count + $p_vacant_count;
+        }
+    }
+
+    $G_p_staff_distribution = ["post" => 'GS', "filled" => 0, "filled_male" => 0, "filled_female" => 0, "vacant" => 0];
+
+    foreach ($p_post_status_distribution as $key => $value) {
+        if ($value['filled'] == 0 && $value['vacant'] == 0) {
+            unset($p_post_status_distribution[$key]);
+        }
+
+        $firstCharacter = $value['post'][0];
+        if ($firstCharacter == 'G' || $firstCharacter == 'N') {
+            $G_p_staff_distribution['filled'] += $value['filled'];
+            $G_p_staff_distribution['filled_male'] += $value['filled_male'];
+            $G_p_staff_distribution['filled_female'] += $value['filled_female'];
+            $G_p_staff_distribution['vacant'] += $value['vacant'];
+            unset($p_post_status_distribution[$key]);
+        }
+    }
+
+    $p_post_status_distribution[] = $G_p_staff_distribution;
+
+    $unsorted_posts = $p_post_status_distribution;
+// $d_post_status_distribution = [];
+
+    foreach ($p_post_status_distribution as $key => $value) {
+        $position = intval(array_search($value['post'], $staff_order_array));
+        $p_post_status_distribution[$key]['order'] = $position;
+    }
+
+    usort($p_post_status_distribution, 'sortByOrder');
+
+    $p_post_categories = array();
+    $p_post_filled = array();
+    $p_post_filled_male = array();
+    $p_post_filled_female = array();
+    $p_post_vacant = array();
+    $p_post_male = array();
+    $p_post_female = array();
+
+// foreach ($d_subprogramme_projects_distribution as $key => $value) {
+    //     echo $value['subprogramme'] . ' subprogramme, ' . $value['projects'] . ' projects <br />';
+    // }
+
+    foreach ($p_post_status_distribution as $key => $value) {
+        array_push($p_post_categories, $value['post']);
+        array_push($p_post_filled, $value['filled']);
+        if ($value['filled'] != 0 && $value['filled_male'] != 0) {
+            array_push($p_post_filled_male, (1 * (100 * $value['filled_male'] / $value['filled'])));
+        } else {
+            array_push($p_post_filled_male, 0);
+        }
+        if ($value['filled'] != 0 && $value['filled_female'] != 0) {
+            array_push($p_post_filled_female, (-1 * (100 * $value['filled_female'] / $value['filled'])));
+        } else {
+            array_push($p_post_filled_female, 0);
+        }
+        array_push($p_post_vacant, $value['vacant']);
+        array_push($p_post_male, $value['filled_male']);
+        array_push($p_post_female, $value['filled_female']);
+    }
+
     $projectlisting[$project_id] = [
         "id" => $project_id,
         "title" => $project_title,
@@ -488,10 +785,21 @@ foreach ($all_projects_data as $key => $value) {
             "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "coding_block" => $coding_block,
         "outputs_activities" => $outputs_activities,
+        "hrpostscategories" => $p_post_categories,
+        "hrpostsfilled" => $p_post_filled,
+        "hrpostsfilledmale" => $p_post_filled_male,
+        "hrpostsfilledfemale" => $p_post_filled_female,
+        "hrpostsvacant" => $p_post_vacant,
+        "hrpostsmale" => $p_post_male,
+        "hrpostsfemale" => $p_post_female,
+        "consultancy_names" => $consultancy_names,
+        "consultancy_start_dates" => $consultancy_start_dates,
+        "consultancy_end_dates" => $consultancy_end_dates,
+        "consultancy_renewals" => $consultancy_renewals,
         "refresh_date" => $refresh_date,
     ];
     if ($project_id == 1626 || $project_id == '1626') {
-        // var_dump($projectlisting[$project_id]);
+        var_dump($projectlisting[$project_id]);
     }
 
     $p++;
