@@ -400,7 +400,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th class="text-left">Budget Class</th>
+                                    <th class="text-left">Budget Class<br/><?php echo $projectlisting[$projectid]["coding_block"];?></th>
                                     <th class="text-right">Budget</th>
                                     <th class="text-center">Commitment</th>
                                     <th class="text-center">Actual</th>
