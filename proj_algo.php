@@ -62,11 +62,11 @@ function gettrafficlight($health)
 
 function checkexpired($date)
 {
-    $expired = true;
+    $expired = 'YES';
     if (!$date) {
         $expired = 'N/A';
     } elseif (strtotime($date) > time()) {
-        $expired = false;
+        $expired = 'NO';
     }
     return $expired;
 }
@@ -123,7 +123,7 @@ function reorder($array)
 }
 
 //FETCH DATA -> CACHED/LIVE
-$version = 'cached'; // live * Choose between: cached and live data here */
+$version = 'live'; // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
 $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
@@ -425,13 +425,20 @@ foreach ($all_projects_data as $key => $value) {
             // Variables needed for budget classes
             if ($budget->grant_key) {
                 $budgetclass_grants[] = $budget->grant_key;
+
+                $budgetclass_grants_from[] = $budget->grant_valid_from;
+
+                $budgetclass_grants_to[] = $budget->grant_valid_to;
+                $budgetclass_grants_expired[] = checkexpired($budget->grant_valid_to);
+
+                // if ($project_id == '00270' || $project_id == 00270) {
+
+                //     echo $budget->grant_valid_to . '<br />';
+                //     echo checkexpired($budget->grant_valid_to) . '<br />';
+                // }
+                $budgetclass_grants_amount[] = $budget->total_grant_amount;
+
             }
-
-            $budgetclass_grants_from[] = $budget->grant_valid_from;
-
-            $budgetclass_grants_to[] = $budget->grant_valid_to;
-            $budgetclass_grants_expired[] = checkexpired($budget->grant_valid_to);
-            $budgetclass_grants_amount[] = $budget->grant_amount;
 
             // var_dump($budget);
             if ($budget->commitment_item && $budget->commitment_item !== '') {
@@ -439,8 +446,14 @@ foreach ($all_projects_data as $key => $value) {
                 if (!in_array($budget->commitment_item, $budgetclass_names)) {
 
                     $order = array_search(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order);
+                    // if ($project_id == '00270' || $project_id == 00270) {
+                    //     echo $order . '<br />';
+                    //     echo $budget->commitment_item . '<br />';
+                    //     echo $budget->total_grant_amount . '<br />';
+                    //     echo '---------------------------------------<br />';
+                    // }
 
-                    if (!in_array(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order)) {
+                    if (!$order) {
                         $order = rand(10, 100);
                     }
 
@@ -475,7 +488,6 @@ foreach ($all_projects_data as $key => $value) {
             }
         }
     }
-
     $budgetclass_names = reorder($budgetclass_names);
     // $budgetclass_grants = reorder($budgetclass_grant);
 
@@ -500,6 +512,12 @@ foreach ($all_projects_data as $key => $value) {
     foreach ($budgetclass_grants as $gkey => $gvalue) {
         $position = array_search($gvalue, $unique_grants);
         if (!in_array($gvalue, $unique_grants)) {
+            // if ($project_id == '00270' || $project_id == 00270) {
+            //     echo $gvalue . '<br/>';
+            //     echo $position . '<br/>';
+            //     echo $budgetclass_grants_amount[$gkey] . '<br/>';
+            //     echo '---------------------------------------------------<br/>';
+            // }
 
             $unique_grants[] = $gvalue;
             $unique_grants_count[] = 1;
@@ -517,21 +535,21 @@ foreach ($all_projects_data as $key => $value) {
 
     }
 
-    if ($p == 1) {
-        // echo '<br />------------------------------------------------------<br />';
-        // var_dump($unique_grants);
-        // echo '<br />------------------------------------------------------<br />';
-        // var_dump($unique_grants_count);
-        // echo '<br />------------------------------------------------------<br />';
-        // var_dump($unique_grants_amount);
-        // echo '<br />------------------------------------------------------<br />';
-        // var_dump($unique_grants_expired);
-        // echo '<br />------------------------------------------------------<br />';
-        // var_dump($unique_grants_from);
-        // echo '<br />------------------------------------------------------<br />';
-        // var_dump($unique_grants_to);
-        // echo '<br />------------------------------------------------------<br />';
-    }
+    // if ($project_id == '00270' || $project_id == 00270) {
+    //     echo '<br />------------------------------------------------------<br />';
+    //     var_dump($unique_grants);
+    //     echo '<br />------------------------------------------------------<br />';
+    //     var_dump($unique_grants_count);
+    //     echo '<br />------------------------------------------------------<br />';
+    //     var_dump($unique_grants_amount);
+    //     echo '<br />------------------------------------------------------<br />';
+    //     var_dump($unique_grants_expired);
+    //     echo '<br />------------------------------------------------------<br />';
+    //     var_dump($unique_grants_from);
+    //     echo '<br />------------------------------------------------------<br />';
+    //     var_dump($unique_grants_to);
+    //     echo '<br />------------------------------------------------------<br />';
+    // }
 
     //var_dump($budgetclass_balance[$ckey]);
     $outputs_activities = array();
@@ -790,7 +808,7 @@ foreach ($all_projects_data as $key => $value) {
         "hrpostsvacant" => $p_post_vacant,
         "hrpostsmale" => $p_post_male,
         "hrpostsfemale" => $p_post_female,
-        "consultants" => array("consultancy_names" => $consultancy_names, "consultancy_start_dates" => $consultancy_start_dates,"consultancy_end_dates" => $consultancy_end_dates,"consultancy_renewals" => $consultancy_renewals),
+        "consultants" => array("consultancy_names" => $consultancy_names, "consultancy_start_dates" => $consultancy_start_dates, "consultancy_end_dates" => $consultancy_end_dates, "consultancy_renewals" => $consultancy_renewals),
         "refresh_date" => $refresh_date,
     ];
     if ($project_id == 1626 || $project_id == '1626') {
