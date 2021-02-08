@@ -98,8 +98,13 @@ body {
 	border-radius: 50%;width: 0.8cm;height: 0.8cm; margin-top: -11px; margin-right:40px; position:absolute; right:15px;
 }
 .reportheader .health .healthrating_box {
+	
+}
+.reportheader.projectinfo .health .healthrating_box {
 	margin-right: 18px;
 }
+
+
 .reportheader .health .healthratingdesc {
 	margin-top: 25px;
 	margin-bottom: 0;

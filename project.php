@@ -524,7 +524,31 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             </table>
                         </div>
                     </div>
-                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped table-sm budgetclass">
+                                <thead>
+                                    <tr>
+                                        <th>Consultants</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    for ($i=0; $i < count($projectlisting[$projectid]["consultants"]["consultancy_names"]); $i++) {
+                                        echo '<tr>';
+                                        echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_names"][$i].'</td>';
+                                        echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_start_dates"][$i].'</td>';
+                                        echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_end_dates"][$i].'</td>';
+                                        //echo '<td>'..'</td>';
+                                        echo '</tr>';
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <p class="quote hidden">Do the difficult things while they are easy and do the great things while they are small. — LAO TZU</p>
             </div>

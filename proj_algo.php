@@ -123,15 +123,14 @@ function reorder($array)
 }
 
 //FETCH DATA -> CACHED/LIVE
-$version = 'live'; // live * Choose between: cached and live data here */
+$version = 'cached'; // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
 $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
 $urlsuffix = ($version == 'cached') ? '.json' : '';
 
-$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
-$consultants_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/consultants_data';
-//$activities_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
+$url = $page_link . 'final_data' . $urlsuffix;
+$consultants_url = $page_link . 'consultants_data' . $urlsuffix;
 $outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
 $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
 $budget_commitment_url = $page_link . 'reportfinancial_data' . $urlsuffix;
@@ -139,7 +138,6 @@ $project_all_activities_url = $page_link . 'allactivities_data' . $urlsuffix;
 $project_outputs_url = $page_link . 'outputtracking_data' . $urlsuffix;
 
 $all_projects_data = getdataobjectfromurl($url); // GET PROJECTS DATA
-//$activities_data = getdataobjectfromurl($activities_url); // GET ACTIVITIES DATA
 $outputs_data = getdataobjectfromurl($outputs_url); // GET OUTPUTS DATA
 $hr_data_uf = getdataobjectfromurl($hr_url); //GET HR DATA
 $proj_outputs_data = getdataobjectfromurl($project_outputs_url);
@@ -792,14 +790,11 @@ foreach ($all_projects_data as $key => $value) {
         "hrpostsvacant" => $p_post_vacant,
         "hrpostsmale" => $p_post_male,
         "hrpostsfemale" => $p_post_female,
-        "consultancy_names" => $consultancy_names,
-        "consultancy_start_dates" => $consultancy_start_dates,
-        "consultancy_end_dates" => $consultancy_end_dates,
-        "consultancy_renewals" => $consultancy_renewals,
+        "consultants" => array("consultancy_names" => $consultancy_names, "consultancy_start_dates" => $consultancy_start_dates,"consultancy_end_dates" => $consultancy_end_dates,"consultancy_renewals" => $consultancy_renewals),
         "refresh_date" => $refresh_date,
     ];
     if ($project_id == 1626 || $project_id == '1626') {
-        var_dump($projectlisting[$project_id]);
+        //var_dump($projectlisting[$project_id]);
     }
 
     $p++;

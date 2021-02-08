@@ -93,6 +93,14 @@ class FontVariables
 			 */
 
 			'fontdata' => [
+				"roboto" => [
+					'L' => "Roboto-Light.ttf",
+					'LI' => "Roboto-LightItalic.ttf",
+					'R' => "Roboto-Regular.ttf",
+				    'I' => "Roboto-Italic.ttf",
+				    'B' => "Roboto-Bold.ttf",
+				    'BI' => "Roboto-BoldItalic.ttf",
+				],
 				"dejavusanscondensed" => [
 					'R' => "DejaVuSansCondensed.ttf",
 					'B' => "DejaVuSansCondensed-Bold.ttf",
