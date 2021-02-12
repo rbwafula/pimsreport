@@ -52,7 +52,6 @@ $pageheader = '<div class="row reportbody section1">
 	        	<img src="assets/images/'.strtolower(str_replace(' ', '_', $division)).'.png" style="">
 	        </div>';
 
-
 $annex1table = '';
 for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++) {
     $annex1table .= '<tr>';

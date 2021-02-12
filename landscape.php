@@ -28,9 +28,13 @@ include_once 'dynamic_algo.php';
     <!--<script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>-->
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+    <script src="assets/vendor/canvg/canvg.min.js"></script>
+    <script src="assets/vendor/html2canvas/html2canvas.min.js"></script>
+
+
+
     <script type="text/javascript">
-        function savedashboard() {
+        /*function savedashboard() {
             var entityname = '<?php echo $division; ?>';
             
             html2canvas($("#dashboardcanvas"), {
@@ -49,7 +53,7 @@ include_once 'dynamic_algo.php';
                     });
                 }
             });
-        }
+        }*/
     </script>
 </head>
 <body>
@@ -1146,7 +1150,7 @@ include_once 'dynamic_algo.php';
                                             data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledmale"]); ?>
                                         }]
                                     }, function(){
-                                        setTimeout(savedashboard(), 10000);
+                                        //setTimeout(savedashboard(), 10000);
                                     });
 
 
@@ -1258,7 +1262,6 @@ include_once 'dynamic_algo.php';
             <div id="dashboardimg" style="display:none;">
                 <img src="" id="newimg" class="top" />
             </div>
-            
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 1: Projects Table</h2>
@@ -1405,31 +1408,70 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
     </div><!-- End of #to_export -->
 
     <script type="text/javascript">
-        // Script to auto capture the dashboard as image to embedd to PDF
-        /*function savedashboard() {
-            var entityname = '<?php echo $division; ?>';
-            html2canvas($("#dashboardcanvas"), {
-                onrendered: function(canvas) {
-                    var imgsrc = canvas.toDataURL("image/png");
-                    console.log(imgsrc);
-                    $("#newimg").attr('src', imgsrc);
-                    //$("#img").show();
-                    var dataURL = canvas.toDataURL();
-                    $.ajax({
-                        type: "POST",
-                        url: "savedashboard.php",
-                        data: {imgBase64: dataURL, entity: entityname}
-                    }).done(function(o) {
-                        console.log('saved');
-                    });
-                }
+        $container = $("#dashboardcanvas");
+        function screencapture() {
+            //find all svg elements in $container
+            //$container is the jQuery object of the div that you need to convert to image. This div may contain highcharts along with other child divs, etc
+            var svgElements= $container.find('svg');
+            //replace all svgs with a temp canvas
+            svgElements.each(function () {
+                var canvas, xml;
+
+                canvas = document.createElement("canvas");
+                canvas.className = "screenShotTempCanvas";
+                //convert SVG into a XML string
+                xml = (new XMLSerializer()).serializeToString(this);
+
+                // Removing the name space as IE throws an error
+                xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
+
+                //draw the SVG onto a canvas
+                canvg(canvas, xml);
+                $(canvas).insertAfter(this);
+                //hide the SVG element
+                this.className = "tempHide";
+                $(this).hide();
             });
-        }*/
-        /*document.addEventListener('DOMContentLoaded', function() {
+
+            //...
+            //HERE GOES YOUR CODE FOR HTML2CANVAS SCREENSHOT
+            //...
             savedashboard();
-        }, false);*/
+
+            //After your image is generated revert the temporary changes
+            //$container.find('.screenShotTempCanvas').remove();
+            //$container.find('svg').show();
+            //$container.find('.tempHide').show().removeClass('tempHide');
+        }
+
+        function savedashboard() {
+            var entityname = '<?php echo $division; ?>';
+            html2canvas($container[0], {
+                scale:2
+            }).then(function(canvas) {
+                var imgsrc = canvas.toDataURL("image/png");
+                $("#newimg").attr('src', imgsrc);
+                var dataURL = canvas.toDataURL();
+                $.ajax({
+                    type: "POST",
+                    url: "savedashboard.php",
+                    data: {imgBase64: dataURL, entity: entityname}
+                }).done(function(o) {
+                    console.log(entityname + ' saved');
+                    $container.find('.screenShotTempCanvas').remove();
+                    $container.find('svg').show();
+                    $container.find('.tempHide').show().removeClass('tempHide');
+                });
+            });
+        }
 
 
+        $(function() {
+            $('html, body').animate({
+                scrollTop: $("#dashboardcanvas").offset().top
+            }, 0);
+            screencapture();
+        });
 
     </script>
 </body>
