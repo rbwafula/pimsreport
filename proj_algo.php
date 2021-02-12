@@ -136,6 +136,7 @@ $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
 $budget_commitment_url = $page_link . 'reportfinancial_data' . $urlsuffix;
 $project_all_activities_url = $page_link . 'allactivities_data' . $urlsuffix;
 $project_outputs_url = $page_link . 'outputtracking_data' . $urlsuffix;
+$grant_data_url = $page_link . 'grant_data' . $urlsuffix;
 
 $all_projects_data = getdataobjectfromurl($url); // GET PROJECTS DATA
 $outputs_data = getdataobjectfromurl($outputs_url); // GET OUTPUTS DATA
@@ -144,6 +145,7 @@ $proj_outputs_data = getdataobjectfromurl($project_outputs_url);
 $proj_activities_data = getdataobjectfromurl($project_all_activities_url);
 $budget_data = getdataobjectfromurl($budget_commitment_url);
 $consultants_data = getdataobjectfromurl($consultants_url);
+$all_grants_data = getdataobjectfromurl($grant_data_url);
 
 $budget_class_order = [
     "staffandotherpersonnelcosts",
@@ -412,6 +414,14 @@ foreach ($all_projects_data as $key => $value) {
     $budgetclass_grants_to = array();
     $budgetclass_grants_expired = array();
     $budgetclass_grants_amount = array();
+    // LATEST ADDITIONS START
+    $budgetclass_grants_fund = array();
+    $budgetclass_grants_precommitment = array();
+    $budgetclass_grants_commitment = array();
+    $budgetclass_grants_actual = array();
+    $budgetclass_grants_consumable_budget = array();
+    $budgetclass_grants_consumed_budget = array();
+    //LATEST ADDITIONS END
 
     $budgetclass_amounts = array();
     $budgetclass_spent = array();
@@ -419,26 +429,39 @@ foreach ($all_projects_data as $key => $value) {
     $budgetclass_expenditure = array();
     $budgetclass_balance = array();
 
-    // BUDGET DATA FROM BUDGET COMMITMENT ENDPOINT
-    foreach ($budget_data as $budget) {
-        if ($budget->projectID == $value->project_id) {
-            // Variables needed for budget classes
-            if ($budget->grant_key) {
-                $budgetclass_grants[] = $budget->grant_key;
+    foreach ($all_grants_data as $grant) {
+        if ($grant->projectID == $value->project_id) {
+// Variables needed for budget classes
+            if ($grant->grant_key) {
+                $budgetclass_grants[] = $grant->grant_key;
 
-                $budgetclass_grants_from[] = $budget->grant_valid_from;
+                $budgetclass_grants_from[] = $grant->grant_valid_from;
 
-                $budgetclass_grants_to[] = $budget->grant_valid_to;
-                $budgetclass_grants_expired[] = checkexpired($budget->grant_valid_to);
+                $budgetclass_grants_to[] = $grant->grant_valid_to;
+                $budgetclass_grants_expired[] = checkexpired($grant->grant_valid_to);
 
                 // if ($project_id == '00270' || $project_id == 00270) {
 
                 //     echo $budget->grant_valid_to . '<br />';
                 //     echo checkexpired($budget->grant_valid_to) . '<br />';
                 // }
-                $budgetclass_grants_amount[] = $budget->total_grant_amount;
+                $budgetclass_grants_amount[] = $grant->total_grant_amount;
+
+                //    latest additions population start
+                $budgetclass_grants_fund[] = $grant->fund;
+                $budgetclass_grants_precommitment[] = $grant->precommitment;
+                $budgetclass_grants_commitment[] = $grant->commitment;
+                $budgetclass_grants_actual[] = $grant->actual;
+                $budgetclass_grants_consumable_budget[] = $grant->consumable_budget;
+                $budgetclass_grants_consumed_budget[] = $grant->consumed_budget;
+                //    latest additions population end
 
             }
+        }
+    }
+    // BUDGET DATA FROM BUDGET COMMITMENT ENDPOINT
+    foreach ($budget_data as $budget) {
+        if ($budget->projectID == $value->project_id) {
 
             // var_dump($budget);
             if ($budget->commitment_item && $budget->commitment_item !== '') {
@@ -509,6 +532,16 @@ foreach ($all_projects_data as $key => $value) {
     $unique_grants_expired = [];
     $unique_grants_amount = [];
 
+//latest additions
+    $unique_grants_fund = [];
+    $unique_grants_precommitment = [];
+    $unique_grants_commitment = [];
+    $unique_grants_actual = [];
+    $unique_grants_consumable_budget = [];
+    $unique_grants_consumed_budget = [];
+
+//latest additions
+
     foreach ($budgetclass_grants as $gkey => $gvalue) {
         $position = array_search($gvalue, $unique_grants);
         if (!in_array($gvalue, $unique_grants)) {
@@ -525,6 +558,15 @@ foreach ($all_projects_data as $key => $value) {
             $unique_grants_to[] = $budgetclass_grants_to[$gkey];
             $unique_grants_expired[] = $budgetclass_grants_expired[$gkey];
             $unique_grants_amount[] = $budgetclass_grants_amount[$gkey];
+
+            //latest additions
+            $unique_grants_fund[] = $budgetclass_grants_fund[$gkey];
+            $unique_grants_precommitment[] = $budgetclass_grants_precommitment[$gkey];
+            $unique_grants_commitment[] = $budgetclass_grants_commitment[$gkey];
+            $unique_grants_actual[] = $budgetclass_grants_actual[$gkey];
+            $unique_grants_consumable_budget[] = $budgetclass_grants_consumable_budget[$gkey];
+            $unique_grants_consumed_budget[] = $budgetclass_grants_consumed_budget[$gkey];
+//latest additions
 
         }
         // else {
@@ -798,7 +840,17 @@ foreach ($all_projects_data as $key => $value) {
             "grants_to" => $unique_grants_to,
             "grants_expired" => $unique_grants_expired,
             "grants_amount" => $unique_grants_amount,
-            "amounts" => $budgetclass_amounts, "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
+//latest changes annexing start
+            "grants_fund" => $unique_grants_fund,
+            "grants_precommitment" => $unique_grants_precommitment,
+            "grants_commitment" => $unique_grants_commitment,
+            "grants_actual" => $unique_grants_actual,
+            "grants_consumable_budget" => $unique_grants_consumable_budget,
+            "grants_consumed_budget" => $unique_grants_consumed_budget,
+//latest changes annexing ends
+            "amounts" => $budgetclass_amounts,
+
+            "spent" => $budgetclass_spent, "obligated" => $budgetclass_obligated, "expenditure" => $budgetclass_expenditure, "balance" => $budgetclass_balance),
         "coding_block" => $coding_block,
         "outputs_activities" => $outputs_activities,
         "hrpostscategories" => $p_post_categories,
