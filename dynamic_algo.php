@@ -15,6 +15,7 @@ $activities_url = $page_link . '/assets/data/div_activitycount_data.json';
 $outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
 $hr_url = $page_link . '/assets/data/officestaff_data.json';
 $proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
+$consultants_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/consultants_data';
 
 $processed_divisiondata = array();
 
@@ -94,6 +95,17 @@ function filter_unique($array, $key)
 
 }
 
+function checkexpired($date)
+{
+    $expired = 'YES';
+    if (!$date) {
+        $expired = 'N/A';
+    } elseif (strtotime($date) > time()) {
+        $expired = 'NO';
+    }
+    return $expired;
+}
+
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
 
@@ -105,6 +117,9 @@ $outputs_data = getdataobjectfromurl($outputs_url);
 
 //GET HR DATA
 $hr_data_uf = getdataobjectfromurl($hr_url);
+
+///GET CONSULTANTS DATA
+$consultants_data = getdataobjectfromurl($consultants_url);
 
 // CLEANSE HR DATA FOR UNIQUE pos_id
 $hr_data = [];
@@ -537,6 +552,28 @@ foreach ($hr_data as $hkey => $hvalue) {
     ];
 }
 
+//CONSULTANTS DATA
+$o_consultancy_names = [];
+$o_consultancy_start_dates = [];
+$o_consultancy_end_dates = [];
+$o_consultancy_renewals = [];
+$o_consultancy_expired = [];
+$o_consultancy_days_duration = [];
+$o_consultancy_morethan11 = [];
+
+foreach ($consultants_data as $consultancy) {
+
+    $o_consultancy_names[] = $consultancy->supplier_full_name;
+    $o_consultancy_start_dates[] = $consultancy->latest_contract_start_date;
+    $o_consultancy_end_dates[] = $consultancy->latest_contract_end_date;
+    $o_consultancy_renewals = $consultancy->no_of_contract_renewals;
+    $o_consultancy_expired[] = checkexpired($consultancy->latest_contract_end_date);
+
+    $o_consultancy_days_duration[] = getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date);
+
+    $o_consultancy_morethan11[] = (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO');
+}
+
 $total_percentage_projects_budget_between0_1 = round($total_count_projects_budget_between0_1 / $total_projects, 2) * 100;
 $total_percentage_projects_budget_between1_2 = round($total_count_projects_budget_between1_2 / $total_projects, 2) * 100;
 $total_percentage_projects_budget_between2_5 = round($total_count_projects_budget_between2_5 / $total_projects, 2) * 100;
@@ -788,6 +825,29 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
 
             ];
+        }
+    }
+
+    //CONSULTANTS DATA
+    $d_consultancy_names = [];
+    $d_consultancy_start_dates = [];
+    $d_consultancy_end_dates = [];
+    $d_consultancy_renewals = [];
+    $d_consultancy_expired = [];
+    $d_consultancy_morethan11 = [];
+    $d_consultancy_days_duration = [];
+
+    foreach ($consultants_data as $consultancy) {
+
+        if ($consultancy->office == $dvalue) {
+            $d_consultancy_names[] = $consultancy->supplier_full_name;
+            $d_consultancy_start_dates[] = $consultancy->latest_contract_start_date;
+            $d_consultancy_end_dates[] = $consultancy->latest_contract_end_date;
+            $d_consultancy_renewals = $consultancy->no_of_contract_renewals;
+            $d_consultancy_expired[] = checkexpired($consultancy->latest_contract_end_date);
+
+            $d_consultancy_days_duration[] = getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date);
+            $d_consultancy_morethan11[] = (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO');
         }
     }
 
@@ -1192,6 +1252,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "hrpostsvacant" => $d_post_vacant,
         "hrpostsmale" => $d_post_male,
         "hrpostsfemale" => $d_post_female,
+        "consultants_data" => array("names" => $d_consultancy_names, "startdates" => $d_consultancy_start_dates, "end_dates" => $d_consultancy_end_dates, "renewals" => $d_consultancy_renewals, "durations" => $d_consultancy_days_duration, "expired" => $d_consultancy_expired, "morethan11" => $d_consultancy_morethan11),
         "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
         "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
         "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
@@ -1537,6 +1598,7 @@ $processed_divisiondata['unep'] = array(
     "hrpostsvacant" => $d_post_vacant,
     "hrpostsmale" => $d_post_male,
     "hrpostsfemale" => $d_post_female,
+    "consultants_data" => array("names" => $o_consultancy_names, "startdates" => $o_consultancy_start_dates, "enddates" => $o_consultancy_end_dates, "renewals" => $o_consultancy_renewals, "durations" => $o_consultancy_days_duration, "expired" => $o_consultancy_expired, "morethan11" => $o_consultancy_morethan11),
     "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
     "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
     "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),
