@@ -393,6 +393,7 @@ foreach ($all_projects_data as $key => $value) {
     $consultancy_start_dates = [];
     $consultancy_end_dates = [];
     $consultancy_renewals = [];
+    $consultancy_expired = [];
 
     foreach ($consultants_data as $consultancy) {
 
@@ -401,6 +402,7 @@ foreach ($all_projects_data as $key => $value) {
             $consultancy_start_dates[] = $consultancy->latest_contract_start_date;
             $consultancy_end_dates[] = $consultancy->latest_contract_end_date;
             $consultancy_renewals = $consultancy->no_of_contract_renewals;
+            $consultancy_expired[] = checkexpired($consultancy->latest_contract_end_date);
         }
     }
 
@@ -690,6 +692,9 @@ foreach ($all_projects_data as $key => $value) {
                 'duty_station' => $hvalue->duty_station,
                 'position_status' => $p_status,
                 'staff_name' => $hvalue->first_name . ' ' . $hvalue->last_name,
+                'performance_cycle' => $hvalue->performance_cycle,
+                'mandatory_training_enrollment_status' => $hvalue->mandatory_training_enrollment_status,
+                'no_of_learning_courses' => $hvalue->no_of_learning_courses,
                 'fund_key' => $hvalue->fund_key,
                 'fund_description' => $hvalue->fund_description,
                 'category' => $hvalue->category,
@@ -860,11 +865,13 @@ foreach ($all_projects_data as $key => $value) {
         "hrpostsvacant" => $p_post_vacant,
         "hrpostsmale" => $p_post_male,
         "hrpostsfemale" => $p_post_female,
-        "consultants" => array("consultancy_names" => $consultancy_names, "consultancy_start_dates" => $consultancy_start_dates, "consultancy_end_dates" => $consultancy_end_dates, "consultancy_renewals" => $consultancy_renewals),
+        "consultants" => array("consultancy_names" => $consultancy_names, "consultancy_start_dates" => $consultancy_start_dates, "consultancy_end_dates" => $consultancy_end_dates, "consultancy_expired" => $consultancy_expired, "consultancy_renewals" => $consultancy_renewals),
         "refresh_date" => $refresh_date,
     ];
-    if ($project_id == 1626 || $project_id == '1626') {
-        //var_dump($projectlisting[$project_id]);
+    if ($project_id == 00270 || $project_id == '00270') {
+        // var_dump($p_staff_information);
+        // echo '-------------------------------';
+        // var_dump($consultancy_expired);
     }
 
     $p++;
