@@ -27,34 +27,8 @@ include_once 'dynamic_algo.php';
     <!-- HTML TO PDF LIB LOADED -->
     <!--<script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>-->
 
-
     <script src="assets/vendor/canvg/canvg.min.js"></script>
     <script src="assets/vendor/html2canvas/html2canvas.min.js"></script>
-
-
-
-    <script type="text/javascript">
-        /*function savedashboard() {
-            var entityname = '<?php echo $division; ?>';
-            
-            html2canvas($("#dashboardcanvas"), {
-                onrendered: function(canvas) {
-                    var imgsrc = canvas.toDataURL("image/png");
-                    console.log(imgsrc);
-                    $("#newimg").attr('src', imgsrc);
-                    //$("#img").show();
-                    var dataURL = canvas.toDataURL();
-                    $.ajax({
-                        type: "POST",
-                        url: "savedashboard.php",
-                        data: {imgBase64: dataURL, entity: entityname}
-                    }).done(function(o) {
-                        console.log('saved');
-                    });
-                }
-            });
-        }*/
-    </script>
 </head>
 <body>
 	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 hidden "><!-- shadow -->
@@ -1410,45 +1384,25 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
     <script type="text/javascript">
         $container = $("#dashboardcanvas");
         function screencapture() {
-            //find all svg elements in $container
-            //$container is the jQuery object of the div that you need to convert to image. This div may contain highcharts along with other child divs, etc
             var svgElements= $container.find('svg');
             //replace all svgs with a temp canvas
             svgElements.each(function () {
                 var canvas, xml;
-
                 canvas = document.createElement("canvas");
                 canvas.className = "screenShotTempCanvas";
-                //convert SVG into a XML string
-                xml = (new XMLSerializer()).serializeToString(this);
-
-                // Removing the name space as IE throws an error
-                xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
-
-                //draw the SVG onto a canvas
-                canvg(canvas, xml);
+                xml = (new XMLSerializer()).serializeToString(this); //convert SVG into a XML string
+                xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, ''); // Removing the name space as IE throws an error
+                canvg(canvas, xml); //draw the SVG onto a canvas
                 $(canvas).insertAfter(this);
-                //hide the SVG element
-                this.className = "tempHide";
+                this.className = "tempHide"; //hide the SVG element
                 $(this).hide();
             });
-
-            //...
-            //HERE GOES YOUR CODE FOR HTML2CANVAS SCREENSHOT
-            //...
             savedashboard();
-
-            //After your image is generated revert the temporary changes
-            //$container.find('.screenShotTempCanvas').remove();
-            //$container.find('svg').show();
-            //$container.find('.tempHide').show().removeClass('tempHide');
         }
 
         function savedashboard() {
             var entityname = '<?php echo $division; ?>';
-            html2canvas($container[0], {
-                scale:2
-            }).then(function(canvas) {
+            html2canvas($container[0],{scale:2}).then(function(canvas) {
                 var imgsrc = canvas.toDataURL("image/png");
                 $("#newimg").attr('src', imgsrc);
                 var dataURL = canvas.toDataURL();
@@ -1465,14 +1419,13 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
             });
         }
 
-
         $(function() {
+            // on page load, scroll to div#dashboardcanvas, wait 3s for chart rendering to complete then grab screen
             $('html, body').animate({
                 scrollTop: $("#dashboardcanvas").offset().top
             }, 0);
-            screencapture();
+            setTimeout(screencapture,3000);
         });
-
     </script>
 </body>
 </html>

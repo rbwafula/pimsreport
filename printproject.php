@@ -122,6 +122,71 @@ $annex1 = '<div class="row reportbody section2">
                 </div>
             </div>';
 
+
+$annex2table = '';
+
+for ($i=0; $i < count($projectlisting[$projectid]["budgetclass"]["grants"]); $i++) {
+    $annex2table .= '<tr>';
+    $annex2table .= '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_fund"][$i].'</td>';
+    $annex2table .= '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants"][$i].'</td>';
+    $annex2table .= '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_from"][$i].'</td>';
+    $annex2table .= '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_to"][$i].'</td>';
+    $annex2table .= '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_expired"][$i].'</td>';
+    $annex2table .= '<td class="right" style="border-right:1px solid #333">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_amount"][$i], 0, '.', ',').'</td>';
+    $annex2table .= '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_consumable_budget"][$i], 0, '.', ',').'</td>';
+    $annex2table .= '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_precommitment"][$i], 0, '.', ',').'</td>';
+    $annex2table .= '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_commitment"][$i], 0, '.', ',').'</td>';
+    $annex2table .= '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_actual"][$i], 0, '.', ',').'</td>';
+    
+    $annex2table .= '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_consumed_budget"][$i], 0, '.', ',').'</td>';
+    //echo '<td>'..'</td>';
+    $annex2table .= '</tr>';
+}
+$annex2table .= '<tr class="total">';
+$annex2table .= '<td></td>';
+$annex2table .= '<td class="center">Total</td>';
+$annex2table .= '<td></td>';
+$annex2table .= '<td></td>';
+$annex2table .= '<td></td>';
+$annex2table .= '<td class="right" style="border-right:1px solid #333">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_amount"]), 0, '.', ',').'</td>';
+$annex2table .= '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_consumable_budget"]), 0, '.', ',').'</td>';
+$annex2table .= '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_precommitment"]), 0, '.', ',').'</td>';
+$annex2table .= '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_commitment"]), 0, '.', ',').'</td>';
+$annex2table .= '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_actual"]), 0, '.', ',').'</td>';
+$annex2table .= '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_consumed_budget"]), 0, '.', ',').'</td>';
+$annex2table .= '</tr>';
+
+$annex2 = '<div class="row reportbody section2">
+                <h2 class="sectiontitle">Annex 1: Outputs &amp; Activites</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm activitytable">
+                        <thead>
+                            <tr>
+                                <th class="center">Fund</th>
+                                <th class="center" width="300px">Grant / Donor</th>
+                                <th class="center">From</th>
+                                <th class="center">To</th>
+                                <th class="center">Expired</th>
+                                <th class="right">Grant Amount</th>
+                                <th class="right">Consumable Budget</th>
+                                <th class="right">Precommitment</th>
+                                <th class="right">Commitment</th>
+                                <th class="right">Actual</th>
+                                <th class="right">Consumed Budget</th>
+                            </tr>
+                        </thead>
+                        <tbody>'.$annex2table.'
+                        </tbody>
+                    </table>
+                </div>
+            </div>';
+
+
+
+
+
+
+
 $footer = '</div><!-- End of .toprint -->
     </div><!-- End of .container-fluid -->
 </body>
@@ -145,12 +210,12 @@ $mpdf->SetProtection(array('print'));
 $mpdf->SetTitle("pimsreport");
 $mpdf->SetAuthor("UNEP - PIMS+");
 $mpdf->SetDisplayMode('fullpage');
-$mpdf->Bookmark('Summary');
 $mpdf->WriteHTML($pageheader);
 $mpdf->AddPage();
 $mpdf->WriteHTML($header);
-$mpdf->Bookmark('Annex 1: Projects Table');
 $mpdf->WriteHTML($annex1);
+$mpdf->AddPage();
+$mpdf->WriteHTML($annex2);
 /*$mpdf->AddPage();
 $mpdf->Bookmark('Annex 2: Vacant Positions');
 $mpdf->WriteHTML($annex2);

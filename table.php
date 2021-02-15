@@ -48,8 +48,8 @@ $header = '<!DOCTYPE html>
 	            </div>
 	        </div>';*/
 
-$pageheader = '<div class="row reportbody section1">
-	        	<img src="assets/images/'.strtolower(str_replace(' ', '_', $division)).'.png" style="">
+$pageheader = '<div class="row reportbody section1" style="width:100%;">
+	        	<img src="assets/images/'.strtolower(str_replace(' ', '_', $division)).'.png" style="width:100%;">
 	        </div>';
 
 $annex1table = '';
