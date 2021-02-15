@@ -1,21 +1,16 @@
 <?php
-/*$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
+$version = 'cached'; // live * Choose between: cached and live data here */
+$cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
+$livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
+$page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
+$urlsuffix = ($version == 'cached') ? '.json' : '';
 
-$activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
-
-$outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
-
-$hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/officestaff_data';
-
-$proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
-
-$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
-$url = $page_link . '/assets/data/final_data.json';
-$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
-$outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
-$hr_url = $page_link . '/assets/data/officestaff_data.json';
-$proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
-$consultants_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/consultants_data';
+$url = $page_link . 'final_data' . $urlsuffix;
+$activities_url = $page_link . 'div_activitycount_data' . $urlsuffix;
+$outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
+$hr_url = $page_link . 'officestaff_data' . $urlsuffix;
+$proj_activity_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
+$consultants_url = $page_link . 'consultants_data' . $urlsuffix;
 
 $processed_divisiondata = array();
 
