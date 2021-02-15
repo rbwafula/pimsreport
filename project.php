@@ -617,6 +617,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                 <th>Consultants</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th class="center">Active</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -626,6 +627,12 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                 echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_names"][$i].'</td>';
                                 echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_start_dates"][$i].'</td>';
                                 echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_end_dates"][$i].'</td>';
+                                //echo '<td>'.($projectlisting[$projectid]["consultants"]["consultancy_expired"][$i] == "YES") ? "No" : "Yes".'</td>';
+                                if ($projectlisting[$projectid]["consultants"]["consultancy_expired"][$i] == "YES") {
+                                    echo '<td class="center">No</td>';
+                                } else {
+                                    echo '<td class="center">Yes</td>';
+                                }
                                 //echo '<td>'..'</td>';
                                 echo '</tr>';
                             }
