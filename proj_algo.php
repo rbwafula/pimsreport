@@ -394,6 +394,8 @@ foreach ($all_projects_data as $key => $value) {
     $consultancy_end_dates = [];
     $consultancy_renewals = [];
     $consultancy_expired = [];
+    $consultancy_days_duration = [];
+    $consultancy_morethan11 = [];
 
     foreach ($consultants_data as $consultancy) {
 
@@ -403,6 +405,11 @@ foreach ($all_projects_data as $key => $value) {
             $consultancy_end_dates[] = $consultancy->latest_contract_end_date;
             $consultancy_renewals = $consultancy->no_of_contract_renewals;
             $consultancy_expired[] = checkexpired($consultancy->latest_contract_end_date);
+
+            $consultancy_days_duration[] = getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date);
+
+            $consultancy_morethan11[] = (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO');
+
         }
     }
 
@@ -865,7 +872,7 @@ foreach ($all_projects_data as $key => $value) {
         "hrpostsvacant" => $p_post_vacant,
         "hrpostsmale" => $p_post_male,
         "hrpostsfemale" => $p_post_female,
-        "consultants" => array("consultancy_names" => $consultancy_names, "consultancy_start_dates" => $consultancy_start_dates, "consultancy_end_dates" => $consultancy_end_dates, "consultancy_expired" => $consultancy_expired, "consultancy_renewals" => $consultancy_renewals),
+        "consultants" => array("consultancy_names" => $consultancy_names, "consultancy_start_dates" => $consultancy_start_dates, "consultancy_end_dates" => $consultancy_end_dates, "consultancy_durations" => $consultancy_days_duration, "consultancy_morethan11" => $consultancy_morethan11, "consultancy_expired" => $consultancy_expired, "consultancy_renewals" => $consultancy_renewals),
         "refresh_date" => $refresh_date,
     ];
     if ($project_id == 00270 || $project_id == '00270') {
