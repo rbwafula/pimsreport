@@ -571,8 +571,8 @@ foreach ($all_projects_data as $key => $value) {
             if ($project_id == '00270' || $project_id == 00270) {
                 // echo $gvalue . '<br/>';
                 // echo $position . '<br/>';
-                var_dump($budgetclass_cost_centers);
-                echo '---------------------------------------------------<br/>';
+                // var_dump($budgetclass_cost_centers);
+                // echo '---------------------------------------------------<br/>';
             }
 
             $unique_grants[] = $gvalue;
@@ -891,7 +891,7 @@ foreach ($all_projects_data as $key => $value) {
         "refresh_date" => $refresh_date,
     ];
     if ($project_id == 00270 || $project_id == '00270') {
-        // var_dump($p_staff_information);
+        var_dump($projectlisting[$project_id]['budgetclass']);
         // echo '-------------------------------';
         // var_dump($consultancy_expired);
     }
