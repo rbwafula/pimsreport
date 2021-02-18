@@ -492,12 +492,12 @@ foreach ($all_projects_data as $key => $value) {
                 if (!in_array($budget->commitment_item, $budgetclass_names)) {
 
                     $order = array_search(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order);
-                    // if ($project_id == '00270' || $project_id == 00270) {
-                    //     echo $order . '<br />';
-                    //     echo $budget->commitment_item . '<br />';
-                    //     echo $budget->total_grant_amount . '<br />';
-                    //     echo '---------------------------------------<br />';
-                    // }
+                    if ($project_id == '00270' || $project_id == 00270) {
+                        // echo $order . '<br />';
+                        // echo $budget->commitment_item . '<br />';
+                        // echo $budget->total_grant_amount . '<br />';
+                        // echo '---------------------------------------<br />';
+                    }
 
                     if (!$order) {
                         $order = rand(10, 100);
