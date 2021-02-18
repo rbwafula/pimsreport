@@ -1,7 +1,7 @@
 <?php
 $month = Date("M") . ' ' . Date("Y");
 include_once 'proj_algo.php';
-$projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($projectlisting));
+$projectid = (isset($_GET['id'])) ? strtoupper(str_replace(" ", "+", urldecode($_GET['id']))) : strtoupper(key($projectlisting));
 ?>
 <!DOCTYPE html>
 <html>
@@ -12,9 +12,9 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
     <link rel="stylesheet" href="assets/css/highcharts.css">
 
     <!-- Vendor JS -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/highcharts.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/highcharts-more.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/solid-gauge.js"></script>
     <script src="assets/vendor/jquery/jquery.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -550,8 +550,8 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                 </div>
             </div>
 
-            <div class="row reportbody section2">
-                <h2 class="sectiontitle">Annex 2: Grants</h2>
+            <!--<div class="row reportbody section2">
+                <h2 class="sectiontitle">Annex 2: Staff</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm budgetclass">
                         <thead>
@@ -571,7 +571,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                         </thead>
                         <tbody>
                             <?php
-                            for ($i=0; $i < count($projectlisting[$projectid]["budgetclass"]["grants"]); $i++) {
+                            /*for ($i=0; $i < count($projectlisting[$projectid]["budgetclass"]["grants"]); $i++) {
                                 echo '<tr>';
                                 echo '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_fund"][$i].'</td>';
                                 echo '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants"][$i].'</td>';
@@ -600,12 +600,12 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                             echo '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_commitment"]), 0, '.', ',').'</td>';
                             echo '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_actual"]), 0, '.', ',').'</td>';
                             echo '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_consumed_budget"]), 0, '.', ',').'</td>';
-                            echo '</tr>';
+                            echo '</tr>';*/
                             ?>
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>-->
 
 
             <div class="row reportbody section2">
@@ -614,9 +614,10 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                     <table class="table table-striped table-sm budgetclass">
                         <thead>
                             <tr>
-                                <th>Consultants</th>
+                                <th>Name</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th class="center">Duration (days)</th>
                                 <th class="center">Active</th>
                             </tr>
                         </thead>
@@ -627,6 +628,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper($_GET['id']) : strtoupper(key($pr
                                 echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_names"][$i].'</td>';
                                 echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_start_dates"][$i].'</td>';
                                 echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_end_dates"][$i].'</td>';
+                                echo '<td class="center">'.number_format($projectlisting[$projectid]["consultants"]["consultancy_durations"][$i], 0, ".", ",").'</td>';
                                 //echo '<td>'.($projectlisting[$projectid]["consultants"]["consultancy_expired"][$i] == "YES") ? "No" : "Yes".'</td>';
                                 if ($projectlisting[$projectid]["consultants"]["consultancy_expired"][$i] == "YES") {
                                     echo '<td class="center">No</td>';

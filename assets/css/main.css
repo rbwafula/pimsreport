@@ -178,6 +178,9 @@ body {
 .reportbody.section1 .hrstatistics .metric5 {
 	color: #d59442;
 }
+.reportbody.section1 .hrstatistics .metric6 {
+	color: #000;
+}
 .reportbody.section1 .hrstatistics .metricvalue i {
 	color: #707070;
 }

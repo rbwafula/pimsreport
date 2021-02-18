@@ -14,9 +14,9 @@ include_once 'sp_algo.php';
     <link rel="stylesheet" href="assets/css/highcharts.css">
 
     <!-- Vendor JS -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/highcharts.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/highcharts-more.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/solid-gauge.js"></script>
     <script src="assets/vendor/jquery/jquery.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 

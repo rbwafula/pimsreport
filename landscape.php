@@ -14,9 +14,9 @@ include_once 'dynamic_algo.php';
     <link rel="stylesheet" href="assets/css/highcharts.css">
 
     <!-- Vendor JS -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/highcharts.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/highcharts-more.js"></script>
+    <script src="assets/vendor/highcharts/v9.0.1/solid-gauge.js"></script>
     <script src="assets/vendor/jquery/jquery.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -906,36 +906,64 @@ include_once 'dynamic_algo.php';
                                         $maleposts += $processed_divisiondata[$division]["hrpostsmale"][$i];
                                         $femaleposts += $processed_divisiondata[$division]["hrpostsfemale"][$i];
                                     }
+$epas_completed = 0;
+$training_total = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
+    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED' && $processed_divisiondata[$division]["stafflisting"][$i]['stage'] == 'Completed') {
+        $epas_completed++;
+        $training_total += $processed_divisiondata[$division]["stafflisting"][$i]['mandatory_training'];
+    }
+}
+
+
                                     ?>
+                                    <div class="col metric1">
+                                        <p class="metricvalue">
+                                            <?php echo count_array_values($processed_divisiondata[$division]["consultants_data"]['expired'], "NO");//number_format($totalposts, 0, '.', ','); ?>
+                                        </p>
+                                        <p class="metricdesc">Active<br/>Consultants</p>
+                                    </div>
                                     <div class="col metric1">
                                         <p class="metricvalue">
                                             <?php echo number_format($totalposts, 0, '.', ','); ?>
                                         </p>
-                                        <p class="metricdesc">Total Posts</p>
+                                        <p class="metricdesc">Total<br/>Posts</p>
                                     </div>
                                     <div class="col metric3">
                                         <p class="metricvalue">
                                             <?php echo number_format($vacantposts, 0, '.', ','); ?>
                                         </p>
-                                        <p class="metricdesc">Vacant Posts</p>
+                                        <p class="metricdesc">Vacant<br/>Posts</p>
                                     </div>
                                     <div class="col metric2">
                                         <p class="metricvalue">
                                             <?php echo number_format($filledposts, 0, '.', ','); ?>
                                         </p>
-                                        <p class="metricdesc">Filled Posts</p>
+                                        <p class="metricdesc">Filled<br/>Posts</p>
                                     </div>
-                                    <div class="col metric4">
+                                    <!--<div class="col metric4">
                                         <p class="metricvalue">
-                                            <?php echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%
+                                            <?php //echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%
                                         </p>
                                         <p class="metricdesc">Female</p>
                                     </div>
                                     <div class="col metric5">
                                         <p class="metricvalue">
-                                            <?php echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%
+                                            <?php //echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%
                                         </p>
                                         <p class="metricdesc">Male</p>
+                                    </div>-->
+                                     <div class="col metric6">
+                                        <p class="metricvalue">
+                                            <?php echo number_format((($epas_completed/max($filledposts,1))*100),0); ?>%
+                                        </p>
+                                        <p class="metricdesc">ePAS<br/>Compliance</p>
+                                    </div>
+                                     <div class="col metric6">
+                                        <p class="metricvalue">
+                                            <?php echo number_format((($training_total/max(($filledposts*9),1))*100),0); ?>%
+                                        </p>
+                                        <p class="metricdesc">Mandatory<br/>Training</p>
                                     </div>
                                 </div>
                                 <div id="hrfilled_chart"></div>
@@ -1031,8 +1059,28 @@ include_once 'dynamic_algo.php';
                                             type: 'bar',
                                             height: 250,
                                             backgroundColor: 'transparent'
+                                            /*,
+                                            events: {
+                                                load: function() {
+                                                    var chart = this,
+                                                    series = chart.series,
+                                                    seriesSum = 0;
+                                                    seriesElements = 0;
+                                                    series.forEach(function(series) {
+                                                        series.data.forEach(function(point) {
+                                                        seriesSum += point.y;
+                                                        seriesElements += 1;
+                                                        })
+                                                    })
+                                                    chart.renderer.text('62%' + seriesSum, 100, 10)
+                                                    .css({
+                                                        fontWeight: 600
+                                                    })
+                                                    .add()
+                                                }
+                                            }*/
                                         },
-                                        colors: ['#17a2b8','#d59442'],
+                                        colors: ['#d59442','#17a2b8'],
                                         credits: {
                                             text: ''
                                         },
@@ -1114,7 +1162,7 @@ include_once 'dynamic_algo.php';
                                                 return '<b>' + this.series.name + ', age ' + this.point.category + '</b><br/>' +
                                                     'Population: ' + Highcharts.numberFormat(Math.abs(this.point.y), 1) + '%';
                                             },
-                                            enabled: false
+                                            enabled: true
                                         },
                                         series: [{
                                             name: 'Female',
@@ -1123,8 +1171,19 @@ include_once 'dynamic_algo.php';
                                             name: 'Male',
                                             data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilledmale"]); ?>
                                         }]
-                                    }, function(){
+                                    }, function(chart){
                                         //setTimeout(savedashboard(), 10000);
+                                        chart.renderer.text('<p style="text-align:center; font-weight:600;"><?php echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%</p>', 30, 227).css({
+                                            color: '#d59442',
+                                            textAlign: 'center'
+                                        })
+                                        .add();
+
+                                        chart.renderer.text('<p style="text-align:center; font-weight:600;"><?php echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%</p>', 270, 227).css({
+                                            color: '#17a2b8',
+                                            textAlign: 'center'
+                                        })
+                                        .add();
                                     });
 
 
@@ -1349,8 +1408,9 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                 <th>Duty Station</th>
                                 <!--<th>Fund</th>-->
                                 <th>Staff Name</th>
-                                <th>Org Code</th>
                                 <th>Org Unit</th>
+                                <th class="text-center">ePAS Status</th>
+                                <th class="text-center">Mandatory Training</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1366,8 +1426,9 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
         //echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
+        echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['stage'] . '</td>';
+        echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['mandatory_training'] . '/9</td>';
         echo '</tr>';
         $j++;
     }
@@ -1377,6 +1438,52 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                     </table>
                 </div>
             </div>
+
+
+
+            <!--<div class="pagebreak"></div>-->
+            <div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 4: Consultants</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <!--<th>Renewals</th>-->
+                                <th>Duration</th>
+                                <th>More than 11 months</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+$j = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['names']); $i++) {
+    
+    if ($processed_divisiondata[$division]["consultants_data"]['expired'][$i] == "NO") {
+        echo '<tr>';
+        echo '<td>'.($j + 1).'.</td>';
+        echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['names'][$i].'</td>';
+        echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['start_dates'][$i].'</td>';
+        echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i].'</td>';
+        //echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['renewals'][$i].'</td>';
+        echo '<td>'.number_format($processed_divisiondata[$division]["consultants_data"]['durations'][$i],0,".",",").'</td>';
+        echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['morethan11'][$i].'</td>';
+        echo '</tr>';
+        $j++;
+    }
+}
+?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
         </div><!-- End of .toprint -->
     </div><!-- End of .container-fluid -->
     </div><!-- End of #to_export -->

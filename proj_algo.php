@@ -439,34 +439,35 @@ foreach ($all_projects_data as $key => $value) {
     $budgetclass_balance = array();
 
     foreach ($all_grants_data as $grant) {
-        if ($grant->projectID == $value->project_id) {
-// Variables needed for budget classes
-            if ($grant->grant_key) {
-                $budgetclass_grants[] = $grant->grant_key;
+        if (isset($grant->projectID) && isset($value->project_id)) {
+            if ($grant->projectID == $value->project_id) {
+                // Variables needed for budget classes
+                if ($grant->grant_key) {
+                    $budgetclass_grants[] = $grant->grant_key;
 
-                $budgetclass_grants_from[] = $grant->grant_valid_from;
+                    $budgetclass_grants_from[] = $grant->grant_valid_from;
 
-                $budgetclass_grants_to[] = $grant->grant_valid_to;
-                $budgetclass_grants_expired[] = checkexpired($grant->grant_valid_to);
+                    $budgetclass_grants_to[] = $grant->grant_valid_to;
+                    $budgetclass_grants_expired[] = checkexpired($grant->grant_valid_to);
 
-                // if ($project_id == '00270' || $project_id == 00270) {
+                    // if ($project_id == '00270' || $project_id == 00270) {
 
-                //     echo $budget->grant_valid_to . '<br />';
-                //     echo checkexpired($budget->grant_valid_to) . '<br />';
-                // }
-                $budgetclass_grants_amount[] = $grant->total_grant_amount;
+                    //     echo $budget->grant_valid_to . '<br />';
+                    //     echo checkexpired($budget->grant_valid_to) . '<br />';
+                    // }
+                    $budgetclass_grants_amount[] = $grant->total_grant_amount;
 
-                //    latest additions population start
-                $budgetclass_grants_fund[] = $grant->fund;
-                $budgetclass_grants_precommitment[] = $grant->precommitment;
-                $budgetclass_grants_commitment[] = $grant->commitment;
-                $budgetclass_grants_actual[] = $grant->actual;
-                $budgetclass_grants_consumable_budget[] = $grant->consumable_budget;
-                $budgetclass_grants_consumed_budget[] = $grant->consumed_budget;
-                //    latest additions population end
-
+                    //    latest additions population start
+                    $budgetclass_grants_fund[] = $grant->fund;
+                    $budgetclass_grants_precommitment[] = $grant->precommitment;
+                    $budgetclass_grants_commitment[] = $grant->commitment;
+                    $budgetclass_grants_actual[] = $grant->actual;
+                    $budgetclass_grants_consumable_budget[] = $grant->consumable_budget;
+                    $budgetclass_grants_consumed_budget[] = $grant->consumed_budget;
+                    //    latest additions population end
+                }
             }
-        }
+        }       
     }
     // BUDGET DATA FROM BUDGET COMMITMENT ENDPOINT
     foreach ($budget_data as $budget) {
