@@ -114,7 +114,18 @@ function checkexpired($date)
     }
     return $expired;
 }
-
+function count_array_values($my_array, $match) 
+{ 
+    $count = 0;    
+    foreach ($my_array as $key => $value) 
+    { 
+        if ($value == $match) 
+        { 
+            $count++; 
+        } 
+    } 
+    return $count; 
+} 
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
 
@@ -563,6 +574,10 @@ foreach ($hr_data as $hkey => $hvalue) {
         'category' => $hvalue->category,
         'org_code' => $hvalue->org_unit,
         'org_unit_description' => $hvalue->org_unit_desc,
+        'final_status' => $hvalue->document_final_status,
+        'stage' => $hvalue->document_stage,
+        'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
+        'all_training' => $hvalue->no_of_total_courses_done,
     ];
 }
 
@@ -911,7 +926,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'org_code' => $hvalue->org_unit,
                 'org_unit_description' => $hvalue->org_unit_desc,
                 'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
-
+                'final_status' => $hvalue->document_final_status,
+                'stage' => $hvalue->document_stage,
+                'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
+                'all_training' => $hvalue->no_of_total_courses_done,
             ];
         }
     }

@@ -1500,14 +1500,16 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                         <tbody>
                             <?php
 
-                            /*echo "<pre>";
+                            echo "<pre>";
                             var_dump($processed_divisiondata[$division]["grants_data"]);
                             echo "</pre>";
-                            exit;*/
+                            exit;
 
                             foreach ($processed_divisiondata[$division]["grants_data"] as $key => $value) {
                                 echo $processed_divisiondata[$division]["grants_data"][$value];
                             }
+
+
 /*$j = 0;
 for ($i = 0; $i < count($processed_divisiondata[$division]["grants_data"]['keys']); $i++) {
     echo '<tr>';
