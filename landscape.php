@@ -1482,6 +1482,87 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
             </div>
 
 
+<div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 5: Project Risks</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Keys</th>
+                                <th>Amounts</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Expiration</th>
+                                <th>Months Remaining</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+
+                            /*echo "<pre>";
+                            var_dump($processed_divisiondata[$division]["grants_data"]);
+                            echo "</pre>";
+                            exit;*/
+
+                            foreach ($processed_divisiondata[$division]["grants_data"] as $key => $value) {
+                                echo $processed_divisiondata[$division]["grants_data"][$value];
+                            }
+/*$j = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["grants_data"]['keys']); $i++) {
+    echo '<tr>';
+    echo '<td class="text-right">'.($j + 1).'.</td>';
+    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['keys'][$i].'</td>';
+    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['amounts'][$i].'</td>';
+    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['start_dates'][$i].'</td>';
+    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['end_dates'][$i].'</td>';
+    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['expiration'][$i].'</td>';
+    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['months_remaining'][$i].'</td>';
+    echo '</tr>';
+    $j++;
+}*/
+?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+            <div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 6: Project Risks</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Names</th>
+                                <th>Projects</th>
+                                <th>Months</th>
+                                <th>Years</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+$j = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["risks_data"]['names']); $i++) {
+    echo '<tr>';
+    echo '<td class="text-right">'.($j + 1).'.</td>';
+    echo '<td>'.$processed_divisiondata[$division]["risks_data"]['names'][$i].'</td>';
+    echo '<td>'.$processed_divisiondata[$division]["risks_data"]['number_of_projects'][$i].'</td>';
+    echo '<td>'.$processed_divisiondata[$division]["risks_data"]['months'][$i].'</td>';
+    echo '<td>'.$processed_divisiondata[$division]["risks_data"]['years'][$i].'</td>';
+    echo '</tr>';
+    $j++;
+}
+?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
 
 
         </div><!-- End of .toprint -->

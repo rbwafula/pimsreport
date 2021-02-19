@@ -801,10 +801,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     ksort($d_grant_expired);
     ksort($d_grant_aging);
 
-    echo '----------------------------------------<br/>';
+    /*echo '----------------------------------------<br/>';
     echo $dvalue . '<br/>';
     var_dump($d_grant_aging);
-    echo '----------------------------------------<br/>';
+    echo '----------------------------------------<br/>';*/
 
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
