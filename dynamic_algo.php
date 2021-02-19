@@ -751,6 +751,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_grant_expired = [];
     $d_grant_aging = [];
 
+    $d_grant_unique_keys = [];
+
     $d_risks = [];
     $d_risk_projects = [];
     $d_risk_months = [];
@@ -768,9 +770,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     }
 
     foreach ($all_grants_details as $detkey => $detvalue) {
-        if (!in_array($detvalue->grant_key, $d_grant_keys) && strtolower(str_replace(' ', '', $detvalue->office)) == strtolower(str_replace(' ', '', $dvalue))) {
+        if (!in_array($detvalue->grant_key, $d_grant_unique_keys) && strtolower(str_replace(' ', '', $detvalue->office)) == strtolower(str_replace(' ', '', $dvalue))) {
             foreach ($all_grants_data as $gkey => $gvalue) {
                 if ($gvalue->grant_key == $detvalue->grant_key) {
+                    $d_grant_unique_keys[] = $gvalue->grant_key;
                     $d_grant_keys[] = ["value" => $gvalue->grant_key, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                     $d_grant_amounts[] = ["value" => $gvalue->grant_cash_balance, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                     $d_grant_start[] = ["value" => $gvalue->grant_valid_from, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
@@ -780,6 +783,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 }
             }
         }
+
     }
     // asort($d_grant_keys);
     // ksort($d_grant_amounts);
