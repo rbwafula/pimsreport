@@ -771,28 +771,28 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         if (!in_array($detvalue->grant_key, $d_grant_keys) && strtolower(str_replace(' ', '', $detvalue->office)) == strtolower(str_replace(' ', '', $dvalue))) {
             foreach ($all_grants_data as $gkey => $gvalue) {
                 if ($gvalue->grant_key == $detvalue->grant_key) {
-                    $d_grant_keys[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_key;
-                    $d_grant_amounts[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_cash_balance;
-                    $d_grant_start[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_valid_from;
-                    $d_grant_end[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_valid_to;
-                    $d_grant_expired[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = checkexpired($gvalue->grant_valid_to);
-                    $d_grant_aging[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30);
+                    $d_grant_keys[] = ["value" => $gvalue->grant_key, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_amounts[] = ["value" => $gvalue->grant_cash_balance, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_start[] = ["value" => $gvalue->grant_valid_from, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_end[] = ["value" => $gvalue->grant_valid_to, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_expired[] = ["value" => checkexpired($gvalue->grant_valid_to), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_aging[] = ["value" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                 }
             }
         }
 
     }
-    asort($d_grant_keys);
-    ksort($d_grant_amounts);
-    ksort($d_grant_start);
-    ksort($d_grant_end);
-    ksort($d_grant_expired);
-    ksort($d_grant_aging);
+    // asort($d_grant_keys);
+    // ksort($d_grant_amounts);
+    // ksort($d_grant_start);
+    // ksort($d_grant_end);
+    // ksort($d_grant_expired);
+    // ksort($d_grant_aging);
 
-    echo '----------------------------------------<br/>';
-    echo $dvalue . '<br/>';
-    var_dump($d_grant_aging);
-    echo '----------------------------------------<br/>';
+    // echo '----------------------------------------<br/>';
+    // echo $dvalue . '<br/>';
+    // var_dump($d_grant_aging);
+    // echo '----------------------------------------<br/>';
 
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
