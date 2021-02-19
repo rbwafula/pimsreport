@@ -463,9 +463,12 @@ $projectid = (isset($_GET['id'])) ? strtoupper(str_replace(" ", "+", urldecode($
                                     ?>
                                 </tbody>
                             </table>
-                            <p>Grant Number: <?php echo $projectlisting[$projectid]["budgetclass"]["grants"][0]; ?></p>
-                            <p>Cash Balance: <?php echo number_format($projectlisting[$projectid]["budgetclass"]["grants_amount"][0], 0, ".", ","); ?></p>
-                            
+                            <table class="table table-xs budgetclass">
+                                <tr>
+                                    <td>Grant Number: <?php echo $projectlisting[$projectid]["budgetclass"]["grants"][0]; ?></td>
+                                    <td>Cash Balance: <?php echo number_format($projectlisting[$projectid]["budgetclass"]["grants_amount"][0], 0, ".", ","); ?></td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                     <p class="quote hidden">Do the difficult things while they are easy and do the great things while they are small. — LAO TZU</p>

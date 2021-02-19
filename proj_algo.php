@@ -123,7 +123,7 @@ function reorder($array)
 }
 
 //FETCH DATA -> CACHED/LIVE
-$version = 'live'; // live * Choose between: cached and live data here */
+$version = 'cached'; // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
 $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
@@ -137,7 +137,7 @@ $budget_commitment_url = $page_link . 'reportfinancial_data' . $urlsuffix;
 $project_all_activities_url = $page_link . 'allactivities_data' . $urlsuffix;
 $project_outputs_url = $page_link . 'outputtracking_data' . $urlsuffix;
 $grant_data_url = $page_link . 'grant_data' . $urlsuffix;
-$grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
+$grant_details_url = $page_link . 'grantdetails_data' . $urlsuffix;
 
 $all_projects_data = getdataobjectfromurl($url); // GET PROJECTS DATA
 $outputs_data = getdataobjectfromurl($outputs_url); // GET OUTPUTS DATA
@@ -891,7 +891,7 @@ foreach ($all_projects_data as $key => $value) {
         "refresh_date" => $refresh_date,
     ];
     if ($project_id == 00270 || $project_id == '00270') {
-        var_dump($projectlisting[$project_id]['budgetclass']);
+        //var_dump($projectlisting[$project_id]['budgetclass']);
         // echo '-------------------------------';
         // var_dump($consultancy_expired);
     }
