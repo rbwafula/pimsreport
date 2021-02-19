@@ -12,6 +12,10 @@ $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
 $proj_activity_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $consultants_url = $page_link . 'consultants_data' . $urlsuffix;
 
+$grant_data_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grant_data';
+$grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
+$risks_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/divisionrisk_data';
+
 $processed_divisiondata = array();
 
 function getdataobjectfromurl($url)
@@ -29,7 +33,12 @@ function getdataobjectfromurl($url)
 
 function getdaysbetween($start, $end)
 {
-    $startDate = strtotime($start);
+
+    if ($start) {
+        $startDate = strtotime($start);
+    } else {
+        $startDate = time();
+    }
 
     if ($end) {
         $endDate = strtotime($end);
@@ -128,6 +137,11 @@ $hr_data_uf = getdataobjectfromurl($hr_url);
 
 ///GET CONSULTANTS DATA
 $consultants_data = getdataobjectfromurl($consultants_url);
+
+$all_grants_data = getdataobjectfromurl($grant_data_url);
+$all_grants_details = getdataobjectfromurl($grant_details_url);
+
+$risks_data = getdataobjectfromurl($risks_url);
 
 // CLEANSE HR DATA FOR UNIQUE pos_id
 $hr_data = [];
@@ -564,6 +578,31 @@ foreach ($hr_data as $hkey => $hvalue) {
     ];
 }
 
+$overall_grant_keys = [];
+$overall_grant_amounts = [];
+$overall_grant_start = [];
+$overall_grant_end = [];
+$overall_grant_expired = [];
+$overall_grant_aging = [];
+
+foreach ($all_grants_data as $gkey => $gvalue) {
+
+    $overall_grant_keys[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_key;
+    $overall_grant_amounts[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_cash_balance;
+    $overall_grant_start[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_valid_from;
+    $overall_grant_end[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_valid_to;
+    $overall_grant_expired[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = checkexpired($gvalue->grant_valid_to);
+    $overall_grant_aging[] = ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30);
+
+}
+
+asort($overall_grant_aging);
+ksort($overall_grant_keys);
+ksort($overall_grant_amounts);
+ksort($overall_grant_start);
+ksort($overall_grant_end);
+ksort($overall_grant_aging);
+
 //CONSULTANTS DATA
 $o_consultancy_names = [];
 $o_consultancy_start_dates = [];
@@ -716,6 +755,56 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_scatter_points_yellow = [];
     $d_scatter_points_green = [];
     $d_overan_days = 0;
+
+    $d_grant_keys = [];
+    $d_grant_amounts = [];
+    $d_grant_start = [];
+    $d_grant_end = [];
+    $d_grant_expired = [];
+    $d_grant_aging = [];
+
+    $d_risks = [];
+    $d_risk_projects = [];
+    $d_risk_months = [];
+    $d_risk_years = [];
+
+    foreach ($risks_data as $rkey => $rvalue) {
+        if (strtolower(str_replace(' ', '', $rvalue->managing_division)) == strtolower(str_replace(' ', '', $dvalue))) {
+
+            $d_risks[] = $rvalue->risk;
+            $d_risk_projects[] = $rvalue->number_of_projects;
+            $d_risk_months[] = $rvalue->month;
+            $d_risk_years[] = $rvalue->year;
+
+        }
+    }
+
+    foreach ($all_grants_details as $detkey => $detvalue) {
+        if (!in_array($detvalue->grant_key, $d_grant_keys) && strtolower(str_replace(' ', '', $detvalue->office)) == strtolower(str_replace(' ', '', $dvalue))) {
+            foreach ($all_grants_data as $gkey => $gvalue) {
+                if ($gvalue->grant_key == $detvalue->grant_key) {
+                    $d_grant_keys[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_key;
+                    $d_grant_amounts[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_cash_balance;
+                    $d_grant_start[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_valid_from;
+                    $d_grant_end[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_valid_to;
+                    $d_grant_expired[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = checkexpired($gvalue->grant_valid_to);
+                    $d_grant_aging[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30);
+                }
+            }
+        }
+
+    }
+    asort($d_grant_keys);
+    ksort($d_grant_amounts);
+    ksort($d_grant_start);
+    ksort($d_grant_end);
+    ksort($d_grant_expired);
+    ksort($d_grant_aging);
+
+    echo '----------------------------------------<br/>';
+    echo $dvalue . '<br/>';
+    var_dump($d_grant_aging);
+    echo '----------------------------------------<br/>';
 
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
@@ -1268,6 +1357,20 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "hrpostsvacant" => $d_post_vacant,
         "hrpostsmale" => $d_post_male,
         "hrpostsfemale" => $d_post_female,
+        "grants_data" => [
+            "keys" => $d_grant_keys,
+            "amounts" => $d_grant_amounts,
+            "start_dates" => $d_grant_start,
+            "end_dates" => $d_grant_end,
+            "expiration" => $d_grant_expired,
+            "months_remaining" => $d_grant_aging,
+        ],
+        "risks_data" => [
+            "names" => $d_risks
+            , "number_of_projects" => $d_risk_projects
+            , "months" => $d_risk_months
+            , "years" => $d_risk_years,
+        ],
         "consultants_data" => array("names" => $d_consultancy_names, "start_dates" => $d_consultancy_start_dates, "end_dates" => $d_consultancy_end_dates, "renewals" => $d_consultancy_renewals, "durations" => $d_consultancy_days_duration, "expired" => $d_consultancy_expired, "morethan11" => $d_consultancy_morethan11),
         "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
         "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
@@ -1614,6 +1717,14 @@ $processed_divisiondata['unep'] = array(
     "hrpostsvacant" => $d_post_vacant,
     "hrpostsmale" => $d_post_male,
     "hrpostsfemale" => $d_post_female,
+    "grants_data" => [
+        "keys" => $overall_grant_keys,
+        "amounts" => $overall_grant_amounts,
+        "start_dates" => $overall_grant_start,
+        "end_dates" => $overall_grant_end,
+        "expiration" => $overall_grant_expired,
+        "months_remaining" => $overall_grant_aging,
+    ],
     "consultants_data" => array("names" => $o_consultancy_names, "start_dates" => $o_consultancy_start_dates, "end_dates" => $o_consultancy_end_dates, "renewals" => $o_consultancy_renewals, "durations" => $o_consultancy_days_duration, "expired" => $o_consultancy_expired, "morethan11" => $o_consultancy_morethan11),
     "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
     "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),

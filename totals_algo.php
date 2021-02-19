@@ -11,6 +11,8 @@ $activities_url = $page_link . '/assets/data/div_activitycount_data.json';
 $outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
 $hr_url = $page_link . '/assets/data/officestaff_data.json';
 $proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
+$grant_data_url = $page_link . 'grant_data' . $urlsuffix;
+$grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
 
 $processed_divisiondata = array();
 
@@ -107,6 +109,9 @@ $outputs_data = getdataobjectfromurl($outputs_url);
 
 //GET HR DATA
 $hr_data_uf = getdataobjectfromurl($hr_url);
+
+$all_grants_data = getdataobjectfromurl($grant_data_url);
+$all_grants_details = getdataobjectfromurl($grant_details_url);
 
 // CLEANSE HR DATA FOR UNIQUE pos_id
 $hr_data = [];
@@ -306,6 +311,11 @@ $overall_post_status_distribution = [];
 $overall_office_budget_distribution = [];
 $overall_office_budget_distribution_office = [];
 $overall_office_budget_distribution_region = [];
+$overall_grant_keys = [];
+$overall_grant_amounts = [];
+$overall_grant_start = [];
+$overall_grant_end = [];
+$overall_grant_aging = [];
 
 $t_filled_posts = 0;
 $t_vacant_posts = 0;
@@ -313,6 +323,16 @@ $t_posts = 0;
 
 $t_filled_male_count = 0;
 $t_filled_female_count = 0;
+
+foreach ($all_grants_data as $gkey => $gvalue) {
+
+    $overall_grant_keys[] =$gvalue->grant_key;
+    $overall_grant_amounts[] = $gvalue->grant_cash_balance;
+    $overall_grant_start[] = $gvalue->grant_valid_from;
+    $overall_grant_end[] = $gvalue->grant_valid_;
+    $overall_grant_aging[] = $gvalue->;
+
+}
 
 foreach ($unique_posts_data as $pkey => $pvalue) {
 
