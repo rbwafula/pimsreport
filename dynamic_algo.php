@@ -1,16 +1,21 @@
 <?php
-$version = 'cached'; // live * Choose between: cached and live data here */
-$cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
-$livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
-$page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
-$urlsuffix = ($version == 'cached') ? '.json' : '';
+/*$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
 
-$url = $page_link . 'final_data' . $urlsuffix;
-$activities_url = $page_link . 'div_activitycount_data' . $urlsuffix;
-$outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
-$hr_url = $page_link . 'officestaff_data' . $urlsuffix;
-$proj_activity_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
-$consultants_url = $page_link . 'consultants_data' . $urlsuffix;
+$activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
+
+$outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
+
+$hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/officestaff_data';
+
+$proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
+
+$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
+$url = $page_link . '/assets/data/final_data.json';
+$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
+$outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
+$hr_url = $page_link . '/assets/data/officestaff_data.json';
+$proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
+$consultants_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/consultants_data';
 
 $grant_data_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grant_data';
 $grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
@@ -109,19 +114,6 @@ function checkexpired($date)
     }
     return $expired;
 }
-
-function count_array_values($my_array, $match) 
-{ 
-    $count = 0;    
-    foreach ($my_array as $key => $value) 
-    { 
-        if ($value == $match) 
-        { 
-            $count++; 
-        } 
-    } 
-    return $count; 
-} 
 
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
@@ -571,10 +563,6 @@ foreach ($hr_data as $hkey => $hvalue) {
         'category' => $hvalue->category,
         'org_code' => $hvalue->org_unit,
         'org_unit_description' => $hvalue->org_unit_desc,
-        'final_status' => $hvalue->document_final_status,
-        'stage' => $hvalue->document_stage,
-        'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
-        'all_training' => $hvalue->no_of_total_courses_done,
     ];
 }
 
@@ -783,28 +771,27 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         if (!in_array($detvalue->grant_key, $d_grant_keys) && strtolower(str_replace(' ', '', $detvalue->office)) == strtolower(str_replace(' ', '', $dvalue))) {
             foreach ($all_grants_data as $gkey => $gvalue) {
                 if ($gvalue->grant_key == $detvalue->grant_key) {
-                    $d_grant_keys[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_key;
-                    $d_grant_amounts[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_cash_balance;
-                    $d_grant_start[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_valid_from;
-                    $d_grant_end[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = $gvalue->grant_valid_to;
-                    $d_grant_expired[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = checkexpired($gvalue->grant_valid_to);
-                    $d_grant_aging[ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)] = ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30);
+                    $d_grant_keys[] = ["value" => $gvalue->grant_key, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_amounts[] = ["value" => $gvalue->grant_cash_balance, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_start[] = ["value" => $gvalue->grant_valid_from, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_end[] = ["value" => $gvalue->grant_valid_to, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_expired[] = ["value" => checkexpired($gvalue->grant_valid_to), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grant_aging[] = ["value" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                 }
             }
         }
-
     }
-    asort($d_grant_keys);
-    ksort($d_grant_amounts);
-    ksort($d_grant_start);
-    ksort($d_grant_end);
-    ksort($d_grant_expired);
-    ksort($d_grant_aging);
+    // asort($d_grant_keys);
+    // ksort($d_grant_amounts);
+    // ksort($d_grant_start);
+    // ksort($d_grant_end);
+    // ksort($d_grant_expired);
+    // ksort($d_grant_aging);
 
-    /*echo '----------------------------------------<br/>';
-    echo $dvalue . '<br/>';
-    var_dump($d_grant_aging);
-    echo '----------------------------------------<br/>';*/
+    // echo '----------------------------------------<br/>';
+    // echo $dvalue . '<br/>';
+    // var_dump($d_grant_aging);
+    // echo '----------------------------------------<br/>';
 
     foreach ($division_data as $prkey => $prvalue) {
         if ($prvalue->managing_division == $dvalue) {
@@ -922,13 +909,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'fund_description' => $hvalue->fund_description,
                 'category' => $hvalue->category,
                 'org_code' => $hvalue->org_unit,
-                'branch' => $hvalue->branch,
                 'org_unit_description' => $hvalue->org_unit_desc,
                 'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
-                'final_status' => $hvalue->document_final_status,
-                'stage' => $hvalue->document_stage,
-                'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
-                'all_training' => $hvalue->no_of_total_courses_done,
+
             ];
         }
     }
