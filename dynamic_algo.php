@@ -19,6 +19,7 @@ $consultants_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-
 
 $grant_data_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grant_data';
 $grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
+$risks_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/divisionrisk_data';
 
 $processed_divisiondata = array();
 
@@ -131,6 +132,8 @@ $consultants_data = getdataobjectfromurl($consultants_url);
 
 $all_grants_data = getdataobjectfromurl($grant_data_url);
 $all_grants_details = getdataobjectfromurl($grant_details_url);
+
+$risks_data = getdataobjectfromurl($risks_url);
 
 // CLEANSE HR DATA FOR UNIQUE pos_id
 $hr_data = [];
@@ -748,6 +751,22 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_grant_expired = [];
     $d_grant_aging = [];
 
+    $d_risks = [];
+    $d_risk_projects = [];
+    $d_risk_months = [];
+    $d_risk_years = [];
+
+    foreach ($risks_data as $rkey => $rvalue) {
+        if (strtolower(str_replace(' ', '', $rvalue->managing_division)) == strtolower(str_replace(' ', '', $dvalue))) {
+
+            $d_risks[] = $rvalue->risk;
+            $d_risk_projects[] = $rvalue->number_of_projects;
+            $d_risk_months[] = $rvalue->month;
+            $d_risk_years[] = $rvalue->year;
+
+        }
+    }
+
     foreach ($all_grants_details as $detkey => $detvalue) {
         if (!in_array($detvalue->grant_key, $d_grant_keys) && strtolower(str_replace(' ', '', $detvalue->office)) == strtolower(str_replace(' ', '', $dvalue))) {
             foreach ($all_grants_data as $gkey => $gvalue) {
@@ -1329,6 +1348,12 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             "end_dates" => $d_grant_end,
             "expiration" => $d_grant_expired,
             "months_remaining" => $d_grant_aging,
+        ],
+        "risks_data" => [
+            "names" => $d_risks
+            , "number_of_projects" => $d_risk_projects
+            , "months" => $d_risk_months
+            , "years" => $d_risk_years,
         ],
         "consultants_data" => array("names" => $d_consultancy_names, "start_dates" => $d_consultancy_start_dates, "end_dates" => $d_consultancy_end_dates, "renewals" => $d_consultancy_renewals, "durations" => $d_consultancy_days_duration, "expired" => $d_consultancy_expired, "morethan11" => $d_consultancy_morethan11),
         "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
