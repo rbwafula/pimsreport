@@ -780,7 +780,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 }
             }
         }
-
     }
     // asort($d_grant_keys);
     // ksort($d_grant_amounts);
