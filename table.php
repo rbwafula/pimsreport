@@ -194,6 +194,122 @@ $annex3 = '<div class="row reportbody section3">
                     </table>
                 </div>
             </div>';
+            
+$annex4table = '';
+$j = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['names']); $i++) { 
+    if ($processed_divisiondata[$division]["consultants_data"]['expired'][$i] == "NO") {
+        $annex4table .= '<tr>';
+        $annex4table .= '<td>'.($j + 1).'.</td>';
+        $annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['names'][$i].'</td>';
+        $annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['start_dates'][$i].'</td>';
+        $annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i].'</td>';
+        //$annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['renewals'][$i].'</td>';
+        $annex4table .= '<td>'.number_format($processed_divisiondata[$division]["consultants_data"]['durations'][$i],0,".",",").'</td>';
+        $annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['morethan11'][$i].'</td>';
+        $annex4table .= '</tr>';
+        $j++;
+    }
+}
+
+$annex4 = '<div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 4: Consultants</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <!--<th>Renewals</th>-->
+                                <th>Duration</th>
+                                <th>More than 11 months</th>
+                            </tr>
+                        </thead>
+                        <tbody>'.$annex4table.'
+                        </tbody>
+                    </table>
+                </div>
+            </div>';
+
+$annex5table = '';
+array_multisort(array_column($processed_divisiondata[$division]["grantsdatanew"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdatanew"]);
+$j = 0;
+$expired_totalamount = 0;
+$negative_totalamount = 0;
+foreach ($processed_divisiondata[$division]["grantsdatanew"] as $key => $value) {
+    if (number_format($value["grantamount"],0,".",",") != "0") {
+        $annex5table .= '<tr>';
+        $annex5table .= '<td class="text-right">'.($j + 1).'.</td>';
+        $annex5table .= '<td>'.$value["grantkey"].'</td>';
+        if ($value["grantamount"] < 0) {
+            $annex5table .= '<td class="text-right red">'.number_format($value["grantamount"],0,".",",").'</td>';
+        } else {
+            $annex5table .= '<td class="text-right">'.number_format($value["grantamount"],0,".",",").'</td>';
+        }
+        $annex5table .= '<td class="text-center">'.$value["grantstartdate"].'</td>';
+        $annex5table .= '<td class="text-center">'.$value["grantenddate"].'</td>';
+        $annex5table .= '<td class="text-center">'.$value["grantexpired"].'</td>';
+        $annex5table .= '<td class="text-center">'.$value["grantaging"].'</td>';
+        $j++;
+        $expired_totalamount += ($value["grantexpired"] == "YES") ? $value["grantamount"] : 0;
+        $negative_totalamount += ($value["grantamount"] < 0) ? $value["grantamount"] : 0;
+    }
+}
+
+$annex5 = '<div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 5: Umoja Grants Data</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Keys</th>
+                                <th class="text-right">Amounts</th>
+                                <th class="text-center">Start Date</th>
+                                <th class="text-center">End Date</th>
+                                <th class="text-center">Expiration</th>
+                                <th class="text-center">Months Remaining</th>
+                            </tr>
+                        </thead>
+                        <tbody>'.$annex5table.'
+                        </tbody>
+                    </table>
+                </div>
+            </div>';
+
+$annex6table = '';
+$j = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["risks_data"]['names']); $i++) {
+    $annex6table .= '<tr>';
+    $annex6table .= '<td class="text-right">'.($j + 1).'.</td>';
+    $annex6table .= '<td>'.$processed_divisiondata[$division]["risks_data"]['names'][$i].'</td>';
+    $annex6table .= '<td>'.$processed_divisiondata[$division]["risks_data"]['number_of_projects'][$i].'</td>';
+    $annex6table .= '<td>'.$processed_divisiondata[$division]["risks_data"]['months'][$i].'</td>';
+    $annex6table .= '<td>'.$processed_divisiondata[$division]["risks_data"]['years'][$i].'</td>';
+    $annex6table .= '</tr>';
+    $j++;
+}
+
+$annex6 = '<div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 6: Project Risks</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Names</th>
+                                <th>Projects</th>
+                                <th>Months</th>
+                                <th>Years</th>
+                            </tr>
+                        </thead>
+                        <tbody>'.$annex6table.'
+                        </tbody>
+                    </table>
+                </div>
+            </div>';
 
 
 
@@ -221,204 +337,28 @@ $mpdf->SetProtection(array('print'));
 $mpdf->SetTitle("pimsreport");
 $mpdf->SetAuthor("UNEP - PIMS+");
 $mpdf->SetDisplayMode('fullpage');
-$mpdf->Bookmark('Summary');
+//$mpdf->Bookmark('Summary');
 $mpdf->WriteHTML($pageheader);
 $mpdf->AddPage();
 $mpdf->WriteHTML($header);
-$mpdf->Bookmark('Annex 1: Projects Table');
+//$mpdf->Bookmark('Annex 1: Projects Table');
 $mpdf->WriteHTML($annex1);
 $mpdf->AddPage();
-$mpdf->Bookmark('Annex 2: Vacant Positions');
+//$mpdf->Bookmark('Annex 2: Vacant Positions');
 $mpdf->WriteHTML($annex2);
 $mpdf->AddPage();
-$mpdf->Bookmark('Annex 3: Filled Positions');
+//$mpdf->Bookmark('Annex 3: Filled Positions');
 $mpdf->WriteHTML($annex3);
+$mpdf->AddPage();
+//$mpdf->Bookmark('Annex 4: Consultants');
+$mpdf->WriteHTML($annex4);
+$mpdf->AddPage();
+//$mpdf->Bookmark('Annex 5: Umoja Grants Data');
+$mpdf->WriteHTML($annex5);
+$mpdf->AddPage();
+//$mpdf->Bookmark('Annex 6: Project Risks');
+$mpdf->WriteHTML($annex6);
 $mpdf->WriteHTML($footer);
 $mpdf->Output($filename, 'I');
 exit;
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-	<title><?php echo strtoupper($division); ?> Report</title>
-	<!-- Vendor CSS -->
-    <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
-    <!--<link rel="stylesheet" href="assets/css/highcharts.css">-->
-
-    <!-- Vendor JS -->
-    <!--<script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>-->
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.min.css">
-    <!--<script src="assets/js/main.js"></script>-->
-
-    <!-- HTML TO PDF LIB LOADED -->
-    <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
-</head>
-<body>
-	<div class="container-fluid printlandscape">
-		<div id="toprint" class="toprint">
-			<div class="row reportheader">
-                <div class="col-md-4 logo">
-                    <img class="logo" src="assets/images/pimslogo.png">
-                </div>
-                <div class="col-md-4 title">
-                    <h1><?php echo $processed_divisiondata[$division]["entity"]; ?></h1>
-                    <h6>Programme Delivery Report</h6>
-                </div>
-                <div class="col-md-4 health">
-                    <p class="reportdate">Jan 2021</p>
-                    <p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>;">&nbsp;</p>
-                    <p class="healthratingdesc">Project Portfolio Rating</p>
-                </div>
-            </div>
-
-            <div class="row reportbody section2">
-                <h2 class="sectiontitle">Annex 1: Projects Table</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th class="left">Branch</th>
-                                <th width="115px" class="left">Project ID</th>
-                                <th class="left">Project Title</th>
-                                <th class="center">Sub<br/>Programme</th>
-                                <th class="center">Months<br/>Past Due</th>
-                                <th class="left">Project<br/>Manager</th>
-                                <th class="right">Budget</th>
-                                <th class="projectlistinghealth">System Rating <span>(40%)</span></th>
-                                <th class="projectlistinghealth">Management Rating <span>(60%)</span></th>
-                                <th class="projectlistinghealth">Final Rating</th>
-                                <th class="center">Project Rank</th>
-                                <th class="center">Outputs</th>
-                                <th class="center">Completed Activities</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-							for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++) {
-							    echo '<tr>';
-							    echo '<td class="right">' . ($i + 1) . '.</td>';
-							    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['branch'] . '</td>';
-							    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_id'] . '</td>';
-							    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_title'] . '</td>';
-							    echo '<td class="center">SP ' . $processed_divisiondata[$division]["projectlisting"][$i]['sp_number'] . '</td>';
-
-							    if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] < 0) {
-							        echo '<td class="center" style="color:#dc3545; font-weight: 500;">' . abs($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining']) . '</td>';
-							    } else if ($processed_divisiondata[$division]["projectlisting"][$i]['months_remaining'] == 'No Enddate') {
-							        echo '<td class="center" style="color:#dc3545; font-weight: 500;">No end date</td>';
-							    } else {
-							        echo '<td class="center" style="font-weight:500; color:green">&nbsp;</td>';
-							    }
-							    echo '<td class="left">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_manager'] . '</td>';
-							    echo '<td class="right">' . number_format($processed_divisiondata[$division]["projectlisting"][$i]['budget'], 0, '.', ',') . '</td>';
-							    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['system_rating']) . '">&nbsp;</p></td>';
-							    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['management_rating']) . '">&nbsp;</p></td>';
-							    echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['final_rating']) . '">&nbsp;</p></td>';
-							    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_rank'] . '</td>';
-							    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['outputs'] . '</td>';
-							    if ($processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] != '' && $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] != '') {
-							        echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] . ' / ' . $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] . ' </td>';
-							    } else {
-							        echo '<td class="center"> - </td>';
-							    }
-							    echo '</tr>';
-							}
-							?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!--<div class="pagebreak"></div>-->
-            <div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 2: Vacant Positions Table</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th>Grade</th>
-                                <th>Position Title</th>
-                                <th>Position Number</th>
-                                <th>Duty Station</th>
-                                <th>Fund</th>
-                                <th>Org Code</th>
-                                <th>Org Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-							$j = 0;
-							for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-							    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
-							        echo '<tr>';
-							        echo '<td>' . ($j + 1) . '.</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
-							        echo '</tr>';
-							        $j++;
-							    }
-							}
-							?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!--<div class="pagebreak"></div>-->
-            <div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 3: Filled Positions Table</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th>Grade</th>
-                                <th>Position Title</th>
-                                <th>Position Number</th>
-                                <th>Duty Station</th>
-                                <!--<th>Fund</th>-->
-                                <th>Staff Name</th>
-                                <th>Org Code</th>
-                                <th>Org Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-							$j = 0;
-							for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-							    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
-							        echo '<tr>';
-							        echo '<td>' . ($j + 1) . '.</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-							        //echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-							        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
-							        echo '</tr>';
-							        $j++;
-							    }
-							}
-							?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-		</div>
-	</div>
-</body>
-</html>

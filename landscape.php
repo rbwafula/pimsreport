@@ -1483,49 +1483,51 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
 
 
 <div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 5: Project Risks</h2>
+                <h2 class="sectiontitle">Annex 5: Umoja Grants Data</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
                                 <th>Keys</th>
-                                <th>Amounts</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Expiration</th>
-                                <th>Months Remaining</th>
+                                <th class="text-right">Amounts</th>
+                                <th class="text-center">Start Date</th>
+                                <th class="text-center">End Date</th>
+                                <th class="text-center">Expiration</th>
+                                <th class="text-center">Months Remaining</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-
-                            echo "<pre>";
-                            var_dump($processed_divisiondata[$division]["grants_data"]);
-                            echo "</pre>";
-                            exit;
-
-                            foreach ($processed_divisiondata[$division]["grants_data"] as $key => $value) {
-                                echo $processed_divisiondata[$division]["grants_data"][$value];
+                            array_multisort(array_column($processed_divisiondata[$division]["grantsdatanew"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdatanew"]);
+                            $j = 0;
+                            $expired_totalamount = 0;
+                            $negative_totalamount = 0;
+                            foreach ($processed_divisiondata[$division]["grantsdatanew"] as $key => $value) {
+                                if (number_format($value["grantamount"],0,".",",") != "0") {
+                                    echo '<tr>';
+                                    echo '<td class="text-right">'.($j + 1).'.</td>';
+                                    echo '<td>'.$value["grantkey"].'</td>';
+                                    if ($value["grantamount"] < 0) {
+                                        echo '<td class="text-right red">'.number_format($value["grantamount"],0,".",",").'</td>';
+                                    } else {
+                                        echo '<td class="text-right">'.number_format($value["grantamount"],0,".",",").'</td>';
+                                    }
+                                    echo '<td class="text-center">'.$value["grantstartdate"].'</td>';
+                                    echo '<td class="text-center">'.$value["grantenddate"].'</td>';
+                                    echo '<td class="text-center">'.$value["grantexpired"].'</td>';
+                                    echo '<td class="text-center">'.$value["grantaging"].'</td>';
+                                    $j++;
+                                    $expired_totalamount += ($value["grantexpired"] == "YES") ? $value["grantamount"] : 0;
+                                    $negative_totalamount += ($value["grantamount"] < 0) ? $value["grantamount"] : 0;
+                                }
                             }
-
-
-/*$j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["grants_data"]['keys']); $i++) {
-    echo '<tr>';
-    echo '<td class="text-right">'.($j + 1).'.</td>';
-    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['keys'][$i].'</td>';
-    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['amounts'][$i].'</td>';
-    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['start_dates'][$i].'</td>';
-    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['end_dates'][$i].'</td>';
-    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['expiration'][$i].'</td>';
-    echo '<td>'.$processed_divisiondata[$division]["grants_data"]['months_remaining'][$i].'</td>';
-    echo '</tr>';
-    $j++;
-}*/
-?>
+                            ?>
+                            <tr>
+                            </tr>
                         </tbody>
                     </table>
+                    <?php echo "Expired: ".number_format($expired_totalamount,0,".",",")."<br/>Negative: ".number_format($negative_totalamount,0,".",","); ?>
                 </div>
             </div>
 

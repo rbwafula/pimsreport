@@ -125,7 +125,7 @@ function count_array_values($my_array, $match)
         } 
     } 
     return $count; 
-} 
+}
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
 
@@ -784,6 +784,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         }
     }
 
+    $grantkeysnew = [];
     foreach ($all_grants_details as $detkey => $detvalue) {
         if (!in_array($detvalue->grant_key, $d_grant_unique_keys) && strtolower(str_replace(' ', '', $detvalue->office)) == strtolower(str_replace(' ', '', $dvalue))) {
             foreach ($all_grants_data as $gkey => $gvalue) {
@@ -795,6 +796,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                     $d_grant_end[] = ["value" => $gvalue->grant_valid_to, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                     $d_grant_expired[] = ["value" => checkexpired($gvalue->grant_valid_to), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                     $d_grant_aging[] = ["value" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+
+
+
+                    $grantkeysnew[] = ["grantkey" => $gvalue->grant_key,"grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                 }
             }
         }
@@ -1370,6 +1375,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             "expiration" => $d_grant_expired,
             "months_remaining" => $d_grant_aging,
         ],
+        "grantsdatanew" => $grantkeysnew,
         "risks_data" => [
             "names" => $d_risks
             , "number_of_projects" => $d_risk_projects
