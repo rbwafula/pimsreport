@@ -1,25 +1,22 @@
 <?php
-/*$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
+//FETCH DATA -> CACHED/LIVE
+$version = 'cached'; // live * Choose between: cached and live data here */
+$cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
+$livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
+$page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
+$urlsuffix = ($version == 'cached') ? '.json' : '';
 
-$activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
-
-$outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
-
-$hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/officestaff_data';
-
-$proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
-
-$page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
-$url = $page_link . '/assets/data/final_data.json';
-$activities_url = $page_link . '/assets/data/div_activitycount_data.json';
-$outputs_url = $page_link . '/assets/data/div_activitycount_data.json';
-$hr_url = $page_link . '/assets/data/officestaff_data.json';
-$proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
-$consultants_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/consultants_data';
-
-$grant_data_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grant_data';
-$grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
-$risks_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/divisionrisk_data';
+$url = $page_link . 'final_data' . $urlsuffix;
+$activities_url = $page_link . 'div_activitycount_data' . $urlsuffix;
+$outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
+$hr_url = $page_link . 'officestaff_data' . $urlsuffix;
+$proj_activity_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
+$consultants_url = $page_link . 'consultants_data' . $urlsuffix;
+$grant_data_url = $page_link . 'grant_data' . $urlsuffix;
+$grant_details_url = $page_link . 'grantdetails_data' . $urlsuffix;
+$risks_url = $page_link . 'divisionrisk_data' . $urlsuffix;
+$boa_url = $page_link . 'boa_data' . $urlsuffix;
+$oios_url = $page_link . 'oios_data' . $urlsuffix;
 
 $processed_divisiondata = array();
 
@@ -143,8 +140,9 @@ $consultants_data = getdataobjectfromurl($consultants_url);
 
 $all_grants_data = getdataobjectfromurl($grant_data_url);
 $all_grants_details = getdataobjectfromurl($grant_details_url);
-
 $risks_data = getdataobjectfromurl($risks_url);
+$boa_data = getdataobjectfromurl($boa_url);
+$oios_data = getdataobjectfromurl($oios_url);
 
 // CLEANSE HR DATA FOR UNIQUE pos_id
 $hr_data = [];
@@ -773,33 +771,71 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_risk_months = [];
     $d_risk_years = [];
 
+
+    $d_risksdata = [];
     foreach ($risks_data as $rkey => $rvalue) {
         if (strtolower(str_replace(' ', '', $rvalue->managing_division)) == strtolower(str_replace(' ', '', $dvalue))) {
-
-            $d_risks[] = $rvalue->risk;
-            $d_risk_projects[] = $rvalue->number_of_projects;
-            $d_risk_months[] = $rvalue->month;
-            $d_risk_years[] = $rvalue->year;
-
+            $d_risksdata[] = ["riskname" => $rvalue->risk, "projectcount" => $rvalue->number_of_projects, "year" => $rvalue->year];
         }
     }
 
-    $grantkeysnew = [];
+    $d_boadata = [];
+    foreach ($boa_data as $bkey => $bvalue) {
+        if (strtolower(str_replace(' ', '', $bvalue->departments_responsible)) == strtolower(str_replace(' ', '', $dvalue))) {
+            $d_boadata[] = [
+                "year" => $bvalue->year,
+                "reportreference" => $bvalue->report_reference_and_financial_period,
+                "summaryrecommendation" => $bvalue->summary_of_recommendation,
+                "unepresponse" => $bvalue->unep_responses_provided_for_sgr,
+                "referencedocuments" => $bvalue->reference_documents,
+                "boardassessment" => $bvalue->boards_assessment,
+                "departmentresponsible" => $bvalue->departments_responsible,
+                "responiblestaff" => $bvalue->responsible_staff,
+                "priority" => $bvalue->priority,
+                "targetdate" => $bvalue->target_date,
+                "suggestedstatusverified" => $bvalue->suggested_status_after_verification_from_unep,
+                "suggestedstatus" => $bvalue->suggested_status,
+                "category" => $bvalue->category,
+                "agemonths" => $bvalue->age_in_months
+            ];
+        }
+    }
+
+    $d_oiosdata = [];
+    foreach ($oios_data as $key => $value) {
+        if (strtolower(str_replace(' ', '', $value->responsible_unep_office)) == strtolower(str_replace(' ', '', $dvalue))) {
+            $d_oiosdata[] = [
+                "projectcode" => $value->project_code,
+                "recommendation_no" => $value->recommendation_no,
+                "division" => $value->division,
+                "category" => $value->category,
+                "issue_date" => $value->actual_issue_date,
+                "project_name" => $value->project_name,
+                "recommendation" => $value->recommendation,
+                "status_update" => $value->status_update,
+                "recommendation_update" => $value->recommendation_update,
+                "recommendation_state" => $value->recommendation_state,
+                "implementation_date" => $value->estimated_implementation_date,
+                "age_months" => $value->age_in_months,
+                "implementation_pastdue" => $value->past_due_est_implementation_in_months,
+                "client_responsible_office" => $value->client_responsible_office,
+                "team_central_update" => $value->last_status_update_from_team_central,
+                "proposed_status_update" => $value->proposed_status_update,
+                "proposed_revision_of_estimated_date" => $value->proposed_revision_of_estimated_date,
+                "reference_to_attachment" => $value->reference_to_attachment,
+                "proposed_status_in_progress_implemented" => $value->proposed_status_in_progress_implemented
+            ];
+        }
+    }
+
+
+    $d_grantsdata = [];
     foreach ($all_grants_details as $detkey => $detvalue) {
         if (!in_array($detvalue->grant_key, $d_grant_unique_keys) && strtolower(str_replace(' ', '', $detvalue->office)) == strtolower(str_replace(' ', '', $dvalue))) {
             foreach ($all_grants_data as $gkey => $gvalue) {
                 if ($gvalue->grant_key == $detvalue->grant_key) {
                     $d_grant_unique_keys[] = $gvalue->grant_key;
-                    $d_grant_keys[] = ["value" => $gvalue->grant_key, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
-                    $d_grant_amounts[] = ["value" => $gvalue->grant_cash_balance, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
-                    $d_grant_start[] = ["value" => $gvalue->grant_valid_from, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
-                    $d_grant_end[] = ["value" => $gvalue->grant_valid_to, "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
-                    $d_grant_expired[] = ["value" => checkexpired($gvalue->grant_valid_to), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
-                    $d_grant_aging[] = ["value" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
-
-
-
-                    $grantkeysnew[] = ["grantkey" => $gvalue->grant_key,"grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grantsdata[] = ["grantkey" => $gvalue->grant_key,"grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                 }
             }
         }
@@ -939,6 +975,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'stage' => $hvalue->document_stage,
                 'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
                 'all_training' => $hvalue->no_of_total_courses_done,
+                'contract_expiry' => $hvalue->appt_exp,
+                'retirement_date' => $hvalue->retirement_date
             ];
         }
     }
@@ -1375,13 +1413,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             "expiration" => $d_grant_expired,
             "months_remaining" => $d_grant_aging,
         ],
-        "grantsdatanew" => $grantkeysnew,
-        "risks_data" => [
-            "names" => $d_risks
-            , "number_of_projects" => $d_risk_projects
-            , "months" => $d_risk_months
-            , "years" => $d_risk_years,
-        ],
+        "grantsdata" => $d_grantsdata,
+        "risks_data" => $d_risksdata,
+        "boa_data" => $d_boadata,
+        "oios_data" => $d_oiosdata,
         "consultants_data" => array("names" => $d_consultancy_names, "start_dates" => $d_consultancy_start_dates, "end_dates" => $d_consultancy_end_dates, "renewals" => $d_consultancy_renewals, "durations" => $d_consultancy_days_duration, "expired" => $d_consultancy_expired, "morethan11" => $d_consultancy_morethan11),
         "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
         "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),

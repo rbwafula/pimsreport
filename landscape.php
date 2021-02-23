@@ -912,7 +912,13 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
     if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED' && $processed_divisiondata[$division]["stafflisting"][$i]['stage'] == 'Completed') {
         $epas_completed++;
         $training_total += $processed_divisiondata[$division]["stafflisting"][$i]['mandatory_training'];
+    } else if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED' && $processed_divisiondata[$division]["stafflisting"][$i]['stage'] == 'SM Self & FRO Evaluation') {
+        $epas_completed++;
+        $training_total += $processed_divisiondata[$division]["stafflisting"][$i]['mandatory_training'];
     }
+
+
+    
 }
 
 
@@ -1406,11 +1412,11 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                 <th>Position Title</th>
                                 <th>Position Number</th>
                                 <th>Duty Station</th>
-                                <!--<th>Fund</th>-->
                                 <th>Staff Name</th>
-                                <th>Org Unit</th>
                                 <th class="text-center">ePAS Status</th>
                                 <th class="text-center">Mandatory Training</th>
+                                <th class="text-center">Contract Expiration</th>
+                                <th class="text-center">Retirement</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1426,9 +1432,10 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
         //echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
         echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
         echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['stage'] . '</td>';
         echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['mandatory_training'] . '/9</td>';
+        echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['contract_expiry'] . '</td>';
+        echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['retirement_date'] . '</td>';        
         echo '</tr>';
         $j++;
     }
@@ -1445,14 +1452,14 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
             <div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 4: Consultants</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm">
+                    <table class="table table-striped table-sm budgetclass">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
                                 <th>Name</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
-                                <!--<th>Renewals</th>-->
+                                <th>Elapsed</th>
                                 <th>Duration</th>
                                 <th>More than 11 months</th>
                             </tr>
@@ -1468,7 +1475,23 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
         echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['names'][$i].'</td>';
         echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['start_dates'][$i].'</td>';
         echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i].'</td>';
-        //echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['renewals'][$i].'</td>';
+
+        $elapsed = floor(getdaysbetween($processed_divisiondata[$division]["consultants_data"]['start_dates'][$i],min(date("Y-m-d",time()),$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i])));
+        $duration = ceil(getdaysbetween($processed_divisiondata[$division]["consultants_data"]['start_dates'][$i],$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i]));
+        if ($elapsed != 0 && $duration != 0) {
+            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+            if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+            } else if ($elapsedtime >= 100) {
+                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+            } else {
+                $elapsedtime = 'N/A';
+                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+            }
+        } else {
+            $elapsedtime = 'N/A';
+            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+        }
         echo '<td>'.number_format($processed_divisiondata[$division]["consultants_data"]['durations'][$i],0,".",",").'</td>';
         echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['morethan11'][$i].'</td>';
         echo '</tr>';
@@ -1485,7 +1508,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
 <div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 5: Umoja Grants Data</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm">
+                    <table class="table table-striped table-sm budgetclass">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
@@ -1493,33 +1516,69 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                                 <th class="text-right">Amounts</th>
                                 <th class="text-center">Start Date</th>
                                 <th class="text-center">End Date</th>
+                                <th class="text-center">Elapsed</th>
                                 <th class="text-center">Expiration</th>
                                 <th class="text-center">Months Remaining</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            array_multisort(array_column($processed_divisiondata[$division]["grantsdatanew"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdatanew"]);
+                            array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdata"]);
                             $j = 0;
                             $expired_totalamount = 0;
                             $negative_totalamount = 0;
-                            foreach ($processed_divisiondata[$division]["grantsdatanew"] as $key => $value) {
+                            $sixmonthexpiry_totalamount = 0;
+                            $expired_count = 0;
+                            $negative_count = 0;
+                            $sixmonthexpiry_count = 0;
+
+
+                            foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
                                 if (number_format($value["grantamount"],0,".",",") != "0") {
                                     echo '<tr>';
                                     echo '<td class="text-right">'.($j + 1).'.</td>';
                                     echo '<td>'.$value["grantkey"].'</td>';
                                     if ($value["grantamount"] < 0) {
-                                        echo '<td class="text-right red">'.number_format($value["grantamount"],0,".",",").'</td>';
+                                        echo '<td class="text-right text-red">'.number_format($value["grantamount"],0,".",",").'</td>';
                                     } else {
                                         echo '<td class="text-right">'.number_format($value["grantamount"],0,".",",").'</td>';
                                     }
                                     echo '<td class="text-center">'.$value["grantstartdate"].'</td>';
                                     echo '<td class="text-center">'.$value["grantenddate"].'</td>';
+
+                                    $elapsed = floor(getdaysbetween($value["grantstartdate"],min(date("Y-m-d",time()),$value["grantenddate"])));
+                                    $duration = ceil(getdaysbetween($value["grantstartdate"],$value["grantenddate"]));
+                                    if ($elapsed != 0 && $duration != 0) {
+                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                        if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else if ($elapsedtime >= 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                        }
+                                    } else {
+                                        $elapsedtime = 'N/A';
+                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                    }
+
                                     echo '<td class="text-center">'.$value["grantexpired"].'</td>';
                                     echo '<td class="text-center">'.$value["grantaging"].'</td>';
                                     $j++;
-                                    $expired_totalamount += ($value["grantexpired"] == "YES") ? $value["grantamount"] : 0;
-                                    $negative_totalamount += ($value["grantamount"] < 0) ? $value["grantamount"] : 0;
+
+                                    if ($value["grantexpired"] == "YES") {
+                                        $expired_totalamount += $value["grantamount"];
+                                        $expired_count++;
+                                    }
+                                    if ($value["grantamount"] < 0) {
+                                        $negative_totalamount += $value["grantamount"];
+                                        $negative_count++;
+                                    }
+                                    if ($value["grantenddate"] > date("Y-m-d", strtotime("now")) && $value["grantenddate"] <= date("Y-m-d", strtotime("+6 month"))) {
+                                        $sixmonthexpiry_totalamount = $value["grantamount"];
+                                        $sixmonthexpiry_count++;
+                                    }
                                 }
                             }
                             ?>
@@ -1527,12 +1586,9 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                             </tr>
                         </tbody>
                     </table>
-                    <?php echo "Expired: ".number_format($expired_totalamount,0,".",",")."<br/>Negative: ".number_format($negative_totalamount,0,".",","); ?>
+                    <?php echo $expired_count." expired grants: $".number_format($expired_totalamount,0,".",",")."<br/>".$sixmonthexpiry_count." grants expiring in next 6 months: $".number_format($sixmonthexpiry_totalamount,0,".",",")."<br/>".$negative_count." negative grants: $".number_format($negative_totalamount,0,".",","); ?>
                 </div>
             </div>
-
-
-
 
             <div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 6: Project Risks</h2>
@@ -1541,30 +1597,175 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th>Names</th>
-                                <th>Projects</th>
-                                <th>Months</th>
-                                <th>Years</th>
+                                <th class="text-left">Risk Name</th>
+                                <th class="text-center">Number of Projects</th>
+                                <!--<th class="text-center">Month</th>-->
+                                <th class="text-center">Year</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-$j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["risks_data"]['names']); $i++) {
-    echo '<tr>';
-    echo '<td class="text-right">'.($j + 1).'.</td>';
-    echo '<td>'.$processed_divisiondata[$division]["risks_data"]['names'][$i].'</td>';
-    echo '<td>'.$processed_divisiondata[$division]["risks_data"]['number_of_projects'][$i].'</td>';
-    echo '<td>'.$processed_divisiondata[$division]["risks_data"]['months'][$i].'</td>';
-    echo '<td>'.$processed_divisiondata[$division]["risks_data"]['years'][$i].'</td>';
-    echo '</tr>';
-    $j++;
-}
-?>
+                                array_multisort(array_column($processed_divisiondata[$division]["risks_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["risks_data"]);
+
+                                $j = 0;
+                                foreach ($processed_divisiondata[$division]["risks_data"] as $key => $value) {
+                                    if ($value["year"] == date("Y", strtotime("now"))) {
+                                        echo '<tr>';
+                                        echo '<td class="text-right">'.($j + 1).'.</td>';
+                                        echo '<td class="text-left">'.$value["riskname"].'</td>';
+                                        echo '<td class="text-center">'.$value["projectcount"].'</td>';
+                                        //echo '<td class="text-center">'.date('F', mktime(0, 0, 0, $value["month"], 10)).'</td>';
+                                        echo '<td class="text-center">'.$value["year"].'</td>';
+                                        echo '</tr>';
+                                        $j++;
+                                    }
+                                }
+                            ?>
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 7: Board of Auditors</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th class="text-left">Recommendation</th>
+                                <th class="text-left">Reference</th>
+                                <th class="text-center">Priority</th>
+                                <th class="text-center">Audit Year</th>
+                                <th class="text-center">Target Date</th>
+                                <th class="text-center" style="width: 100px">Elapsed</th>
+                                <!--<th class="text-center">Age <br><span>(Months)</span></th>-->
+                                <th class="text-center">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                array_multisort(array_column($processed_divisiondata[$division]["boa_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["boa_data"]);
+
+                                $j = 0;
+                                foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
+                                    if ($value["year"] == $value["year"]/* date("Y", strtotime("now")) */) {
+                                        echo '<tr>';
+                                        echo '<td class="text-right">'.($j + 1).'.</td>';
+                                        echo '<td class="text-left" style="max-width: 300px;">'.$value["summaryrecommendation"].'</td>';
+                                        echo '<td class="text-left" style="max-width: 70px;">'.$value["reportreference"].'</td>';
+                                        echo '<td class="text-center">'.$value["priority"].'</td>';
+                                        echo '<td class="text-center">'.$value["year"].'</td>';
+                                        echo '<td class="text-center">'.$value["targetdate"].'</td>';
+
+
+                                        $elapsed = floor(getdaysbetween($value["year"]."/01/01",min(date("Y-m-d",time()),$value["targetdate"])));
+                                        $duration = ceil(getdaysbetween($value["year"]."/01/01",$value["targetdate"]));
+                                        if ($elapsed != 0 && $duration != 0) {
+                                            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                            if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                            } else if ($elapsedtime >= 100) {
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                            } else {
+                                                $elapsedtime = 'N/A';
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                            }
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                        }
+
+
+                                        //echo '<td class="text-center">'.$value["agemonths"].'</td>';
+                                        echo '<td class="text-center">'.$value["category"].'</td>';
+                                        
+                                        echo '</tr>';
+                                        $j++;
+                                    }
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 8: OIOS</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th class="text-left">Recommendation</th>
+                                <th class="text-left">Code</th>
+                                <th class="text-left">Priority</th>
+                                <th class="text-center">Start Date</th>
+                                <th class="text-center">End Date</th>
+                                <th class="text-center" style="width: 100px">Elapsed</th>
+                                <th class="text-center">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                array_multisort(array_column($processed_divisiondata[$division]["oios_data"], 'issue_date'), SORT_ASC,$processed_divisiondata[$division]["oios_data"]);
+
+                                $j = 0;
+                                foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
+                                    echo '<tr>';
+                                    echo '<td class="text-right">'.($j + 1).'.</td>';
+                                    echo '<td class="text-left" style="max-width: 300px;">'.ltrim(stristr($value["recommendation"], '. '), '. ').'</td>';
+                                    echo '<td class="text-left">'.$value["projectcode"].'</td>';
+                                    echo '<td class="text-center">'.$value["recommendation_update"].'</td>';
+                                    echo '<td class="text-center">'.$value["issue_date"].'</td>';
+                                    echo '<td class="text-center">'.$value["implementation_date"].'</td>';
+
+
+                                    $elapsed = floor(getdaysbetween($value["issue_date"],min(date("Y-m-d",time()),$value["implementation_date"])));
+                                    $duration = ceil(getdaysbetween($value["issue_date"],$value["implementation_date"]));
+                                    if ($elapsed != 0 && $duration != 0) {
+                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                        if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else if ($elapsedtime >= 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                        }
+                                    } else {
+                                        $elapsedtime = 'N/A';
+                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                    }
+
+
+
+
+
+
+
+                                    //echo '<td class="text-center">'.$value["age_months"].'</td>';
+                                    echo '<td class="text-center">'.$value["category"].'</td>';
+                                    echo '</tr>';
+                                    $j++;
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -425,7 +425,7 @@ table.budgetclass_footer tr td:last-child {
 	padding-left: 5px;
 	font-weight: bold;
 }
-.red {
+.text-red {
 	color: #dc3545 !important;
 	font-weight: bold;
 }
