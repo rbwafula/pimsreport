@@ -355,8 +355,8 @@ $pctg_mc_completion = round(($mc_completed_staff / $total_filled_posts) * 100);
 
 $pctg_epass_compliance = round(($epass_compliant_staff / $total_filled_posts) * 100);
 // echo $mc_completed_staff . ' completed <br />';
-echo $pctg_mc_completion . '% mandatory courses <br />';
-echo $pctg_epass_compliance . '% epass compliance';
+// echo $pctg_mc_completion . '% mandatory courses <br />';
+// echo $pctg_epass_compliance . '% epass compliance';
 
 $overall_post_status_distribution = [];
 
