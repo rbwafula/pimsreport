@@ -261,7 +261,10 @@ rsort($unique_final_ratings);
 //USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
 foreach ($hr_data as $key => $value) {
 
-    if (!in_array($value->pos_ps_group, $unique_post_groups)) {
+
+    $position = (substr($value->pos_ps_group,1,1) !== "-") ? substr($value->pos_ps_group,0,1)."-".substr($value->pos_ps_group,1,1) : $value->pos_ps_group;
+
+    if (!in_array($position, $unique_post_groups)) {
 
         if ($value->gender == 'male') {
 
@@ -278,21 +281,21 @@ foreach ($hr_data as $key => $value) {
                 $female = 1;
             }
 
-            $unique_posts_data[] = ["post" => $value->pos_ps_group, "vacant" => 0, "filled" => 1, "filled_male" => $male, "filled_female" => $female, "offices_post_vacant" => [], "offices_post_filled" => [$value->office]];
+            $unique_posts_data[] = ["post" => $position, "vacant" => 0, "filled" => 1, "filled_male" => $male, "filled_female" => $female, "offices_post_vacant" => [], "offices_post_filled" => [$value->office]];
             $total_filled_posts += 1;
-            $overall_filled_posts[array_search($value->pos_ps_group, $staff_order_array)] = $value->pos_ps_group;
+            $overall_filled_posts[array_search($position, $staff_order_array)] = $position;
 
         } else {
-            $unique_posts_data[] = ["post" => $value->pos_ps_group, "vacant" => 1, "filled" => 0, "filled_male" => 0, "filled_female" => 0, "offices_post_vacant" => [$value->office], "offices_post_filled" => []];
+            $unique_posts_data[] = ["post" => $position, "vacant" => 1, "filled" => 0, "filled_male" => 0, "filled_female" => 0, "offices_post_vacant" => [$value->office], "offices_post_filled" => []];
             $total_vacant_posts += 1;
-            $overall_vacant_posts[array_search($value->pos_ps_group, $staff_order_array)] = $value->pos_ps_group;
+            $overall_vacant_posts[array_search($position, $staff_order_array)] = $position;
 
         }
 
-        $unique_post_groups[] = $value->pos_ps_group;
+        $unique_post_groups[] = $position;
     } else {
         foreach ($unique_posts_data as $pkey => $pvalue) {
-            if ($value->pos_ps_group == $pvalue['post']) {
+            if ($position == $pvalue['post']) {
                 if ($value->pers_no > 0) {
                     if ($value->gender == 'Male') {
                         $unique_posts_data[$pkey]['filled_male'] += 1;
@@ -304,13 +307,13 @@ foreach ($hr_data as $key => $value) {
                     $unique_posts_data[$pkey]['filled'] += 1;
                     $unique_posts_data[$pkey]['offices_post_filled'][] = $value->office;
                     $total_filled_posts += 1;
-                    $overall_filled_posts[] = $value->pos_ps_group;
+                    $overall_filled_posts[] = $position;
 
                 } else {
                     $unique_posts_data[$pkey]['vacant'] += 1;
                     $unique_posts_data[$pkey]['offices_post_vacant'][] = $value->office;
                     $total_vacant_posts += 1;
-                    $overall_vacant_posts[] = $value->pos_ps_group;
+                    $overall_vacant_posts[] = $position;
 
                 }
             }
@@ -561,7 +564,7 @@ foreach ($hr_data as $hkey => $hvalue) {
         $filled = false;
     }
     $overall_staff_information[] = [
-        'grade' => $hvalue->pos_ps_group,
+        'grade' => (substr($hvalue->pos_ps_group,1,1) !== "-") ? substr($hvalue->pos_ps_group,0,1)."-".substr($hvalue->pos_ps_group,1,1) : $hvalue->pos_ps_group,
         'position_title' => $hvalue->pos_title,
         'position_number' => $hvalue->pos_id,
         'duty_station' => $hvalue->duty_station,
@@ -959,7 +962,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 $p_status = 'VACANT';
             }
             $d_staff_information[] = [
-                'grade' => $hvalue->pos_ps_group,
+                'grade' => (substr($hvalue->pos_ps_group,1,1) !== "-") ? substr($hvalue->pos_ps_group,0,1)."-".substr($hvalue->pos_ps_group,1,1) : $hvalue->pos_ps_group,
                 'position_title' => $hvalue->pos_title,
                 'position_number' => $hvalue->pos_id,
                 'duty_station' => $hvalue->duty_station,
@@ -970,7 +973,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'category' => $hvalue->category,
                 'org_code' => $hvalue->org_unit,
                 'org_unit_description' => $hvalue->org_unit_desc,
-                'order' => array_search($hvalue->pos_ps_group, $staff_order_array_all),
+                'order' => array_search((substr($hvalue->pos_ps_group,1,1) !== "-") ? substr($hvalue->pos_ps_group,0,1)."-".substr($hvalue->pos_ps_group,1,1) : $hvalue->pos_ps_group, $staff_order_array_all),
                 'final_status' => $hvalue->document_final_status,
                 'stage' => $hvalue->document_stage,
                 'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
@@ -1034,7 +1037,9 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
             foreach ($hr_data as $hkey => $hvalue) {
                 # code...
-                if ($hvalue->office == $dvalue && $hvalue->pos_ps_group == $pvalue['post']) {
+                $position = (substr($hvalue->pos_ps_group,1,1) !== "-") ? substr($hvalue->pos_ps_group,0,1)."-".substr($hvalue->pos_ps_group,1,1) : $hvalue->pos_ps_group;
+
+                if ($hvalue->office == $dvalue && $position == $pvalue['post']) {
                     if ($hvalue->pers_no > 0) {
                         if ($hvalue->gender == 'Male') {
                             $d_filled_male += 1;

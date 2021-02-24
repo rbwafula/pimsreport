@@ -1301,7 +1301,62 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
             <div id="dashboardimg" style="display:none;">
                 <img src="" id="newimg" class="top" />
             </div>
-            <!--<div class="pagebreak"></div>-->
+            <div class="pagebreak"></div>
+
+
+            <!-- new dashboard -->
+            <div class="row reportbody section1 dashboard2" style="width: 29.7cm; height: 21cm; background-color: #f9f9f9;">
+                <?php
+                array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdata"]);
+                $expired_totalamount = 0;
+                $negative_totalamount = 0;
+                $sixmonthexpiry_totalamount = 0;
+                $expired_count = 0;
+                $negative_count = 0;
+                $sixmonthexpiry_count = 0;
+
+                foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
+                    if (number_format($value["grantamount"],0,".",",") != "0") {
+                        if ($value["grantexpired"] == "YES") {
+                            $expired_totalamount += $value["grantamount"];
+                            $expired_count++;
+                        }
+                        if ($value["grantamount"] < 0) {
+                            $negative_totalamount += $value["grantamount"];
+                            $negative_count++;
+                        }
+                        if ($value["grantenddate"] > date("Y-m-d", strtotime("now")) && $value["grantenddate"] <= date("Y-m-d", strtotime("+6 month"))) {
+                            $sixmonthexpiry_totalamount = $value["grantamount"];
+                            $sixmonthexpiry_count++;
+                        }
+                    }
+                }
+                ?>
+                <div class="col-md-4">
+                    <h5 class="sectiontitle">First Column</h5>
+                    
+                    <?php echo $expired_count." expired grants: $".number_format($expired_totalamount,0,".",",")."<br/>".$sixmonthexpiry_count." grants expiring in next 6 months: $".number_format($sixmonthexpiry_totalamount,0,".",",")."<br/>".$negative_count." negative grants: $".number_format($negative_totalamount,0,".",","); ?>
+                </div>
+                <div class="col-md-4" style="background-color: #fff">
+                    <h5 class="sectiontitle">Second Column</h5>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="sectiontitle">Third Column</h5>
+                </div>
+            </div>
+            <!-- end of new dashboard -->
+
+
+
+
+
+
+
+
+
+
+
+
             <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 1: Projects Table</h2>
                 <div class="table-responsive">
@@ -1379,23 +1434,23 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                         </thead>
                         <tbody>
                             <?php
-$j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
-        echo '<tr>';
-        echo '<td>' . ($j + 1) . '.</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['category'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
-        echo '</tr>';
-        $j++;
-    }
-}
-?>
+                            $j = 0;
+                            foreach ($processed_divisiondata[$division]["stafflisting"] as $key => $value) {
+                                if ($value["position_status"] == "VACANT") {
+                                    echo '<tr>';
+                                    echo '<td class="text-right">'.($j+1).'.</td>';
+                                    echo '<td class="text-center">'.$value["grade"].'</td>';
+                                    echo '<td class="text-left">'.$value["position_title"].'</td>';
+                                    echo '<td class="text-center">'.$value["position_number"].'</td>';
+                                    echo '<td class="text-left">'.$value["duty_station"].'</td>';
+                                    echo '<td class="text-center">'.$value["category"].'</td>';
+                                    echo '<td class="text-left">'.$value["org_code"].'</td>';
+                                    echo '<td class="text-left">'.$value["org_unit_description"].'</td>';
+                                    echo '</tr>';
+                                    $j++;
+                                }
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -1408,11 +1463,12 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th>Grade</th>
-                                <th>Position Title</th>
-                                <th>Position Number</th>
-                                <th>Duty Station</th>
-                                <th>Staff Name</th>
+                                <th class="text-center">Grade</th>
+                                <th class="text-left">Position Title</th>
+                                <th class="text-center">Position Number</th>
+                                <th class="text-left">Duty Station</th>
+                                <th class="text-left">Staff Name</th>
+                                <th class="text-center">Fund</th>
                                 <th class="text-center">ePAS Status</th>
                                 <th class="text-center">Mandatory Training</th>
                                 <th class="text-center">Contract Expiration</th>
@@ -1421,26 +1477,34 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                         </thead>
                         <tbody>
                             <?php
-$j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
-        echo '<tr>';
-        echo '<td>' . ($j + 1) . '.</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        //echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
-        echo '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
-        echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['stage'] . '</td>';
-        echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['mandatory_training'] . '/9</td>';
-        echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['contract_expiry'] . '</td>';
-        echo '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['retirement_date'] . '</td>';        
-        echo '</tr>';
-        $j++;
-    }
-}
-?>
+                            $j = 0;
+                            foreach ($processed_divisiondata[$division]["stafflisting"] as $key => $value) {
+                                if ($value["position_status"] == "FILLED") {
+                                    echo '<tr>';
+                                    echo '<td class="text-right">'.($j+1).'.</td>';
+                                    echo '<td class="text-center">'.$value["grade"].'</td>';
+                                    echo '<td class="text-left">'.$value["position_title"].'</td>';
+                                    echo '<td class="text-center">'.$value["position_number"].'</td>';
+                                    echo '<td class="text-left">'.$value["duty_station"].'</td>';
+                                    echo '<td class="text-left">'.$value["staff_name"].'</td>';
+                                    echo '<td class="text-center">'.$value["category"].'</td>';
+                                    if ($value["stage"] != "" && $value["stage"] != null) {
+                                        echo '<td class="text-center">'.$value["stage"].'</td>';
+                                    } else {
+                                        echo '<td class="text-center">-N/A-</td>';
+                                    }
+                                    if ($value["mandatory_training"] != "" && $value["mandatory_training"] != null) {
+                                        echo '<td class="text-center">'.$value["mandatory_training"].' / 9</td>';
+                                    } else {
+                                        echo '<td class="text-center">0 / 9</td>'; 
+                                    }
+                                    echo '<td class="text-center">'.$value["contract_expiry"].'</td>';
+                                    echo '<td class="text-center">'.$value["retirement_date"].'</td>';
+                                    echo '</tr>';
+                                    $j++;
+                                }
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -1523,16 +1587,8 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                         </thead>
                         <tbody>
                             <?php
-                            array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdata"]);
+                            
                             $j = 0;
-                            $expired_totalamount = 0;
-                            $negative_totalamount = 0;
-                            $sixmonthexpiry_totalamount = 0;
-                            $expired_count = 0;
-                            $negative_count = 0;
-                            $sixmonthexpiry_count = 0;
-
-
                             foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
                                 if (number_format($value["grantamount"],0,".",",") != "0") {
                                     echo '<tr>';
@@ -1566,19 +1622,6 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                                     echo '<td class="text-center">'.$value["grantexpired"].'</td>';
                                     echo '<td class="text-center">'.$value["grantaging"].'</td>';
                                     $j++;
-
-                                    if ($value["grantexpired"] == "YES") {
-                                        $expired_totalamount += $value["grantamount"];
-                                        $expired_count++;
-                                    }
-                                    if ($value["grantamount"] < 0) {
-                                        $negative_totalamount += $value["grantamount"];
-                                        $negative_count++;
-                                    }
-                                    if ($value["grantenddate"] > date("Y-m-d", strtotime("now")) && $value["grantenddate"] <= date("Y-m-d", strtotime("+6 month"))) {
-                                        $sixmonthexpiry_totalamount = $value["grantamount"];
-                                        $sixmonthexpiry_count++;
-                                    }
                                 }
                             }
                             ?>
@@ -1586,7 +1629,6 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                             </tr>
                         </tbody>
                     </table>
-                    <?php echo $expired_count." expired grants: $".number_format($expired_totalamount,0,".",",")."<br/>".$sixmonthexpiry_count." grants expiring in next 6 months: $".number_format($sixmonthexpiry_totalamount,0,".",",")."<br/>".$negative_count." negative grants: $".number_format($negative_totalamount,0,".",","); ?>
                 </div>
             </div>
 
