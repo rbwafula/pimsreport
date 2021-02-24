@@ -400,14 +400,13 @@ foreach ($all_projects_data as $key => $value) {
     }
     $project_pctg_activities_completed = round($value->percentage_activities_completed * 100);
 
-
     // Staff Data
     $staff_data = [];
     foreach ($hr_data_uf as $hkey => $staff) {
         if ($staff->project_id == $project_id) {
             $staff_data[] = [
                 "person_no" => $staff->pers_no,
-                "name" => $staff->first_name.' '.$staff->last_name,
+                "name" => $staff->first_name . ' ' . $staff->last_name,
                 "gender" => $staff->gender,
                 "duty_station" => $staff->duty_station,
                 "pos_title" => $staff->pos_title,
@@ -431,11 +430,10 @@ foreach ($all_projects_data as $key => $value) {
                 "appt_exp" => $staff->appt_exp,
                 "retirement_date" => $staff->retirement_date,
                 "appt_exp_months" => $staff->months_to_appt_exp,
-                "retirement_date_months" => $staff->months_to_retirement
+                "retirement_date_months" => $staff->months_to_retirement,
             ];
         }
     }
-
 
     //CONSULTANTS DATA
     $consultantslist_data = [];
@@ -448,7 +446,7 @@ foreach ($all_projects_data as $key => $value) {
                 "renewals" => $consultancy->no_of_contract_renewals,
                 "active" => checkactive($consultancy->latest_contract_end_date),
                 "duration" => getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date),
-                "morethan11" => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO')
+                "morethan11" => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO'),
             ];
         }
     }
@@ -529,7 +527,7 @@ foreach ($all_projects_data as $key => $value) {
 
                 if (!in_array($budget->commitment_item, $budgetclass_names)) {
 
-                    $order = array_search(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order);
+                    $order = array_search(strtolower(str_replace(' ', '', $budget->commitment_item)), $budget_class_order) + 1;
                     if ($project_id == '00270' || $project_id == 00270) {
                         // echo $order . '<br />';
                         // echo $budget->commitment_item . '<br />';

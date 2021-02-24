@@ -5,13 +5,16 @@ $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-ap
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
 $urlsuffix = ($version == 'cached') ? '.json' : '';
 
-$url = $page_link.'final_data'.$urlsuffix;
-$activities_url = $page_link.'div_activitycount_data'.$urlsuffix;
-$outputs_url = $page_link.'div_activitycount_data'.$urlsuffix;
-$hr_url = $page_link.'officestaff_data'.$urlsuffix;
-$proj_activity_url = $page_link.'div_practivitycount_data'.$urlsuffix;
-$grant_data_url = $page_link.'grant_data'.$urlsuffix;
-$grant_details_url = $page_link.'grantdetails_data'.$urlsuffix;
+$url = $page_link . 'final_data' . $urlsuffix;
+$activities_url = $page_link . 'div_activitycount_data' . $urlsuffix;
+$outputs_url = $page_link . 'div_activitycount_data' . $urlsuffix;
+$hr_url = $page_link . 'officestaff_data' . $urlsuffix;
+$proj_activity_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
+$grant_data_url = $page_link . 'grant_data' . $urlsuffix;
+$grant_details_url = $page_link . 'grantdetails_data' . $urlsuffix;
+
+// TODO Staff positions
+// TODO epass and mandatory learning compliance
 
 /*
 $page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
@@ -22,7 +25,7 @@ $hr_url = $page_link . '/assets/data/officestaff_data.json';
 $proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
 $grant_data_url = $page_link . 'grant_data' . $urlsuffix;
 $grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
-*/
+ */
 
 $processed_divisiondata = array();
 
@@ -244,7 +247,7 @@ rsort($unique_final_ratings);
 //USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
 foreach ($hr_data as $key => $value) {
 
-    $position = (substr($value->pos_ps_group,1,1) !== "-") ? substr($value->pos_ps_group,0,1)."-".substr($value->pos_ps_group,1,1) : $value->pos_ps_group;
+    $position = (substr($value->pos_ps_group, 1, 1) !== "-") ? substr($value->pos_ps_group, 0, 1) . "-" . substr($value->pos_ps_group, 1, 1) : $value->pos_ps_group;
 
     if (!in_array($position, $unique_post_groups)) {
 
@@ -337,7 +340,7 @@ $t_filled_male_count = 0;
 $t_filled_female_count = 0;
 
 foreach ($all_grants_data as $gkey => $gvalue) {
-    $overall_grant_keys[] =$gvalue->grant_key;
+    $overall_grant_keys[] = $gvalue->grant_key;
     $overall_grant_amounts[] = $gvalue->grant_cash_balance;
     $overall_grant_start[] = $gvalue->grant_valid_from;
     $overall_grant_end[] = $gvalue->grant_valid_to;
