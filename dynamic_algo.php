@@ -20,6 +20,8 @@ $consultants_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-
 $grant_data_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grant_data';
 $grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
 $risks_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/divisionrisk_data';
+$boa_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/boa_data';
+$oios_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/oios_data';
 
 $processed_divisiondata = array();
 
@@ -114,17 +116,15 @@ function checkexpired($date)
     }
     return $expired;
 }
-function count_array_values($my_array, $match) 
-{ 
-    $count = 0;    
-    foreach ($my_array as $key => $value) 
-    { 
-        if ($value == $match) 
-        { 
-            $count++; 
-        } 
-    } 
-    return $count; 
+function count_array_values($my_array, $match)
+{
+    $count = 0;
+    foreach ($my_array as $key => $value) {
+        if ($value == $match) {
+            $count++;
+        }
+    }
+    return $count;
 }
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
@@ -145,6 +145,9 @@ $all_grants_data = getdataobjectfromurl($grant_data_url);
 $all_grants_details = getdataobjectfromurl($grant_details_url);
 
 $risks_data = getdataobjectfromurl($risks_url);
+
+$boa_data = getdataobjectfromurl($boa_url);
+$oios_data = getdataobjectfromurl($oios_url);
 
 // CLEANSE HR DATA FOR UNIQUE pos_id
 $hr_data = [];
@@ -797,9 +800,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                     $d_grant_expired[] = ["value" => checkexpired($gvalue->grant_valid_to), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                     $d_grant_aging[] = ["value" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30), "order" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
 
-
-
-                    $grantkeysnew[] = ["grantkey" => $gvalue->grant_key,"grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $grantkeysnew[] = ["grantkey" => $gvalue->grant_key, "grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                 }
             }
         }
