@@ -1,6 +1,6 @@
 <?php
 //FETCH DATA -> CACHED/LIVE
-$version = 'cached';
+$version = 'live';
 // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
 $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
@@ -221,6 +221,8 @@ $overall_filled_posts = [];
 $total_vacant_posts = 0;
 $total_filled_posts = 0;
 $total_posts = 0;
+$mc_completed_staff = 0;
+$epass_compliant_staff = 0;
 
 $unique_post_groups = [];
 $unique_posts_data = [];
@@ -228,6 +230,8 @@ $unique_posts_data = [];
 $unique_subprogrammes = [];
 $unique_subprogramme_data = [];
 $unique_final_ratings = [0];
+
+//if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED' && ($processed_divisiondata[$division]["stafflisting"][$i]['stage'] == 'Completed' || $processed_divisiondata[$division]["stafflisting"][$i]['stage'] == 'SM Self & FRO Evaluation')) {
 
 //USE DATA FROM API TO FEED THE UNIQUE SUBPROGRAMMES AND FINAL RATINGS ARRAY
 $x = 2;
@@ -320,7 +324,7 @@ foreach ($hr_data as $key => $value) {
             }
         }
     }
-    $total_posts += 1;
+    //$total_posts += 1;
 
 }
 
@@ -336,7 +340,23 @@ foreach ($hr_data as $key => $value) {
         $total_vacant_posts += 1;
     }
     $total_posts += 1;
+
+    if ($value->document_stage === 'SM Self & FRO Evaluation' || $value->document_stage === 'COMPLETED') {
+        // echo $value->first_name2 . ' <br />';
+        $epass_compliant_staff++;
+    }
+
+    if ($value->no_of_mandatory_courses_done === '9' || $value->no_of_mandatory_courses_done === 9) {
+        $mc_completed_staff++;
+    }
+
 }
+$pctg_mc_completion = round(($mc_completed_staff / $total_filled_posts) * 100);
+
+$pctg_epass_compliance = round(($epass_compliant_staff / $total_filled_posts) * 100);
+// echo $mc_completed_staff . ' completed <br />';
+echo $pctg_mc_completion . '% mandatory courses <br />';
+echo $pctg_epass_compliance . '% epass compliance';
 
 $overall_post_status_distribution = [];
 
@@ -1767,6 +1787,8 @@ $processed_divisiondata['unep'] = array(
     "hrpostsvacant" => $d_post_vacant,
     "hrpostsmale" => $d_post_male,
     "hrpostsfemale" => $d_post_female,
+    "mandatory_training_completion" => $pctg_mc_completion,
+    "epass_compliance" => $pctg_epass_compliance,
     "grants_data" => [
         "keys" => $overall_grant_keys,
         "amounts" => $overall_grant_amounts,
