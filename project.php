@@ -519,8 +519,11 @@ $projectid = (isset($_GET['id'])) ? strtoupper(str_replace(" ", "+", urldecode($
                                         $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
                                         if ($elapsedtime >= 0 && $elapsedtime <= 100) {
                                             echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
-                                        } else {
+                                        } else if ($elapsedtime >= 100) {
                                             echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
                                         }
                                     } else {
                                         $elapsedtime = 'N/A';
@@ -556,62 +559,48 @@ $projectid = (isset($_GET['id'])) ? strtoupper(str_replace(" ", "+", urldecode($
                 </div>
             </div>
 
-            <!--<div class="row reportbody section2">
+            <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 2: Staff</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm budgetclass">
                         <thead>
                             <tr>
-                                <th class="center">Fund</th>
-                                <th class="center">Grant / Donor</th>
-                                <th class="center">From</th>
-                                <th class="center">To</th>
-                                <th class="center">Expired</th>
+                                <th class="center">&nbsp;</th>
+                                <th class="left">Name</th>
+                                
+                                <th class="left">Grade</th>
+                                <th class="left">Title</th>
+                                <th class="left">Appointment Expiry</th>
+                                <!--<th class="center">Expired</th>
                                 <th class="right">Grant Amount</th>
                                 <th class="right">Consumable Budget</th>
                                 <th class="right">Precommitment</th>
                                 <th class="right">Commitment</th>
                                 <th class="right">Actual</th>
-                                <th class="right">Consumed Budget</th>
+                                <th class="right">Consumed Budget</th>-->
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            /*for ($i=0; $i < count($projectlisting[$projectid]["budgetclass"]["grants"]); $i++) {
-                                echo '<tr>';
-                                echo '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_fund"][$i].'</td>';
-                                echo '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants"][$i].'</td>';
-                                echo '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_from"][$i].'</td>';
-                                echo '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_to"][$i].'</td>';
-                                echo '<td class="center">'.$projectlisting[$projectid]["budgetclass"]["grants_expired"][$i].'</td>';
-                                echo '<td class="right" style="border-right:1px solid #333">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_amount"][$i], 0, '.', ',').'</td>';
-                                echo '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_consumable_budget"][$i], 0, '.', ',').'</td>';
-                                echo '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_precommitment"][$i], 0, '.', ',').'</td>';
-                                echo '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_commitment"][$i], 0, '.', ',').'</td>';
-                                echo '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_actual"][$i], 0, '.', ',').'</td>';
-                                
-                                echo '<td class="right">'.number_format($projectlisting[$projectid]["budgetclass"]["grants_consumed_budget"][$i], 0, '.', ',').'</td>';
-                                //echo '<td>'..'</td>';
-                                echo '</tr>';
-                            }
-                            echo '<tr class="total">';
-                            echo '<td></td>';
-                            echo '<td class="center">Total</td>';
-                            echo '<td></td>';
-                            echo '<td></td>';
-                            echo '<td></td>';
-                            echo '<td class="right" style="border-right:1px solid #333">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_amount"]), 0, '.', ',').'</td>';
-                            echo '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_consumable_budget"]), 0, '.', ',').'</td>';
-                            echo '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_precommitment"]), 0, '.', ',').'</td>';
-                            echo '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_commitment"]), 0, '.', ',').'</td>';
-                            echo '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_actual"]), 0, '.', ',').'</td>';
-                            echo '<td class="right">'.number_format(array_sum($projectlisting[$projectid]["budgetclass"]["grants_consumed_budget"]), 0, '.', ',').'</td>';
-                            echo '</tr>';*/
+                                array_multisort(array_column($projectlisting[$projectid]["staff"], 'appt_exp'), SORT_ASC,$projectlisting[$projectid]["staff"]);
+
+                                $j = 0;
+                                foreach ($projectlisting[$projectid]["staff"] as $key => $value) {
+                                    echo '<tr>';
+                                    echo '<td class="text-right">'.($j + 1).'.</td>';
+                                    echo '<td class="text-left">'.$value["name"].'</td>';
+                                    
+                                    echo '<td class="text-left">'.$value["pos_group"].'</td>';
+                                    echo '<td class="text-left">'.$value["pos_title"].'</td>';
+                                    echo '<td class="text-left">'.$value["appt_exp"].' ('.$value["appt_exp_months"].' months remaining)</td>';
+                                    echo '</tr>';
+                                    $j++;
+                                }
                             ?>
                         </tbody>
                     </table>
                 </div>
-            </div>-->
+            </div>
 
 
             <div class="row reportbody section2">
@@ -620,30 +609,52 @@ $projectid = (isset($_GET['id'])) ? strtoupper(str_replace(" ", "+", urldecode($
                     <table class="table table-striped table-sm budgetclass">
                         <thead>
                             <tr>
+                                <th>&nbsp;</th>
                                 <th>Name</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th>Elapsed</th>
                                 <th class="center">Duration (days)</th>
-                                <th class="center">Active</th>
+                                <!--<th class="center">Active</th>-->
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            for ($i=0; $i < count($projectlisting[$projectid]["consultants"]["consultancy_names"]); $i++) {
-                                echo '<tr>';
-                                echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_names"][$i].'</td>';
-                                echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_start_dates"][$i].'</td>';
-                                echo '<td>'.$projectlisting[$projectid]["consultants"]["consultancy_end_dates"][$i].'</td>';
-                                echo '<td class="center">'.number_format($projectlisting[$projectid]["consultants"]["consultancy_durations"][$i], 0, ".", ",").'</td>';
-                                //echo '<td>'.($projectlisting[$projectid]["consultants"]["consultancy_expired"][$i] == "YES") ? "No" : "Yes".'</td>';
-                                if ($projectlisting[$projectid]["consultants"]["consultancy_expired"][$i] == "YES") {
-                                    echo '<td class="center">No</td>';
-                                } else {
-                                    echo '<td class="center">Yes</td>';
+                                array_multisort(
+                                    array_column($projectlisting[$projectid]["consultants"], 'active'), SORT_DESC,
+                                    array_column($projectlisting[$projectid]["consultants"], 'enddate'), SORT_ASC,
+                                    $projectlisting[$projectid]["consultants"]);
+
+                                $j = 0;
+                                foreach ($projectlisting[$projectid]["consultants"] as $key => $value) {
+                                    echo '<tr>';
+                                    echo '<td class="text-right">'.($j + 1).'.</td>';
+                                    echo '<td class="text-left">'.$value["names"].'</td>';
+                                    echo '<td class="text-left">'.$value["startdate"].'</td>';
+                                    echo '<td class="text-left">'.$value["enddate"].'</td>';
+
+                                    $elapsed = floor(getdaysbetween($value["startdate"],min(date("Y-m-d",time()),$value["enddate"])));
+                                    $duration = ceil(getdaysbetween($value["startdate"],$value["enddate"]));
+                                    if ($elapsed != 0 && $duration != 0) {
+                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                        if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else if ($elapsedtime >= 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                        }
+                                    } else {
+                                        $elapsedtime = 'N/A';
+                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                    }
+
+                                    echo '<td class="text-center">'.number_format($value["duration"], 0, ".", ",").'</td>';
+                                    //echo '<td class="text-center">'.$value["active"].'</td>';
+                                    echo '</tr>';
+                                    $j++;
                                 }
-                                //echo '<td>'..'</td>';
-                                echo '</tr>';
-                            }
                             ?>
                         </tbody>
                     </table>

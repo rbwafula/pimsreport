@@ -163,11 +163,11 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
         $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
         $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
         $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        //$annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['fund'] . '</td>';
         $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_code'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['org_unit_description'] . '</td>';
-        $annex3table .= '</tr>';
+        $annex3table .= '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['stage'] . '</td>';
+        $annex3table .= '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['mandatory_training'] . '/9</td>';
+        $annex3table .= '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['contract_expiry'] . '</td>';
+        $annex3table .= '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['retirement_date'] . '</td>'; 
         $j++;
     }
 }
@@ -183,10 +183,11 @@ $annex3 = '<div class="row reportbody section3">
                                 <th>Position Title</th>
                                 <th>Position Number</th>
                                 <th>Duty Station</th>
-                                <!--<th>Fund</th>-->
                                 <th>Staff Name</th>
-                                <th>Org Code</th>
-                                <th>Org Unit</th>
+                                <th class="text-center">ePAS Status</th>
+                                <th class="text-center">Mandatory Training</th>
+                                <th class="text-center">Contract Expiration</th>
+                                <th class="text-center">Retirement</th>
                             </tr>
                         </thead>
                         <tbody>'.$annex3table.'
@@ -194,19 +195,34 @@ $annex3 = '<div class="row reportbody section3">
                     </table>
                 </div>
             </div>';
-            
+
 $annex4table = '';
 $j = 0;
 for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['names']); $i++) { 
     if ($processed_divisiondata[$division]["consultants_data"]['expired'][$i] == "NO") {
         $annex4table .= '<tr>';
-        $annex4table .= '<td>'.($j + 1).'.</td>';
-        $annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['names'][$i].'</td>';
-        $annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['start_dates'][$i].'</td>';
-        $annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i].'</td>';
-        //$annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['renewals'][$i].'</td>';
-        $annex4table .= '<td>'.number_format($processed_divisiondata[$division]["consultants_data"]['durations'][$i],0,".",",").'</td>';
-        $annex4table .= '<td>'.$processed_divisiondata[$division]["consultants_data"]['morethan11'][$i].'</td>';
+        $annex4table .= '<td class="text-right">'.($j + 1).'.</td>';
+        $annex4table .= '<td class="text-left">'.$processed_divisiondata[$division]["consultants_data"]['names'][$i].'</td>';
+        $annex4table .= '<td class="text-center">'.$processed_divisiondata[$division]["consultants_data"]['start_dates'][$i].'</td>';
+        $annex4table .= '<td class="text-center">'.$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i].'</td>';
+        $elapsed = floor(getdaysbetween($processed_divisiondata[$division]["consultants_data"]['start_dates'][$i],min(date("Y-m-d",time()),$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i])));
+        $duration = ceil(getdaysbetween($processed_divisiondata[$division]["consultants_data"]['start_dates'][$i],$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i]));
+        if ($elapsed != 0 && $duration != 0) {
+            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+            if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                $annex4table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+            } else if ($elapsedtime >= 100) {
+                $annex4table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+            } else {
+                $elapsedtime = 'N/A';
+                $annex4table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+            }
+        } else {
+            $elapsedtime = 'N/A';
+            $annex4table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+        }
+        $annex4table .= '<td class="text-center">'.number_format($processed_divisiondata[$division]["consultants_data"]['durations'][$i],0,".",",").'</td>';
+        $annex4table .= '<td class="text-center">'.$processed_divisiondata[$division]["consultants_data"]['morethan11'][$i].'</td>';
         $annex4table .= '</tr>';
         $j++;
     }
@@ -219,12 +235,12 @@ $annex4 = '<div class="row reportbody section3">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th>Name</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <!--<th>Renewals</th>-->
-                                <th>Duration</th>
-                                <th>More than 11 months</th>
+                                <th class="text-left">Name</th>
+                                <th class="text-center">Start Date</th>
+                                <th class="text-center">End Date</th>
+                                <th class="text-center">Elapsed</th>
+                                <th class="text-center">Duration</th>
+                                <th class="text-center">More than 11 months</th>
                             </tr>
                         </thead>
                         <tbody>'.$annex4table.'
@@ -234,27 +250,62 @@ $annex4 = '<div class="row reportbody section3">
             </div>';
 
 $annex5table = '';
-array_multisort(array_column($processed_divisiondata[$division]["grantsdatanew"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdatanew"]);
+array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdata"]);
 $j = 0;
 $expired_totalamount = 0;
 $negative_totalamount = 0;
-foreach ($processed_divisiondata[$division]["grantsdatanew"] as $key => $value) {
+$sixmonthexpiry_totalamount = 0;
+$expired_count = 0;
+$negative_count = 0;
+$sixmonthexpiry_count = 0;
+
+
+foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
     if (number_format($value["grantamount"],0,".",",") != "0") {
         $annex5table .= '<tr>';
         $annex5table .= '<td class="text-right">'.($j + 1).'.</td>';
         $annex5table .= '<td>'.$value["grantkey"].'</td>';
         if ($value["grantamount"] < 0) {
-            $annex5table .= '<td class="text-right red">'.number_format($value["grantamount"],0,".",",").'</td>';
+            $annex5table .= '<td class="text-right text-red">'.number_format($value["grantamount"],0,".",",").'</td>';
         } else {
             $annex5table .= '<td class="text-right">'.number_format($value["grantamount"],0,".",",").'</td>';
         }
         $annex5table .= '<td class="text-center">'.$value["grantstartdate"].'</td>';
         $annex5table .= '<td class="text-center">'.$value["grantenddate"].'</td>';
+
+        $elapsed = floor(getdaysbetween($value["grantstartdate"],min(date("Y-m-d",time()),$value["grantenddate"])));
+        $duration = ceil(getdaysbetween($value["grantstartdate"],$value["grantenddate"]));
+        if ($elapsed != 0 && $duration != 0) {
+            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+            if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                $annex5table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+            } else if ($elapsedtime >= 100) {
+                $annex5table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+            } else {
+                $elapsedtime = 'N/A';
+                $annex5table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+            }
+        } else {
+            $elapsedtime = 'N/A';
+            $annex5table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+        }
+
         $annex5table .= '<td class="text-center">'.$value["grantexpired"].'</td>';
         $annex5table .= '<td class="text-center">'.$value["grantaging"].'</td>';
         $j++;
-        $expired_totalamount += ($value["grantexpired"] == "YES") ? $value["grantamount"] : 0;
-        $negative_totalamount += ($value["grantamount"] < 0) ? $value["grantamount"] : 0;
+
+        /*if ($value["grantexpired"] == "YES") {
+            $expired_totalamount += $value["grantamount"];
+            $expired_count++;
+        }
+        if ($value["grantamount"] < 0) {
+            $negative_totalamount += $value["grantamount"];
+            $negative_count++;
+        }
+        if ($value["grantenddate"] > date("Y-m-d", strtotime("now")) && $value["grantenddate"] <= date("Y-m-d", strtotime("+6 month"))) {
+            $sixmonthexpiry_totalamount = $value["grantamount"];
+            $sixmonthexpiry_count++;
+        }*/
     }
 }
 
@@ -265,10 +316,11 @@ $annex5 = '<div class="row reportbody section3">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th>Keys</th>
+                                <th class="text-left" style="width: 30%;">Keys</th>
                                 <th class="text-right">Amounts</th>
                                 <th class="text-center">Start Date</th>
                                 <th class="text-center">End Date</th>
+                                <th class="text-center">Elapsed</th>
                                 <th class="text-center">Expiration</th>
                                 <th class="text-center">Months Remaining</th>
                             </tr>
@@ -280,16 +332,18 @@ $annex5 = '<div class="row reportbody section3">
             </div>';
 
 $annex6table = '';
+array_multisort(array_column($processed_divisiondata[$division]["risks_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["risks_data"]);
 $j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["risks_data"]['names']); $i++) {
-    $annex6table .= '<tr>';
-    $annex6table .= '<td class="text-right">'.($j + 1).'.</td>';
-    $annex6table .= '<td>'.$processed_divisiondata[$division]["risks_data"]['names'][$i].'</td>';
-    $annex6table .= '<td>'.$processed_divisiondata[$division]["risks_data"]['number_of_projects'][$i].'</td>';
-    $annex6table .= '<td>'.$processed_divisiondata[$division]["risks_data"]['months'][$i].'</td>';
-    $annex6table .= '<td>'.$processed_divisiondata[$division]["risks_data"]['years'][$i].'</td>';
-    $annex6table .= '</tr>';
-    $j++;
+foreach ($processed_divisiondata[$division]["risks_data"] as $key => $value) {
+    if ($value["year"] == date("Y", strtotime("now"))) {
+        $annex6table .= '<tr>';
+        $annex6table .= '<td class="text-right">'.($j + 1).'.</td>';
+        $annex6table .= '<td class="text-left">'.$value["riskname"].'</td>';
+        $annex6table .= '<td class="text-center">'.$value["projectcount"].'</td>';
+        $annex6table .= '<td class="text-center">'.$value["year"].'</td>';
+        $annex6table .= '</tr>';
+        $j++;
+    }
 }
 
 $annex6 = '<div class="row reportbody section3">
@@ -299,10 +353,9 @@ $annex6 = '<div class="row reportbody section3">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th>Names</th>
-                                <th>Projects</th>
-                                <th>Months</th>
-                                <th>Years</th>
+                                <th class="text-left">Risk Name</th>
+                                <th class="text-center">Number of Projects</th>
+                                <th class="text-center">Year</th>
                             </tr>
                         </thead>
                         <tbody>'.$annex6table.'
@@ -311,6 +364,121 @@ $annex6 = '<div class="row reportbody section3">
                 </div>
             </div>';
 
+
+
+
+
+$annex7table = '';
+array_multisort(array_column($processed_divisiondata[$division]["boa_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["boa_data"]);
+$j = 0;
+foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
+    if ($value["year"] == $value["year"]/* date("Y", strtotime("now")) */) {
+        $annex7table .= '<tr>';
+        $annex7table .= '<td class="text-right">'.($j + 1).'.</td>';
+        $annex7table .= '<td class="text-left" style="max-width: 300px;">'.$value["summaryrecommendation"].'</td>';
+        $annex7table .= '<td class="text-left" style="max-width: 70px;">'.$value["reportreference"].'</td>';
+        $annex7table .= '<td class="text-center">'.$value["priority"].'</td>';
+        $annex7table .= '<td class="text-center">'.$value["year"].'</td>';
+        $annex7table .= '<td class="text-center">'.$value["targetdate"].'</td>';
+
+
+        $elapsed = floor(getdaysbetween($value["year"]."/01/01",min(date("Y-m-d",time()),$value["targetdate"])));
+        $duration = ceil(getdaysbetween($value["year"]."/01/01",$value["targetdate"]));
+        if ($elapsed != 0 && $duration != 0) {
+            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+            if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                $annex7table .= '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+            } else if ($elapsedtime >= 100) {
+                $annex7table .= '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+            } else {
+                $elapsedtime = 'N/A';
+                $annex7table .= '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+            }
+        } else {
+            $elapsedtime = 'N/A';
+            $annex7table .= '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+        }
+        $annex7table .= '<td class="text-center">'.$value["category"].'</td>';
+        $annex7table .= '</tr>';
+        $j++;
+    }
+}
+
+$annex7 = '<div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 7: Board of Auditors</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th class="text-left">Recommendation</th>
+                                <th class="text-left">Reference</th>
+                                <th class="text-center">Priority</th>
+                                <th class="text-center">Audit Year</th>
+                                <th class="text-center">Target Date</th>
+                                <th class="text-center" style="width: 100px">Elapsed</th>
+                                <th class="text-center">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>'.$annex7table.'
+                        </tbody>
+                    </table>
+                </div>
+            </div>';
+
+$annex8table = '';
+array_multisort(array_column($processed_divisiondata[$division]["oios_data"], 'issue_date'), SORT_ASC,$processed_divisiondata[$division]["oios_data"]);
+$j = 0;
+foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
+    $annex8table .= '<tr>';
+    $annex8table .= '<td class="text-right">'.($j + 1).'.</td>';
+    $annex8table .= '<td class="text-left" style="max-width: 300px;">'.ltrim(stristr($value["recommendation"], '. '), '. ').'</td>';
+    $annex8table .= '<td class="text-left">'.$value["projectcode"].'</td>';
+    $annex8table .= '<td class="text-center">'.$value["recommendation_update"].'</td>';
+    $annex8table .= '<td class="text-center">'.$value["issue_date"].'</td>';
+    $annex8table .= '<td class="text-center">'.$value["implementation_date"].'</td>';
+    $elapsed = floor(getdaysbetween($value["issue_date"],min(date("Y-m-d",time()),$value["implementation_date"])));
+    $duration = ceil(getdaysbetween($value["issue_date"],$value["implementation_date"]));
+    if ($elapsed != 0 && $duration != 0) {
+        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+        if ($elapsedtime >= 0 && $elapsedtime < 100) {
+            $annex8table .= '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+        } else if ($elapsedtime >= 100) {
+            $annex8table .= '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+        } else {
+            $elapsedtime = 'N/A';
+            $annex8table .= '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+        }
+    } else {
+        $elapsedtime = 'N/A';
+        $annex8table .= '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+    }
+    $annex8table .= '<td class="text-center">'.$value["category"].'</td>';
+    $annex8table .= '</tr>';
+    $j++;
+}
+
+$annex8 = '<div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 8: OIOS</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th class="text-left">Recommendation</th>
+                                <th class="text-left">Code</th>
+                                <th class="text-left">Priority</th>
+                                <th class="text-center">Start Date</th>
+                                <th class="text-center">End Date</th>
+                                <th class="text-center" style="width: 100px">Elapsed</th>
+                                <th class="text-center">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>'.$annex8table.'
+                        </tbody>
+                    </table>
+                </div>
+            </div>';
 
 
 
@@ -358,6 +526,12 @@ $mpdf->WriteHTML($annex5);
 $mpdf->AddPage();
 //$mpdf->Bookmark('Annex 6: Project Risks');
 $mpdf->WriteHTML($annex6);
+$mpdf->AddPage();
+//$mpdf->Bookmark('Annex 5: Umoja Grants Data');
+$mpdf->WriteHTML($annex7);
+$mpdf->AddPage();
+//$mpdf->Bookmark('Annex 5: Umoja Grants Data');
+$mpdf->WriteHTML($annex8);
 $mpdf->WriteHTML($footer);
 $mpdf->Output($filename, 'I');
 exit;

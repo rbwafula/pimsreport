@@ -70,6 +70,16 @@ function checkexpired($date)
     }
     return $expired;
 }
+function checkactive($date)
+{
+    $active = 'No';
+    if (!$date) {
+        $active = 'N/A';
+    } elseif (strtotime($date) > time()) {
+        $active = 'Yes';
+    }
+    return $active;
+}
 function gethealthcolor($health)
 {
     $color = '#dc3545 !important'; //red
@@ -165,10 +175,10 @@ $budget_class_order = [
 
 $hr_data = [];
 $unique_posids = [];
-foreach ($hr_data_uf as $h) {
-    if (!in_array($h->pos_id, $unique_posids)) {
-        $hr_data[] = $h;
-        $unique_posids[] = $h->pos_id;
+foreach ($hr_data_uf as $hkey => $staff) {
+    if (!in_array($staff->pos_id, $unique_posids)) {
+        $hr_data[] = $staff;
+        $unique_posids[] = $staff->pos_id;
     }
 }
 
@@ -390,28 +400,56 @@ foreach ($all_projects_data as $key => $value) {
     }
     $project_pctg_activities_completed = round($value->percentage_activities_completed * 100);
 
+
+    // Staff Data
+    $staff_data = [];
+    foreach ($hr_data_uf as $hkey => $staff) {
+        if ($staff->project_id == $project_id) {
+            $staff_data[] = [
+                "person_no" => $staff->pers_no,
+                "name" => $staff->first_name.' '.$staff->last_name,
+                "gender" => $staff->gender,
+                "duty_station" => $staff->duty_station,
+                "pos_title" => $staff->pos_title,
+                "pos_group" => $staff->pos_ps_group,
+                "org_unit" => $staff->org_unit_desc,
+                "office" => $staff->office,
+                "branch" => $staff->branch,
+                "subprogramme" => $staff->subprogramme,
+                "wbse" => $staff->wbse,
+                "fundkey" => $staff->fund_key,
+                "fund_desc" => $staff->fund_description,
+                "fundcategory" => $staff->fund_category,
+                "category" => $staff->category,
+                "performance_cycle" => $staff->performance_cycle,
+                "fro_name" => $staff->fro_name,
+                "sro_name" => $staff->sro_name,
+                "document_stage" => $staff->fro_name,
+                "document_final_status" => $staff->sro_name,
+                "allcourses" => $staff->no_of_total_courses_done,
+                "mandatorycourses" => $staff->no_of_mandatory_courses_done,
+                "appt_exp" => $staff->appt_exp,
+                "retirement_date" => $staff->retirement_date,
+                "appt_exp_months" => $staff->months_to_appt_exp,
+                "retirement_date_months" => $staff->months_to_retirement
+            ];
+        }
+    }
+
+
     //CONSULTANTS DATA
-    $consultancy_names = [];
-    $consultancy_start_dates = [];
-    $consultancy_end_dates = [];
-    $consultancy_renewals = [];
-    $consultancy_expired = [];
-    $consultancy_days_duration = [];
-    $consultancy_morethan11 = [];
-
+    $consultantslist_data = [];
     foreach ($consultants_data as $consultancy) {
-
         if ($consultancy->project_id == $project_id) {
-            $consultancy_names[] = $consultancy->supplier_full_name;
-            $consultancy_start_dates[] = $consultancy->latest_contract_start_date;
-            $consultancy_end_dates[] = $consultancy->latest_contract_end_date;
-            $consultancy_renewals = $consultancy->no_of_contract_renewals;
-            $consultancy_expired[] = checkexpired($consultancy->latest_contract_end_date);
-
-            $consultancy_days_duration[] = getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date);
-
-            $consultancy_morethan11[] = (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO');
-
+            $consultantslist_data[] = [
+                "names" => $consultancy->supplier_full_name,
+                "startdate" => $consultancy->latest_contract_start_date,
+                "enddate" => $consultancy->latest_contract_end_date,
+                "renewals" => $consultancy->no_of_contract_renewals,
+                "active" => checkactive($consultancy->latest_contract_end_date),
+                "duration" => getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date),
+                "morethan11" => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO')
+            ];
         }
     }
 
@@ -887,7 +925,8 @@ foreach ($all_projects_data as $key => $value) {
         "hrpostsvacant" => $p_post_vacant,
         "hrpostsmale" => $p_post_male,
         "hrpostsfemale" => $p_post_female,
-        "consultants" => array("consultancy_names" => $consultancy_names, "consultancy_start_dates" => $consultancy_start_dates, "consultancy_end_dates" => $consultancy_end_dates, "consultancy_durations" => $consultancy_days_duration, "consultancy_morethan11" => $consultancy_morethan11, "consultancy_expired" => $consultancy_expired, "consultancy_renewals" => $consultancy_renewals),
+        "consultants" => $consultantslist_data,
+        "staff" => $staff_data,
         "refresh_date" => $refresh_date,
     ];
     if ($project_id == 00270 || $project_id == '00270') {

@@ -1,10 +1,19 @@
 <?php
-/*$url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/final_data';
-$activities_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
-$outputs_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_activitycount_data';
-$hr_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/officestaff_data';
-$proj_activity_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/div_practivitycount_data';*/
+$version = 'cached'; // live * Choose between: cached and live data here */
+$cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
+$livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
+$page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
+$urlsuffix = ($version == 'cached') ? '.json' : '';
 
+$url = $page_link.'final_data'.$urlsuffix;
+$activities_url = $page_link.'div_activitycount_data'.$urlsuffix;
+$outputs_url = $page_link.'div_activitycount_data'.$urlsuffix;
+$hr_url = $page_link.'officestaff_data'.$urlsuffix;
+$proj_activity_url = $page_link.'div_practivitycount_data'.$urlsuffix;
+$grant_data_url = $page_link.'grant_data'.$urlsuffix;
+$grant_details_url = $page_link.'grantdetails_data'.$urlsuffix;
+
+/*
 $page_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
 $url = $page_link . '/assets/data/final_data.json';
 $activities_url = $page_link . '/assets/data/div_activitycount_data.json';
@@ -13,6 +22,7 @@ $hr_url = $page_link . '/assets/data/officestaff_data.json';
 $proj_activity_url = $page_link . '/assets/data/div_practivitycount_data.json';
 $grant_data_url = $page_link . 'grant_data' . $urlsuffix;
 $grant_details_url = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/grantdetails_data';
+*/
 
 $processed_divisiondata = array();
 
@@ -131,8 +141,8 @@ $proj_data = getdataobjectfromurl($proj_activity_url);
 // var_dump($hr_data);
 
 // STAFF ORDER BY SENIORITY FOR REFERENCE
-$staff_order_array = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'GS', 'INT-I', 'INT-II'];
-$staff_order_array_all = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'G-7', 'G-6', 'G-5', 'G-4', 'G-3', 'G-2', 'G-1', 'NO-A', 'NO-B', 'NO-C', 'NO-D', 'INT-I', 'INT-II'];
+$staff_order_array = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'GS'];
+$staff_order_array_all = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'G-7', 'G-6', 'G-5', 'G-4', 'G-3', 'G-2', 'G-1', 'NO-A', 'NO-B', 'NO-C', 'NO-D'];
 
 $divisionlist = array('Economy', 'Disasters and Conflicts', 'Law', 'Communication', 'Ecosystems', 'Science');
 $officelist = array('Europe', 'Latin America', 'Asia Pacific', 'Africa', 'West Asia');
@@ -234,7 +244,9 @@ rsort($unique_final_ratings);
 //USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
 foreach ($hr_data as $key => $value) {
 
-    if (!in_array($value->pos_ps_group, $unique_post_groups)) {
+    $position = (substr($value->pos_ps_group,1,1) !== "-") ? substr($value->pos_ps_group,0,1)."-".substr($value->pos_ps_group,1,1) : $value->pos_ps_group;
+
+    if (!in_array($position, $unique_post_groups)) {
 
         if ($value->gender == 'male') {
 
@@ -251,21 +263,21 @@ foreach ($hr_data as $key => $value) {
                 $female = 1;
             }
 
-            $unique_posts_data[] = ["post" => $value->pos_ps_group, "vacant" => 0, "filled" => 1, "filled_male" => $male, "filled_female" => $female, "offices_post_vacant" => [], "offices_post_filled" => [$value->office]];
+            $unique_posts_data[] = ["post" => $position, "vacant" => 0, "filled" => 1, "filled_male" => $male, "filled_female" => $female, "offices_post_vacant" => [], "offices_post_filled" => [$value->office]];
             $total_filled_posts += 1;
-            $overall_filled_posts[array_search($value->pos_ps_group, $staff_order_array)] = $value->pos_ps_group;
+            $overall_filled_posts[array_search($position, $staff_order_array)] = $position;
 
         } else {
-            $unique_posts_data[] = ["post" => $value->pos_ps_group, "vacant" => 1, "filled" => 0, "filled_male" => 0, "filled_female" => 0, "offices_post_vacant" => [$value->office], "offices_post_filled" => []];
+            $unique_posts_data[] = ["post" => $position, "vacant" => 1, "filled" => 0, "filled_male" => 0, "filled_female" => 0, "offices_post_vacant" => [$value->office], "offices_post_filled" => []];
             $total_vacant_posts += 1;
-            $overall_vacant_posts[array_search($value->pos_ps_group, $staff_order_array)] = $value->pos_ps_group;
+            $overall_vacant_posts[array_search($position, $staff_order_array)] = $position;
 
         }
 
-        $unique_post_groups[] = $value->pos_ps_group;
+        $unique_post_groups[] = $position;
     } else {
         foreach ($unique_posts_data as $pkey => $pvalue) {
-            if ($value->pos_ps_group == $pvalue['post']) {
+            if ($position == $pvalue['post']) {
                 if ($value->pers_no > 0) {
                     if ($value->gender == 'Male') {
                         $unique_posts_data[$pkey]['filled_male'] += 1;
@@ -277,13 +289,13 @@ foreach ($hr_data as $key => $value) {
                     $unique_posts_data[$pkey]['filled'] += 1;
                     $unique_posts_data[$pkey]['offices_post_filled'][] = $value->office;
                     $total_filled_posts += 1;
-                    $overall_filled_posts[] = $value->pos_ps_group;
+                    $overall_filled_posts[] = $position;
 
                 } else {
                     $unique_posts_data[$pkey]['vacant'] += 1;
                     $unique_posts_data[$pkey]['offices_post_vacant'][] = $value->office;
                     $total_vacant_posts += 1;
-                    $overall_vacant_posts[] = $value->pos_ps_group;
+                    $overall_vacant_posts[] = $position;
 
                 }
             }
@@ -325,13 +337,11 @@ $t_filled_male_count = 0;
 $t_filled_female_count = 0;
 
 foreach ($all_grants_data as $gkey => $gvalue) {
-
     $overall_grant_keys[] =$gvalue->grant_key;
     $overall_grant_amounts[] = $gvalue->grant_cash_balance;
     $overall_grant_start[] = $gvalue->grant_valid_from;
-    $overall_grant_end[] = $gvalue->grant_valid_;
-    $overall_grant_aging[] = $gvalue->;
-
+    $overall_grant_end[] = $gvalue->grant_valid_to;
+    $overall_grant_aging[] = ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30);
 }
 
 foreach ($unique_posts_data as $pkey => $pvalue) {
