@@ -75,7 +75,7 @@ include_once 'totals_algo.php';
                     <h6>Programme Delivery Report</h6>
                 </div>
                 <div class="col-md-2 health">
-                    <p class="reportdate">Jan 2021</p>
+                    <p class="reportdate"><?php $month; ?></p>
                     <p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>;">&nbsp;</p>
                     <p class="healthratingdesc">Project Portfolio Rating</p>
                 </div>
@@ -801,7 +801,7 @@ include_once 'totals_algo.php';
                                     <p class="metricvalue">
                                         <?php echo number_format($filledposts, 0, '.', ','); ?>
                                     </p>
-                                    <p class="metricdesc">Filled Posts</p>
+                                    <p class="metricdesc">Encumbered Posts</p>
                                 </div>
                                 <div class="col metric4">
                                     <p class="metricvalue">
@@ -1026,7 +1026,7 @@ include_once 'totals_algo.php';
                                 <th class="center">Budget to<br/>Staff Ratio</th>
 
                                 <th class="center">Total<br/>Posts</th>
-                                <th class="center">Filled<br/>Posts</th>
+                                <th class="center">Encumbered<br/>Posts</th>
                                 <th class="center">Vacant<br/>Posts</th>
                                 <th class="center">%<br/>Vacancy</th>
                                 <!--<th class="right">% Senior<br/>Posts<br/>(D2,D1,P5)</th>
@@ -1367,7 +1367,7 @@ include_once 'totals_algo.php';
             </div>
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 3: Filled Positions Table</h2>
+                <h2 class="sectiontitle">Annex 3: Encumbered Positions Table</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
                         <thead>

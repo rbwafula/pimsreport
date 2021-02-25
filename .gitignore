@@ -1,6 +1,7 @@
 assets/data/
 assets/fonts/
-assets/vendor
+assets/vendor/
+assets/vendor/mpdf/
 docs/
 files/
 *_bk.php

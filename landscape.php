@@ -95,7 +95,7 @@ include_once 'dynamic_algo.php';
                         <h6>Programme Delivery Report</h6>
                     </div>
                     <div class="col-md-2 health">
-                        <p class="reportdate">Jan 2021</p>
+                        <p class="reportdate"><?php echo $month; ?></p>
                         <p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>;">&nbsp;</p>
                         <p class="healthratingdesc">Project Portfolio Rating</p>
                     </div>
@@ -925,7 +925,14 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                     ?>
                                     <div class="col metric1">
                                         <p class="metricvalue">
-                                            <?php echo count_array_values($processed_divisiondata[$division]["consultants_data"]['expired'], "NO");//number_format($totalposts, 0, '.', ','); ?>
+                                            <?php 
+                                            $activeconsultants = 0;
+                                            foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $value) {
+                                                if ($value["expired"] == "NO") {
+                                                    $activeconsultants++;
+                                                }
+                                            }
+                                            echo number_format($activeconsultants, 0, '.', ','); ?>
                                         </p>
                                         <p class="metricdesc">Active<br/>Consultants</p>
                                     </div>
@@ -945,7 +952,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                         <p class="metricvalue">
                                             <?php echo number_format($filledposts, 0, '.', ','); ?>
                                         </p>
-                                        <p class="metricdesc">Filled<br/>Posts</p>
+                                        <p class="metricdesc">Encumbered<br/>Posts</p>
                                     </div>
                                     <!--<div class="col metric4">
                                         <p class="metricvalue">
@@ -1305,43 +1312,488 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
 
 
             <!-- new dashboard -->
-            <div class="row reportbody section1 dashboard2" style="width: 29.7cm; height: 21cm; background-color: #f9f9f9;">
-                <?php
-                array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdata"]);
-                $expired_totalamount = 0;
-                $negative_totalamount = 0;
-                $sixmonthexpiry_totalamount = 0;
-                $expired_count = 0;
-                $negative_count = 0;
-                $sixmonthexpiry_count = 0;
-
-                foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
-                    if (number_format($value["grantamount"],0,".",",") != "0") {
-                        if ($value["grantexpired"] == "YES") {
-                            $expired_totalamount += $value["grantamount"];
-                            $expired_count++;
-                        }
-                        if ($value["grantamount"] < 0) {
-                            $negative_totalamount += $value["grantamount"];
-                            $negative_count++;
-                        }
-                        if ($value["grantenddate"] > date("Y-m-d", strtotime("now")) && $value["grantenddate"] <= date("Y-m-d", strtotime("+6 month"))) {
-                            $sixmonthexpiry_totalamount = $value["grantamount"];
-                            $sixmonthexpiry_count++;
-                        }
-                    }
-                }
-                ?>
+            <div class="row reportbody section1 dashboard2" style="width:29.7cm;height:21cm;background-color:#f9f9f9;">
                 <div class="col-md-4">
-                    <h5 class="sectiontitle">First Column</h5>
-                    
-                    <?php echo $expired_count." expired grants: $".number_format($expired_totalamount,0,".",",")."<br/>".$sixmonthexpiry_count." grants expiring in next 6 months: $".number_format($sixmonthexpiry_totalamount,0,".",",")."<br/>".$negative_count." negative grants: $".number_format($negative_totalamount,0,".",","); ?>
+                    <h5 class="sectiontitle">Finance</h5>
+                    <?php
+                        array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdata"]);
+                        $totalgrants_count = 0;
+                        $totalexpired_count = 0;
+                        $totalnegative_count = 0;
+                        $sixmonthexpiry_count = 0;
+                        $totalgrants_amount = 0;
+                        $totalexpired_amount = 0;
+                        $totalnegative_amount = 0;
+                        $sixmonthexpiry_amount = 0;
+                        foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
+                            if (number_format($value["grantamount"],0,".",",") != "0") {
+                                $totalgrants_count++; // count the grant
+                                $totalgrants_amount += $value["grantamount"]; // count the grant
+                                if ($value["grantexpired"] == "YES") {
+                                    $totalexpired_count++; // count as expired
+                                    $totalexpired_amount += $value["grantamount"]; // add to the dollar value
+                                }
+                                if ($value["grantamount"] < 0) {
+                                    $totalnegative_count++;  // count as negative
+                                    $totalnegative_amount += $value["grantamount"]; // add to the dollar
+                                }
+                                if ($value["grantenddate"] > date("Y-m-d", strtotime("now")) && $value["grantenddate"] <= date("Y-m-d", strtotime("+6 month"))) {
+                                    $sixmonthexpiry_count++;  // count as 6months to expiry
+                                    $sixmonthexpiry_amount += $value["grantamount"]; // add to the dollar
+                                }
+                            }
+                        }
+                    ?>
+                    <div class="row summarystatistics pb-20">
+                        <div class="col metric1">
+                            <p class="metricvalue"><?php echo $totalgrants_count; ?></p>
+                            <p class="metricdesc">Total Grants</p>
+                        </div>
+                        <div class="col metric1">
+                            <p class="metricvalue">$ <?php echo number_format($totalgrants_amount,0); ?></p>
+                            <p class="metricdesc">Total Grant Amount</p>
+                        </div>
+                        <div class="col metric1">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <div class="row summarystatistics pb-20">
+                        <div class="col metric2">
+                            <p class="metricvalue"><?php echo $sixmonthexpiry_count; ?></p>
+                            <p class="metricdesc">Grants Expiring in 6 Months</p>
+                        </div>
+                        <div class="col metric2">
+                            <p class="metricvalue">$ <?php echo number_format($sixmonthexpiry_amount,0,".",","); ?></p>
+                            <p class="metricdesc">Amount of Grants Expiring in 6 Months</p>
+                        </div>
+                        <div class="col metric2">
+                            <p class="metricvalue"><?php echo number_format(($sixmonthexpiry_count*100/$totalgrants_count),0,".",","); ?>%</p>
+                            <p class="metricdesc">% of Grants Expiring in 6 Months</p>
+                        </div>
+                    </div>
+                    <div class="row summarystatistics pb-20">
+                        <div class="col metric4">
+                            <p class="metricvalue"><?php echo $totalexpired_count; ?></p>
+                            <p class="metricdesc">Expired Grants</p>
+                        </div>
+                        <div class="col metric4">
+                            <p class="metricvalue">$ <?php echo number_format($totalexpired_amount,0,".",","); ?></p>
+                            <p class="metricdesc">Amount of Expired Grants</p>
+                        </div>
+                        <div class="col metric4">
+                            <p class="metricvalue"><?php echo number_format(($totalexpired_count*100/$totalgrants_count),0,".",","); ?>%</p>
+                            <p class="metricdesc">% of Expired Grants</p>
+                        </div>
+                    </div>
+                    <div class="row summarystatistics pb-20">
+                        <div class="col metric4">
+                            <p class="metricvalue"><?php echo $totalnegative_count; ?></p>
+                            <p class="metricdesc">Negative Grants</p>
+                        </div>
+                        <div class="col metric4">
+                            <p class="metricvalue">$ <?php echo number_format(abs($totalnegative_amount),0,".",","); ?></p>
+                            <p class="metricdesc">Amount of Negative Grants</p>
+                        </div>
+                        <div class="col metric4">
+                            <p class="metricvalue"><?php echo number_format(($totalnegative_count*100/$totalgrants_count),0,".",","); ?>%</p>
+                            <p class="metricdesc">% of Negative Grants</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-4" style="background-color: #fff">
-                    <h5 class="sectiontitle">Second Column</h5>
+                    <h5 class="sectiontitle">Audits &amp; Risks</h5>
+
+                    <!-- Start of Top Risks -->
+                    <?php
+                        $toprisks_categories_xaxis = [];
+                        $toprisks_categories_series = [];
+                        array_multisort(array_column($processed_divisiondata[$division]["risks_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["risks_data"]);
+                        foreach ($processed_divisiondata[$division]["risks_data"] as $key => $value) {
+                            if ($value["year"] == date("Y", strtotime("now"))) {
+                                $toprisks_categories_xaxis[] = $value["riskname"];
+                                $toprisks_categories_series[] = (int)$value["projectcount"];
+                            }
+                        }
+                    ?>
+                    <div class="col-md-12 toprisks pb-20">
+                        <div id="toprisks_chart"></div>
+                        <script type="text/javascript">
+                            Highcharts.chart('toprisks_chart', {
+                                colors: ['#0077b6'],
+                                credits: {
+                                    text: ''
+                                },
+                                chart: {
+                                    backgroundColor: 'transparent',
+                                    type: 'column',
+                                    height: 250
+                                },
+                                title: {
+                                    text: 'Figure n: Top Risks Current Year',
+                                    floating: false,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
+                                    style: {
+                                        color: '#707070',
+                                        fontSize: '10px',
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
+                                    },
+                                    x: 0,
+                                    y: 0
+                                },
+                                xAxis: {
+                                    categories: <?php echo json_encode($toprisks_categories_xaxis); ?>,
+                                    labels: {
+                                        style: {
+                                            fontSize: '0.25cm',
+                                            fontWeight: 700
+                                        },
+                                        formatter: function() {
+                                            var ret = this.value,
+                                                len = ret.length;
+                                            //console.log(len);
+                                            if (len > 10) {
+                                                ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                            }
+                                            if (len > 25) {
+                                                ret = ret.slice(0, 25) + '...';
+                                            }
+                                            return ret;
+                                        }
+                                    },
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: ''
+                                    },
+                                    labels: {
+                                        style: {
+                                            fontSize: '0.2cm'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true,
+                                    enabled: false
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0,
+                                        dataLabels: {
+                                            enabled: true,
+                                            formatter: function() {
+                                                return '' + Highcharts.numberFormat(this.y,0) + '';
+                                            }
+                                        }
+                                    },
+                                    series: {
+                                        groupPadding: 0,
+                                        pointPadding: 0.1,
+                                        borderWidth: 0
+                                    }
+                                },
+                                series: [{
+                                    name: 'Subprogramme',
+                                    data: <?php echo json_encode($toprisks_categories_series); ?>,
+                                    showInLegend: false
+
+                                }]
+                            });
+                        </script>
+                    </div>
+                    <!-- End of Top Risks -->
+
+
+
+                    <?php
+                        $boa_categories = [];
+                        $boa_categories_xaxis = [];
+                        $boa_categories_series = [];
+                        foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
+                            $boa_categories[] = $value["category"];
+                        }
+                        foreach (array_count_values($boa_categories) as $key => $value) {
+                            $boa_categories_xaxis[] = $key;
+                            $boa_categories_series[] = $value;
+                        }
+                    ?>
+
+                    <div class="col-md-12 boacategories pb-20">
+                        <div id="boacategories_chart"></div>
+                        <script type="text/javascript">
+                            Highcharts.chart('boacategories_chart', {
+                                colors: ['#0077b6'],
+                                credits: {
+                                    text: ''
+                                },
+                                chart: {
+                                    backgroundColor: 'transparent',
+                                    type: 'column',
+                                    height: 250
+                                },
+                                title: {
+                                    text: 'Figure n: BOA by Category',
+                                    floating: false,
+                                    align: 'left',
+                                    verticalAlign: 'top',
+                                    margin: 20,
+                                    style: {
+                                        color: '#707070',
+                                        fontSize: '10px',
+                                        fontWeight: '900',
+                                        textTransform: 'none',
+                                        textDecoration: 'underline'
+
+                                    },
+                                    x: 0,
+                                    y: 0
+                                },
+                                xAxis: {
+                                    categories: <?php echo json_encode($boa_categories_xaxis); ?>,
+                                    labels: {
+                                        style: {
+                                            fontSize: '0.25cm',
+                                            fontWeight: 700
+                                        },
+                                        formatter: function() {
+                                            var ret = this.value,
+                                                len = ret.length;
+                                            //console.log(len);
+                                            if (len > 10) {
+                                                ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                            }
+                                            if (len > 25) {
+                                                ret = ret.slice(0, 25) + '...';
+                                            }
+                                            return ret;
+                                        }
+                                    },
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: ''
+                                    },
+                                    labels: {
+                                        style: {
+                                            fontSize: '0.2cm'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true,
+                                    enabled: false
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0,
+                                        dataLabels: {
+                                            enabled: true,
+                                            formatter: function() {
+                                                return '' + Highcharts.numberFormat(this.y,0) + '';
+                                            }
+                                        }
+                                    },
+                                    series: {
+                                        groupPadding: 0,
+                                        pointPadding: 0.1,
+                                        borderWidth: 0
+                                    }
+                                },
+                                series: [{
+                                    name: 'Subprogramme',
+                                    data: <?php echo json_encode($boa_categories_series); ?>,
+                                    showInLegend: false
+
+                                }]
+                            });
+                        </script>
+                    </div>
+
+                    <!--
+                        Project risks
+
+                        -    top risks
+                        -    BOA , OIOS
+
+                        -    recommendation categories
+                        -    priority
+                        -    aging
+                    -->
+
                 </div>
                 <div class="col-md-4">
-                    <h5 class="sectiontitle">Third Column</h5>
+                    <h5 class="sectiontitle">Human Resource</h5>
+
+                    <?php
+                        $seniorstaffretiring_count = 0;
+                        $expiringstaffcontracts_count = 0;
+                        $hrfilledpositionsfundingtypes_categories = [];
+                        $hrfilledpositionsfundingtypes_categories_xaxis = [];
+                        $hrfilledpositionsfundingtypes_categories_series = [];
+
+
+                        foreach ($processed_divisiondata[$division]["stafflisting"] as $key => $value) {
+                            if ($value["position_status"] == "FILLED") {
+                                $hrfilledpositionsfundingtypes_categories[] = $value["category"];
+                                $seniorposts = ['USG', 'ASG', 'D-2', 'D-1', 'P-5'];
+                                if ( in_array($value["grade"], $seniorposts) && $value["retirement_date"] <= date("Y-m-d", strtotime("+12 month")) ) {
+                                    $seniorstaffretiring_count++;
+                                }
+                                if ( $value["contract_expiry"] <= date("Y-m-d", strtotime("+6 month")) ) {
+                                    $expiringstaffcontracts_count++;
+                                }
+                            }
+                        }
+                        foreach (array_count_values($hrfilledpositionsfundingtypes_categories) as $key => $value) {
+                            $hrfilledpositionsfundingtypes_categories_xaxis[] = $key;
+                            $hrfilledpositionsfundingtypes_categories_series[] = $value;
+                        }
+                        $consultantsmorethan11months_count = 0;
+                        foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $value) {
+                            if ($value["expired"] == "NO" && $value["morethan11months"] == "Yes") {
+                                $consultantsmorethan11months_count++;
+                            }
+                        }
+                    ?>
+
+                    <div class="row summarystatistics pb-20">
+                        <div class="col metric4">
+                            <p class="metricvalue"><?php echo number_format($seniorstaffretiring_count,0,".",","); ?></p>
+                            <p class="metricdesc">Senior Positions<br/>Retiring in 1yr</p>
+                        </div>
+                        <div class="col metric4">
+                            <p class="metricvalue"><?php echo number_format($expiringstaffcontracts_count,0,".",","); ?></p>
+                            <p class="metricdesc">Expiring Staff<br/>Contracts</p>
+                        </div>
+                        <div class="col metric1">
+                            <p class="metricvalue"><?php echo number_format($consultantsmorethan11months_count,0,".",","); ?></p>
+                            <p class="metricdesc">Consultancies More<br/>Than 11 Months</p>
+                        </div>
+                    </div>
+
+                    <div id="hrfilledpositionsfundingtypes_chart"></div>
+                    <script type="text/javascript">
+                        Highcharts.chart('hrfilledpositionsfundingtypes_chart', {
+                            colors: ['#0077b6'],
+                            credits: {
+                                text: ''
+                            },
+                            chart: {
+                                backgroundColor: 'transparent',
+                                type: 'column',
+                                height: 250
+                            },
+                            title: {
+                                text: 'Figure n: Filled Positions by Funding Type',
+                                floating: false,
+                                align: 'left',
+                                verticalAlign: 'top',
+                                margin: 20,
+                                style: {
+                                    color: '#707070',
+                                    fontSize: '10px',
+                                    fontWeight: '900',
+                                    textTransform: 'none',
+                                    textDecoration: 'underline'
+
+                                },
+                                x: 0,
+                                y: 0
+                            },
+                            xAxis: {
+                                categories: <?php echo json_encode($hrfilledpositionsfundingtypes_categories_xaxis); ?>,
+                                labels: {
+                                    style: {
+                                        fontSize: '0.25cm',
+                                        fontWeight: 700
+                                    },
+                                    formatter: function() {
+                                        var ret = this.value,
+                                            len = ret.length;
+                                        //console.log(len);
+                                        if (len > 10) {
+                                            ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                        }
+                                        if (len > 25) {
+                                            ret = ret.slice(0, 25) + '...';
+                                        }
+                                        return ret;
+                                    }
+                                },
+                                crosshair: true
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: ''
+                                },
+                                labels: {
+                                    style: {
+                                        fontSize: '0.2cm'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true,
+                                enabled: false
+                            },
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: true,
+                                        formatter: function() {
+                                            return '' + Highcharts.numberFormat(this.y,0) + '';
+                                        }
+                                    }
+                                },
+                                series: {
+                                    groupPadding: 0,
+                                    pointPadding: 0.1,
+                                    borderWidth: 0
+                                }
+                            },
+                            series: [{
+                                name: 'Subprogramme',
+                                data: <?php echo json_encode($hrfilledpositionsfundingtypes_categories_series); ?>,
+                                showInLegend: false
+
+                            }]
+                        });
+                    </script>
+
+                    <!--
+                        consultancies more than 11 months
+                        funding type for filled positions
+                        senior positions retiring in 2 years
+                    -->
+                    
                 </div>
             </div>
             <!-- end of new dashboard -->
@@ -1457,7 +1909,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
             </div>
             <!--<div class="pagebreak"></div>-->
             <div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 3: Filled Positions Table</h2>
+                <h2 class="sectiontitle">Annex 3: Encumbered Positions</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
                         <thead>
@@ -1498,8 +1950,16 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                     } else {
                                         echo '<td class="text-center">0 / 9</td>'; 
                                     }
-                                    echo '<td class="text-center">'.$value["contract_expiry"].'</td>';
-                                    echo '<td class="text-center">'.$value["retirement_date"].'</td>';
+                                    if ($value["contract_expiry"] <= date("Y-m-d", strtotime("+6 month")) ) {
+                                        echo '<td class="text-center text-red">'.$value["contract_expiry"].'</td>';
+                                    } else {
+                                        echo '<td class="text-center">'.$value["contract_expiry"].'</td>';
+                                    }
+                                    if ($value["retirement_date"] <= date("Y-m-d", strtotime("+12 month")) ) {
+                                        echo '<td class="text-center text-red">'.$value["retirement_date"].'</td>';
+                                    } else {
+                                        echo '<td class="text-center">'.$value["retirement_date"].'</td>';
+                                    }
                                     echo '</tr>';
                                     $j++;
                                 }
@@ -1530,39 +1990,36 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                         </thead>
                         <tbody>
                             <?php
-$j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['names']); $i++) {
-    
-    if ($processed_divisiondata[$division]["consultants_data"]['expired'][$i] == "NO") {
-        echo '<tr>';
-        echo '<td>'.($j + 1).'.</td>';
-        echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['names'][$i].'</td>';
-        echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['start_dates'][$i].'</td>';
-        echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i].'</td>';
-
-        $elapsed = floor(getdaysbetween($processed_divisiondata[$division]["consultants_data"]['start_dates'][$i],min(date("Y-m-d",time()),$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i])));
-        $duration = ceil(getdaysbetween($processed_divisiondata[$division]["consultants_data"]['start_dates'][$i],$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i]));
-        if ($elapsed != 0 && $duration != 0) {
-            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
-            if ($elapsedtime >= 0 && $elapsedtime < 100) {
-                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
-            } else if ($elapsedtime >= 100) {
-                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
-            } else {
-                $elapsedtime = 'N/A';
-                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-            }
-        } else {
-            $elapsedtime = 'N/A';
-            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-        }
-        echo '<td>'.number_format($processed_divisiondata[$division]["consultants_data"]['durations'][$i],0,".",",").'</td>';
-        echo '<td>'.$processed_divisiondata[$division]["consultants_data"]['morethan11'][$i].'</td>';
-        echo '</tr>';
-        $j++;
-    }
-}
-?>
+                            $j = 0;
+                            foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $value) {
+                                if ($value["expired"] == "NO") {
+                                    echo '<tr>';
+                                    echo '<td class="text-right">'.($j + 1).'.</td>';
+                                    echo '<td>'.$value["names"].'</td>';
+                                    echo '<td>'.$value["startdate"].'</td>';
+                                    echo '<td>'.$value["enddate"].'</td>';
+                                    $elapsed = floor(getdaysbetween($value["startdate"],min(date("Y-m-d",time()),$value["enddate"])));
+                                    $duration = ceil(getdaysbetween($value["startdate"],$value["enddate"]));
+                                    if ($elapsed != 0 && $duration != 0) {
+                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                        if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else if ($elapsedtime >= 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                        }
+                                    } else {
+                                        $elapsedtime = 'N/A';
+                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                    }
+                                    echo '<td>'.$value["duration"].'</td>';
+                                    echo '<td>'.$value["morethan11months"].'</td>';
+                                    $j++;
+                                }
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -1647,8 +2104,6 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                         </thead>
                         <tbody>
                             <?php
-                                array_multisort(array_column($processed_divisiondata[$division]["risks_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["risks_data"]);
-
                                 $j = 0;
                                 foreach ($processed_divisiondata[$division]["risks_data"] as $key => $value) {
                                     if ($value["year"] == date("Y", strtotime("now"))) {
@@ -1718,10 +2173,8 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['
                                             echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
                                         }
 
-
                                         //echo '<td class="text-center">'.$value["agemonths"].'</td>';
                                         echo '<td class="text-center">'.$value["category"].'</td>';
-                                        
                                         echo '</tr>';
                                         $j++;
                                     }

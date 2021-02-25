@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,400&display=swap');
-
+@import "bootstrap-extras-margins-padding.css";
 html {
 	direction: ltr;
 	box-shadow: none !important;
@@ -427,6 +427,10 @@ table.budgetclass_footer tr td:last-child {
 }
 .text-red {
 	color: #dc3545 !important;
+	font-weight: bold;
+}
+.text-yellow {
+	color: #ffc107 !important;
 	font-weight: bold;
 }
 @page { 

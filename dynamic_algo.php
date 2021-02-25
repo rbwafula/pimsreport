@@ -162,8 +162,8 @@ $proj_data = getdataobjectfromurl($proj_activity_url);
 // var_dump($hr_data);
 
 // STAFF ORDER BY SENIORITY FOR REFERENCE
-$staff_order_array = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'GS'];
-$staff_order_array_all = ['USG ', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'G-7', 'G-6', 'G-5', 'G-4', 'G-3', 'G-2', 'G-1', 'NO-A', 'NO-B', 'NO-C', 'NO-D'];
+$staff_order_array = ['USG', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'GS'];
+$staff_order_array_all = ['USG', 'ASG', 'D-2', 'D-1', 'P-5', 'P-4', 'P-3', 'P-2', 'P-1', 'G-7', 'G-6', 'G-5', 'G-4', 'G-3', 'G-2', 'G-1', 'NO-A', 'NO-B', 'NO-C', 'NO-D'];
 
 // CALCULATE THE TOTAL METRICS
 $total_projects = 0;
@@ -968,6 +968,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'duty_station' => $hvalue->duty_station,
                 'position_status' => $p_status,
                 'staff_name' => $hvalue->first_name . ' ' . $hvalue->last_name,
+                'contract_type' => $hvalue->contract_type,
                 'fund_key' => $hvalue->fund_key,
                 'fund_description' => $hvalue->fund_description,
                 'category' => $hvalue->category,
@@ -985,25 +986,38 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     }
 
     //CONSULTANTS DATA
-    $d_consultancy_names = [];
+    /*$d_consultancy_names = [];
     $d_consultancy_start_dates = [];
     $d_consultancy_end_dates = [];
     $d_consultancy_renewals = [];
     $d_consultancy_expired = [];
     $d_consultancy_morethan11 = [];
-    $d_consultancy_days_duration = [];
+    $d_consultancy_days_duration = [];*/
+
+    $d_consultants = [];
 
     foreach ($consultants_data as $consultancy) {
 
         if ($consultancy->office == $dvalue) {
-            $d_consultancy_names[] = $consultancy->supplier_full_name;
+
+            $d_consultants[] = [
+                'names' => $consultancy->supplier_full_name,
+                'startdate' => $consultancy->latest_contract_start_date,
+                'enddate' => $consultancy->latest_contract_end_date,
+                'renewals' => $consultancy->no_of_contract_renewals,
+                'expired' => checkexpired($consultancy->latest_contract_end_date),
+                'duration' => getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date),
+                'morethan11months' => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'Yes' : 'No')
+            ];
+
+            /*$d_consultancy_names[] = $consultancy->supplier_full_name;
             $d_consultancy_start_dates[] = $consultancy->latest_contract_start_date;
             $d_consultancy_end_dates[] = $consultancy->latest_contract_end_date;
             $d_consultancy_renewals = $consultancy->no_of_contract_renewals;
             $d_consultancy_expired[] = checkexpired($consultancy->latest_contract_end_date);
 
             $d_consultancy_days_duration[] = getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date);
-            $d_consultancy_morethan11[] = (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO');
+            $d_consultancy_morethan11[] = (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'YES' : 'NO');*/
         }
     }
 
@@ -1422,7 +1436,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         "risks_data" => $d_risksdata,
         "boa_data" => $d_boadata,
         "oios_data" => $d_oiosdata,
-        "consultants_data" => array("names" => $d_consultancy_names, "start_dates" => $d_consultancy_start_dates, "end_dates" => $d_consultancy_end_dates, "renewals" => $d_consultancy_renewals, "durations" => $d_consultancy_days_duration, "expired" => $d_consultancy_expired, "morethan11" => $d_consultancy_morethan11),
+        "consultants_data" => $d_consultants,
         "projectage" => array($d_count_projects_age_between0_2, $d_count_projects_age_between2_5, $d_count_projects_age_between5_10, $d_count_projects_age_more10),
         "grantfundingbygroup" => array($d_amount_projects_budget_between0_1, $d_amount_projects_budget_between1_2, $d_amount_projects_budget_between2_5, $d_amount_projects_budget_between5_10, $d_amount_projects_budget_more10),
         "grantfundingcountbygroup" => array($d_count_projects_budget_between0_1, $d_count_projects_budget_between1_2, $d_count_projects_budget_between2_5, $d_count_projects_budget_between5_10, $d_count_projects_budget_more10),

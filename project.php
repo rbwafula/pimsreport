@@ -86,7 +86,7 @@ $projectid = (isset($_GET['id'])) ? strtoupper(str_replace(" ", "+", urldecode($
                         <h6>Project Delivery Report</h6>
                     </div>
                     <div class="col-md-2 health">
-                        <p class="reportdate">Jan 2021</p>
+                        <p class="reportdate"><?php echo $month; ?></p>
                         <p class="healthrating_box" style="background-color:<?php echo $projectlisting[$projectid]["healthcolor"]; ?>;">&nbsp;</p>
                         <p class="healthratingdesc">Project Rating<?php //echo ': '.$projectlisting[$projectid]["healthrating"];?></p>
                     </div>
