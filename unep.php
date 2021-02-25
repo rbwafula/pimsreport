@@ -785,35 +785,54 @@ include_once 'totals_algo.php';
                                     $femaleposts += $processed_divisiondata[$division]["hrpostsfemale"][$i];
                                 }
                                 ?>
+
+                                <div class="col metric1">
+                                    <p class="metricvalue">
+                                        <?php echo number_format($processed_divisiondata[$division]["activeconsultants"],0); ?>
+                                    </p>
+                                    <p class="metricdesc">Active<br/>Consultants</p>
+                                </div>
                                 <div class="col metric1">
                                     <p class="metricvalue">
                                         <?php echo number_format($totalposts, 0, '.', ','); ?>
                                     </p>
-                                    <p class="metricdesc">Total Posts</p>
+                                    <p class="metricdesc">Total<br/>Posts</p>
                                 </div>
                                 <div class="col metric3">
                                     <p class="metricvalue">
                                         <?php echo number_format($vacantposts, 0, '.', ','); ?>
                                     </p>
-                                    <p class="metricdesc">Vacant Posts</p>
+                                    <p class="metricdesc">Vacant<br/>Posts</p>
                                 </div>
                                 <div class="col metric2">
                                     <p class="metricvalue">
                                         <?php echo number_format($filledposts, 0, '.', ','); ?>
                                     </p>
-                                    <p class="metricdesc">Encumbered Posts</p>
+                                    <p class="metricdesc">Encumbered<br/>Posts</p>
                                 </div>
-                                <div class="col metric4">
+                                <!--<div class="col metric4">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%
+                                        <?php //echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Female</p>
                                 </div>
                                 <div class="col metric5">
                                     <p class="metricvalue">
-                                        <?php echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%
+                                        <?php //echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%
                                     </p>
                                     <p class="metricdesc">Male</p>
+                                </div>-->
+                                 <div class="col metric6">
+                                    <p class="metricvalue">
+                                        <?php echo number_format($processed_divisiondata[$division]["epass_compliance"],0); ?>%
+                                    </p>
+                                    <p class="metricdesc">ePAS<br/>Compliance</p>
+                                </div>
+                                 <div class="col metric6">
+                                    <p class="metricvalue">
+                                        <?php echo number_format($processed_divisiondata[$division]["mandatory_training_completion"],0); ?>%
+                                    </p>
+                                    <p class="metricdesc">Mandatory<br/>Training</p>
                                 </div>
                             </div>
                             <div id="hrfilled_chart"></div>
@@ -890,7 +909,7 @@ include_once 'totals_algo.php';
                                         data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsvacant"]); ?>,
                                         showInLegend: true
                                     }, {
-                                        name: 'Filled',
+                                        name: 'Encumbered',
                                         data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilled"]); ?>,
                                         showInLegend: true
                                     }]
@@ -903,13 +922,34 @@ include_once 'totals_algo.php';
                         <div class="col-md-12 hrgender">
                             <div id="hrgender_chart"></div>
                             <script type="text/javascript">
-                                Highcharts.chart('hrgender_chart', {
-                                    colors: ['#17a2b8','#d59442'],
+                                var chart = new Highcharts.Chart({
                                     chart: {
+                                        renderTo: 'hrgender_chart',
                                         type: 'bar',
                                         height: 250,
                                         backgroundColor: 'transparent'
+                                        /*,
+                                        events: {
+                                            load: function() {
+                                                var chart = this,
+                                                series = chart.series,
+                                                seriesSum = 0;
+                                                seriesElements = 0;
+                                                series.forEach(function(series) {
+                                                    series.data.forEach(function(point) {
+                                                    seriesSum += point.y;
+                                                    seriesElements += 1;
+                                                    })
+                                                })
+                                                chart.renderer.text('62%' + seriesSum, 100, 10)
+                                                .css({
+                                                    fontWeight: 600
+                                                })
+                                                .add()
+                                            }
+                                        }*/
                                     },
+                                    colors: ['#d59442','#17a2b8'],
                                     credits: {
                                         text: ''
                                     },
@@ -991,7 +1031,7 @@ include_once 'totals_algo.php';
                                             return '<b>' + this.series.name + ', age ' + this.point.category + '</b><br/>' +
                                                 'Population: ' + Highcharts.numberFormat(Math.abs(this.point.y), 1) + '%';
                                         },
-                                        enabled: false
+                                        enabled: true
                                     },
                                     series: [{
                                         name: 'Female',
@@ -1000,6 +1040,19 @@ include_once 'totals_algo.php';
                                         name: 'Male',
                                         data: <?php echo str_replace('"', '', json_encode($processed_divisiondata[$division]["hrpostsfilledmale"])); ?>
                                     }]
+                                }, function(chart){
+                                    //setTimeout(savedashboard(), 10000);
+                                    chart.renderer.text('<p style="text-align:center; font-weight:600;"><?php echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%</p>', 30, 227).css({
+                                        color: '#d59442',
+                                        textAlign: 'center'
+                                    })
+                                    .add();
+
+                                    chart.renderer.text('<p style="text-align:center; font-weight:600;"><?php echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%</p>', 270, 227).css({
+                                        color: '#17a2b8',
+                                        textAlign: 'center'
+                                    })
+                                    .add();
                                 });
                             </script>
                         </div>
@@ -1324,9 +1377,142 @@ include_once 'totals_algo.php';
                         </tbody>
                     </table>
                 </div>
-            </div><?php exit; ?>
-            <!--<div class="pagebreak"></div>-->
+            </div>
+
             <div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 2: Board of Auditors</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th class="text-left">Office</th>
+                                <th class="text-left">Recommendation</th>
+                                <th class="text-left">Reference</th>
+                                <th class="text-center">Priority</th>
+                                <th class="text-center">Audit Year</th>
+                                <th class="text-center">Target Date</th>
+                                <th class="text-center" style="width: 100px">Elapsed</th>
+                                <!--<th class="text-center">Age <br><span>(Months)</span></th>-->
+                                <th class="text-center">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                array_multisort(array_column($processed_divisiondata[$division]["boa_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["boa_data"]);
+
+                                $j = 0;
+                                foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
+                                    if ($value["year"] == $value["year"]/* date("Y", strtotime("now")) */) {
+                                        echo '<tr>';
+                                        echo '<td class="text-right">'.($j + 1).'.</td>';
+                                        echo '<td class="text-left">'.$value["office"].'</td>';
+                                        echo '<td class="text-left" style="max-width: 300px;">'.$value["summaryrecommendation"].'</td>';
+                                        echo '<td class="text-left" style="max-width: 70px;">'.$value["reportreference"].'</td>';
+                                        echo '<td class="text-center">'.$value["priority"].'</td>';
+                                        echo '<td class="text-center">'.$value["year"].'</td>';
+                                        echo '<td class="text-center">'.$value["targetdate"].'</td>';
+
+
+                                        $elapsed = floor(getdaysbetween($value["year"]."/01/01",min(date("Y-m-d",time()),$value["targetdate"])));
+                                        $duration = ceil(getdaysbetween($value["year"]."/01/01",$value["targetdate"]));
+                                        if ($elapsed != 0 && $duration != 0) {
+                                            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                            if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                            } else if ($elapsedtime >= 100) {
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                            } else {
+                                                $elapsedtime = 'N/A';
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                            }
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                        }
+
+                                        //echo '<td class="text-center">'.$value["agemonths"].'</td>';
+                                        echo '<td class="text-center">'.$value["category"].'</td>';
+                                        echo '</tr>';
+                                        $j++;
+                                    }
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 3: OIOS</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th class="text-left">Office</th>
+                                <th class="text-left">Recommendation</th>
+                                <th class="text-left">Code</th>
+                                <th class="text-left">Priority</th>
+                                <th class="text-center">Start Date</th>
+                                <th class="text-center">End Date</th>
+                                <th class="text-center" style="width: 100px">Elapsed</th>
+                                <th class="text-center">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                array_multisort(array_column($processed_divisiondata[$division]["oios_data"], 'issue_date'), SORT_ASC,$processed_divisiondata[$division]["oios_data"]);
+
+                                $j = 0;
+                                foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
+                                    echo '<tr>';
+                                    echo '<td class="text-right">'.($j + 1).'.</td>';
+                                    echo '<td class="text-left">'.$value["office"].'</td>';
+                                    echo '<td class="text-left" style="max-width: 300px;">'.ltrim(stristr($value["recommendation"], '. '), '. ').'</td>';
+                                    echo '<td class="text-left">'.$value["projectcode"].'</td>';
+                                    echo '<td class="text-center">'.$value["recommendation_update"].'</td>';
+                                    echo '<td class="text-center">'.$value["issue_date"].'</td>';
+                                    echo '<td class="text-center">'.$value["implementation_date"].'</td>';
+
+
+                                    $elapsed = floor(getdaysbetween($value["issue_date"],min(date("Y-m-d",time()),$value["implementation_date"])));
+                                    $duration = ceil(getdaysbetween($value["issue_date"],$value["implementation_date"]));
+                                    if ($elapsed != 0 && $duration != 0) {
+                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                        if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else if ($elapsedtime >= 100) {
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                        }
+                                    } else {
+                                        $elapsedtime = 'N/A';
+                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                    }
+
+
+
+
+
+
+
+                                    //echo '<td class="text-center">'.$value["age_months"].'</td>';
+                                    echo '<td class="text-center">'.$value["category"].'</td>';
+                                    echo '</tr>';
+                                    $j++;
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!--<div class="pagebreak"></div>-->
+            <!--<div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 2: Vacant Positions Table</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
@@ -1344,7 +1530,7 @@ include_once 'totals_algo.php';
                         </thead>
                         <tbody>
                             <?php
-                            $j = 0;
+                            /*$j = 0;
                             for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
                                 if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'VACANT') {
                                     echo '<tr>';
@@ -1359,14 +1545,14 @@ include_once 'totals_algo.php';
                                     echo '</tr>';
                                     $j++;
                                 }
-                            }
+                            }*/
                             ?>
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>-->
             <!--<div class="pagebreak"></div>-->
-            <div class="row reportbody section3">
+            <!--<div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 3: Encumbered Positions Table</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
@@ -1377,7 +1563,6 @@ include_once 'totals_algo.php';
                                 <th>Position Title</th>
                                 <th>Position Number</th>
                                 <th>Duty Station</th>
-                                <!--<th>Fund</th>-->
                                 <th>Staff Name</th>
                                 <th>Org Code</th>
                                 <th>Org Unit</th>
@@ -1385,7 +1570,7 @@ include_once 'totals_algo.php';
                         </thead>
                         <tbody>
                             <?php
-$j = 0;
+/*$j = 0;
 for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
     if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
         echo '<tr>';
@@ -1401,12 +1586,12 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
         echo '</tr>';
         $j++;
     }
-}
+}*/
 ?>
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>-->
         </div><!-- End of .toprint -->
     </div><!-- End of .container-fluid -->
     </div><!-- End of #to_export -->

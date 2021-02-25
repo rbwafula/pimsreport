@@ -1053,7 +1053,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                             data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsvacant"]); ?>,
                                             showInLegend: true
                                         }, {
-                                            name: 'Filled',
+                                            name: 'Encumbered',
                                             data: <?php echo json_encode($processed_divisiondata[$division]["hrpostsfilled"]); ?>,
                                             showInLegend: true
                                         }]
@@ -1921,6 +1921,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                 <th class="text-left">Duty Station</th>
                                 <th class="text-left">Staff Name</th>
                                 <th class="text-center">Fund</th>
+                                <th class="text-center">Contract Type</th>
                                 <th class="text-center">ePAS Status</th>
                                 <th class="text-center">Mandatory Training</th>
                                 <th class="text-center">Contract Expiration</th>
@@ -1940,6 +1941,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                     echo '<td class="text-left">'.$value["duty_station"].'</td>';
                                     echo '<td class="text-left">'.$value["staff_name"].'</td>';
                                     echo '<td class="text-center">'.$value["category"].'</td>';
+                                    echo '<td class="text-center">'.$value["contract_type"].'</td>';
                                     if ($value["stage"] != "" && $value["stage"] != null) {
                                         echo '<td class="text-center">'.$value["stage"].'</td>';
                                     } else {
@@ -2232,14 +2234,6 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                         $elapsedtime = 'N/A';
                                         echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
                                     }
-
-
-
-
-
-
-
-                                    //echo '<td class="text-center">'.$value["age_months"].'</td>';
                                     echo '<td class="text-center">'.$value["category"].'</td>';
                                     echo '</tr>';
                                     $j++;

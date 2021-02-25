@@ -1,6 +1,6 @@
 <?php
 //FETCH DATA -> CACHED/LIVE
-$version = 'live';
+$version = 'cached';
 // live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
 $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
@@ -140,9 +140,6 @@ $consultants_data = getdataobjectfromurl($consultants_url);
 $all_grants_data = getdataobjectfromurl($grant_data_url);
 $all_grants_details = getdataobjectfromurl($grant_details_url);
 $risks_data = getdataobjectfromurl($risks_url);
-$boa_data = getdataobjectfromurl($boa_url);
-$oios_data = getdataobjectfromurl($oios_url);
-
 $boa_data = getdataobjectfromurl($boa_url);
 $oios_data = getdataobjectfromurl($oios_url);
 

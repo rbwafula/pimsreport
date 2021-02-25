@@ -12,6 +12,9 @@ $hr_url = $page_link . 'officestaff_data' . $urlsuffix;
 $proj_activity_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $grant_data_url = $page_link . 'grant_data' . $urlsuffix;
 $grant_details_url = $page_link . 'grantdetails_data' . $urlsuffix;
+$consultants_url = $page_link . 'consultants_data' . $urlsuffix;
+$boa_url = $page_link . 'boa_data' . $urlsuffix;
+$oios_url = $page_link . 'oios_data' . $urlsuffix;
 
 // TODO Staff positions
 // TODO epass and mandatory learning compliance
@@ -110,6 +113,16 @@ function filter_unique($array, $key)
     return $array;
 
 }
+function checkexpired($date)
+{
+    $expired = 'YES';
+    if (!$date) {
+        $expired = 'N/A';
+    } elseif (strtotime($date) > time()) {
+        $expired = 'NO';
+    }
+    return $expired;
+}
 
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
@@ -125,6 +138,9 @@ $hr_data_uf = getdataobjectfromurl($hr_url);
 
 $all_grants_data = getdataobjectfromurl($grant_data_url);
 $all_grants_details = getdataobjectfromurl($grant_details_url);
+$consultants_data = getdataobjectfromurl($consultants_url);
+$boa_data = getdataobjectfromurl($boa_url);
+$oios_data = getdataobjectfromurl($oios_url);
 
 // CLEANSE HR DATA FOR UNIQUE pos_id
 $hr_data = [];
@@ -133,6 +149,13 @@ foreach ($hr_data_uf as $h) {
     if (!in_array($h->pos_id, $unique_posids)) {
         $hr_data[] = $h;
         $unique_posids[] = $h->pos_id;
+    }
+}
+
+$activeconsultants = 0;
+foreach ($consultants_data as $consultancy) {
+    if (checkexpired($consultancy->latest_contract_end_date) == "NO") {
+        $activeconsultants++;
     }
 }
 
@@ -205,6 +228,8 @@ $overall_filled_posts = [];
 $total_vacant_posts = 0;
 $total_filled_posts = 0;
 $total_posts = 0;
+$mc_completed_staff = 0;
+$epass_compliant_staff = 0;
 
 $unique_post_groups = [];
 $unique_posts_data = [];
@@ -320,7 +345,21 @@ foreach ($hr_data as $key => $value) {
         $total_vacant_posts += 1;
     }
     $total_posts += 1;
+
+    if ($value->document_stage === 'SM Self & FRO Evaluation' || $value->document_stage === 'COMPLETED') {
+        // echo $value->first_name2 . ' <br />';
+        $epass_compliant_staff++;
+    }
+
+    if ($value->no_of_mandatory_courses_done === '9' || $value->no_of_mandatory_courses_done === 9) {
+        $mc_completed_staff++;
+    }
+
 }
+$pctg_mc_completion = round(($mc_completed_staff / $total_filled_posts) * 100);
+$pctg_epass_compliance = round(($epass_compliant_staff / $total_filled_posts) * 100);
+
+
 
 $overall_post_status_distribution = [];
 $overall_office_budget_distribution = [];
@@ -1242,7 +1281,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
         'consumed' => $d_consumed_budget,
         'balance' => $d_consumable_budget - $d_consumed_budget,
         'total_posts' => $d_posts,
-
         'filled_posts' => $filled_posts,
         'budget_staff_ratio' => round($d_consumable_budget / $filled_posts, 0),
         'vacant_posts' => $d_vacant_posts,
@@ -1326,6 +1364,55 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'officeorder' => $divisionorder,
         ];
     }
+
+
+    $o_boadata = [];
+    foreach ($boa_data as $bkey => $bvalue) {
+        $o_boadata[] = [
+            "office" => $bvalue->departments_responsible,
+            "year" => $bvalue->year,
+            "reportreference" => $bvalue->report_reference_and_financial_period,
+            "summaryrecommendation" => $bvalue->summary_of_recommendation,
+            "unepresponse" => $bvalue->unep_responses_provided_for_sgr,
+            "referencedocuments" => $bvalue->reference_documents,
+            "boardassessment" => $bvalue->boards_assessment,
+            "departmentresponsible" => $bvalue->departments_responsible,
+            "responiblestaff" => $bvalue->responsible_staff,
+            "priority" => $bvalue->priority,
+            "targetdate" => $bvalue->target_date,
+            "suggestedstatusverified" => $bvalue->suggested_status_after_verification_from_unep,
+            "suggestedstatus" => $bvalue->suggested_status,
+            "category" => $bvalue->category,
+            "agemonths" => $bvalue->age_in_months,
+        ];
+    }
+
+    $o_oiosdata = [];
+    foreach ($oios_data as $key => $value) {
+        $o_oiosdata[] = [
+            "office" => $bvalue->departments_responsible,
+            "projectcode" => $value->project_code,
+            "recommendation_no" => $value->recommendation_no,
+            "division" => $value->division,
+            "category" => $value->category,
+            "issue_date" => $value->actual_issue_date,
+            "project_name" => $value->project_name,
+            "recommendation" => $value->recommendation,
+            "status_update" => $value->status_update,
+            "recommendation_update" => $value->recommendation_update,
+            "recommendation_state" => $value->recommendation_state,
+            "implementation_date" => $value->estimated_implementation_date,
+            "age_months" => $value->age_in_months,
+            "implementation_pastdue" => $value->past_due_est_implementation_in_months,
+            "client_responsible_office" => $value->client_responsible_office,
+            "team_central_update" => $value->last_status_update_from_team_central,
+            "proposed_status_update" => $value->proposed_status_update,
+            "proposed_revision_of_estimated_date" => $value->proposed_revision_of_estimated_date,
+            "reference_to_attachment" => $value->reference_to_attachment,
+            "proposed_status_in_progress_implemented" => $value->proposed_status_in_progress_implemented,
+        ];
+    }
+
 
     //sort by budget
 
@@ -1902,7 +1989,12 @@ $processed_divisiondata['Unep'] = array(
     , "projectsubprogramme" => $o_sp_array
     , "divisionlisting" => $overall_office_budget_distribution
     , "divisionlisting_office" => $overall_office_budget_distribution_office
-    , "divisionlisting_region" => $overall_office_budget_distribution_region,
+    , "divisionlisting_region" => $overall_office_budget_distribution_region
+    , "boa_data" => $o_boadata
+    , "oios_data" => $o_oiosdata
+    , "mandatory_training_completion" => $pctg_mc_completion
+    , "epass_compliance" => $pctg_epass_compliance
+    , "activeconsultants" => $activeconsultants
 
     /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled
