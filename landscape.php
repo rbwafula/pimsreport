@@ -1827,6 +1827,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                 <th class="projectlistinghealth">Management Rating <span>(60%)</span></th>
                                 <th class="projectlistinghealth">Final Rating</th>
                                 <th class="center">Project Rank</th>
+                                <th class="center"># of Reports</th>
                                 <th class="center">Outputs</th>
                                 <th class="center">Completed Activities</th>
                             </tr>
@@ -1854,6 +1855,14 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
     echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['management_rating']) . '">&nbsp;</p></td>';
     echo '<td><p class="projectlistinghealth" style="background-color:' . gethealthcolor($processed_divisiondata[$division]["projectlisting"][$i]['final_rating']) . '">&nbsp;</p></td>';
     echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['project_rank'] . '</td>';
+
+
+
+    echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['reports'] . ' / '.Date("n").' </td>';
+
+
+
+
     echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['outputs'] . '</td>';
     if ($processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] != '' && $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] != '') {
         echo '<td class="center">' . $processed_divisiondata[$division]["projectlisting"][$i]['completed_activities'] . ' / ' . $processed_divisiondata[$division]["projectlisting"][$i]['total_activities'] . ' </td>';

@@ -18,6 +18,7 @@ $grant_details_url = $page_link . 'grantdetails_data' . $urlsuffix;
 $risks_url = $page_link . 'divisionrisk_data' . $urlsuffix;
 $boa_url = $page_link . 'boa_data' . $urlsuffix;
 $oios_url = $page_link . 'oios_data' . $urlsuffix;
+$projectreporting_url = $page_link . 'currentyearreporting_data' . $urlsuffix;
 
 $processed_divisiondata = array();
 
@@ -142,6 +143,8 @@ $all_grants_details = getdataobjectfromurl($grant_details_url);
 $risks_data = getdataobjectfromurl($risks_url);
 $boa_data = getdataobjectfromurl($boa_url);
 $oios_data = getdataobjectfromurl($oios_url);
+$projectreporting_data = getdataobjectfromurl($projectreporting_url);
+
 
 // CLEANSE HR DATA FOR UNIQUE pos_id
 $hr_data = [];
@@ -550,6 +553,13 @@ foreach ($division_data as $prkey => $prvalue) {
         }
     }
 
+    $p_reports = 0;
+    foreach ($projectreporting_data as $rkey => $rvalue) {
+        if ($rvalue->project_id == $prvalue->project_id) {
+            $p_reports = $rvalue->number_of_months_reported;
+        }
+    }
+
     if (!$prvalue->final_rating) {
         $project_rating = 'N/A';
     } else {
@@ -570,6 +580,7 @@ foreach ($division_data as $prkey => $prvalue) {
         'outputs' => $p_outputs,
         'completed_activities' => $p_completed_activities,
         'total_activities' => $p_activities,
+        'reports' => $p_reports
     ];
 }
 
@@ -922,6 +933,26 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 }
             }
 
+            $p_reports = 0;
+            foreach ($projectreporting_data as $rkey => $rvalue) {
+                if ($rvalue->project_id == $prvalue->project_id) {
+                    $p_reports = $rvalue->number_of_months_reported;
+                }
+            }
+
+
+            /*
+            foreach ($proj_data as $pakey => $pavalue) {
+                if ($pavalue->projectID == $prvalue->project_id) {
+                    $p_outputs = $pavalue->total_outputs;
+                    $p_completed_activities = $pavalue->completed_activities;
+
+                    $p_activities = $pavalue->total_activities;
+
+                }
+            }
+            */
+
             if (!$prvalue->final_rating) {
                 $project_rating = 'N/A';
                 $fr = 0;
@@ -964,6 +995,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'days_remaining' => $project_days_remaining,
                 'months_remaining' => $project_months_remaining,
                 'order' => array_search($prvalue->managing_branch, $d_project_branch),
+                'reports' => $p_reports
             ];
         }
     }
