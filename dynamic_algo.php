@@ -1,6 +1,7 @@
 <?php
 //FETCH DATA -> CACHED/LIVE
-$version = 'cached'; // live * Choose between: cached and live data here */
+$version = 'live';
+// live * Choose between: cached and live data here */
 $cacheddata_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/assets/data/'; // localhost address and folder path to data folder
 $livedata_link = 'https://staging1.unep.org/simon/pims-stg/modules/main/pims3-api/'; // live api
 $page_link = ($version == 'cached') ? $cacheddata_link : $livedata_link;
@@ -111,17 +112,15 @@ function checkexpired($date)
     }
     return $expired;
 }
-function count_array_values($my_array, $match) 
-{ 
-    $count = 0;    
-    foreach ($my_array as $key => $value) 
-    { 
-        if ($value == $match) 
-        { 
-            $count++; 
-        } 
-    } 
-    return $count; 
+function count_array_values($my_array, $match)
+{
+    $count = 0;
+    foreach ($my_array as $key => $value) {
+        if ($value == $match) {
+            $count++;
+        }
+    }
+    return $count;
 }
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
@@ -141,6 +140,9 @@ $consultants_data = getdataobjectfromurl($consultants_url);
 $all_grants_data = getdataobjectfromurl($grant_data_url);
 $all_grants_details = getdataobjectfromurl($grant_details_url);
 $risks_data = getdataobjectfromurl($risks_url);
+$boa_data = getdataobjectfromurl($boa_url);
+$oios_data = getdataobjectfromurl($oios_url);
+
 $boa_data = getdataobjectfromurl($boa_url);
 $oios_data = getdataobjectfromurl($oios_url);
 
@@ -219,6 +221,8 @@ $overall_filled_posts = [];
 $total_vacant_posts = 0;
 $total_filled_posts = 0;
 $total_posts = 0;
+$mc_completed_staff = 0;
+$epass_compliant_staff = 0;
 
 $unique_post_groups = [];
 $unique_posts_data = [];
@@ -226,6 +230,8 @@ $unique_posts_data = [];
 $unique_subprogrammes = [];
 $unique_subprogramme_data = [];
 $unique_final_ratings = [0];
+
+//if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED' && ($processed_divisiondata[$division]["stafflisting"][$i]['stage'] == 'Completed' || $processed_divisiondata[$division]["stafflisting"][$i]['stage'] == 'SM Self & FRO Evaluation')) {
 
 //USE DATA FROM API TO FEED THE UNIQUE SUBPROGRAMMES AND FINAL RATINGS ARRAY
 $x = 2;
@@ -261,8 +267,7 @@ rsort($unique_final_ratings);
 //USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
 foreach ($hr_data as $key => $value) {
 
-
-    $position = (substr($value->pos_ps_group,1,1) !== "-") ? substr($value->pos_ps_group,0,1)."-".substr($value->pos_ps_group,1,1) : $value->pos_ps_group;
+    $position = (substr($value->pos_ps_group, 1, 1) !== "-") ? substr($value->pos_ps_group, 0, 1) . "-" . substr($value->pos_ps_group, 1, 1) : $value->pos_ps_group;
 
     if (!in_array($position, $unique_post_groups)) {
 
@@ -319,7 +324,7 @@ foreach ($hr_data as $key => $value) {
             }
         }
     }
-    $total_posts += 1;
+    //$total_posts += 1;
 
 }
 
@@ -335,7 +340,23 @@ foreach ($hr_data as $key => $value) {
         $total_vacant_posts += 1;
     }
     $total_posts += 1;
+
+    if ($value->document_stage === 'SM Self & FRO Evaluation' || $value->document_stage === 'COMPLETED') {
+        // echo $value->first_name2 . ' <br />';
+        $epass_compliant_staff++;
+    }
+
+    if ($value->no_of_mandatory_courses_done === '9' || $value->no_of_mandatory_courses_done === 9) {
+        $mc_completed_staff++;
+    }
+
 }
+$pctg_mc_completion = round(($mc_completed_staff / $total_filled_posts) * 100);
+
+$pctg_epass_compliance = round(($epass_compliant_staff / $total_filled_posts) * 100);
+// echo $mc_completed_staff . ' completed <br />';
+// echo $pctg_mc_completion . '% mandatory courses <br />';
+// echo $pctg_epass_compliance . '% epass compliance';
 
 $overall_post_status_distribution = [];
 
@@ -564,7 +585,7 @@ foreach ($hr_data as $hkey => $hvalue) {
         $filled = false;
     }
     $overall_staff_information[] = [
-        'grade' => (substr($hvalue->pos_ps_group,1,1) !== "-") ? substr($hvalue->pos_ps_group,0,1)."-".substr($hvalue->pos_ps_group,1,1) : $hvalue->pos_ps_group,
+        'grade' => (substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group,
         'position_title' => $hvalue->pos_title,
         'position_number' => $hvalue->pos_id,
         'duty_station' => $hvalue->duty_station,
@@ -774,7 +795,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $d_risk_months = [];
     $d_risk_years = [];
 
-
     $d_risksdata = [];
     foreach ($risks_data as $rkey => $rvalue) {
         if (strtolower(str_replace(' ', '', $rvalue->managing_division)) == strtolower(str_replace(' ', '', $dvalue))) {
@@ -799,7 +819,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 "suggestedstatusverified" => $bvalue->suggested_status_after_verification_from_unep,
                 "suggestedstatus" => $bvalue->suggested_status,
                 "category" => $bvalue->category,
-                "agemonths" => $bvalue->age_in_months
+                "agemonths" => $bvalue->age_in_months,
             ];
         }
     }
@@ -826,11 +846,10 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 "proposed_status_update" => $value->proposed_status_update,
                 "proposed_revision_of_estimated_date" => $value->proposed_revision_of_estimated_date,
                 "reference_to_attachment" => $value->reference_to_attachment,
-                "proposed_status_in_progress_implemented" => $value->proposed_status_in_progress_implemented
+                "proposed_status_in_progress_implemented" => $value->proposed_status_in_progress_implemented,
             ];
         }
     }
-
 
     $d_grantsdata = [];
     foreach ($all_grants_details as $detkey => $detvalue) {
@@ -838,7 +857,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             foreach ($all_grants_data as $gkey => $gvalue) {
                 if ($gvalue->grant_key == $detvalue->grant_key) {
                     $d_grant_unique_keys[] = $gvalue->grant_key;
-                    $d_grantsdata[] = ["grantkey" => $gvalue->grant_key,"grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                    $d_grantsdata[] = ["grantkey" => $gvalue->grant_key, "grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
                 }
             }
         }
@@ -962,7 +981,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 $p_status = 'VACANT';
             }
             $d_staff_information[] = [
-                'grade' => (substr($hvalue->pos_ps_group,1,1) !== "-") ? substr($hvalue->pos_ps_group,0,1)."-".substr($hvalue->pos_ps_group,1,1) : $hvalue->pos_ps_group,
+                'grade' => (substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group,
                 'position_title' => $hvalue->pos_title,
                 'position_number' => $hvalue->pos_id,
                 'duty_station' => $hvalue->duty_station,
@@ -974,13 +993,13 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'category' => $hvalue->category,
                 'org_code' => $hvalue->org_unit,
                 'org_unit_description' => $hvalue->org_unit_desc,
-                'order' => array_search((substr($hvalue->pos_ps_group,1,1) !== "-") ? substr($hvalue->pos_ps_group,0,1)."-".substr($hvalue->pos_ps_group,1,1) : $hvalue->pos_ps_group, $staff_order_array_all),
+                'order' => array_search((substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group, $staff_order_array_all),
                 'final_status' => $hvalue->document_final_status,
                 'stage' => $hvalue->document_stage,
                 'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
                 'all_training' => $hvalue->no_of_total_courses_done,
                 'contract_expiry' => $hvalue->appt_exp,
-                'retirement_date' => $hvalue->retirement_date
+                'retirement_date' => $hvalue->retirement_date,
             ];
         }
     }
@@ -1051,7 +1070,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
 
             foreach ($hr_data as $hkey => $hvalue) {
                 # code...
-                $position = (substr($hvalue->pos_ps_group,1,1) !== "-") ? substr($hvalue->pos_ps_group,0,1)."-".substr($hvalue->pos_ps_group,1,1) : $hvalue->pos_ps_group;
+                $position = (substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group;
 
                 if ($hvalue->office == $dvalue && $position == $pvalue['post']) {
                     if ($hvalue->pers_no > 0) {
@@ -1782,6 +1801,8 @@ $processed_divisiondata['unep'] = array(
     "hrpostsvacant" => $d_post_vacant,
     "hrpostsmale" => $d_post_male,
     "hrpostsfemale" => $d_post_female,
+    "mandatory_training_completion" => $pctg_mc_completion,
+    "epass_compliance" => $pctg_epass_compliance,
     "grants_data" => [
         "keys" => $overall_grant_keys,
         "amounts" => $overall_grant_amounts,
