@@ -433,6 +433,10 @@ table.budgetclass_footer tr td:last-child {
 	color: #ffc107 !important;
 	font-weight: bold;
 }
+#dashboard2, #dashboard3, #dashboard4 {
+	width: 29.7cm;
+	height: 21cm;
+}
 @page { 
 	size: auto;  
 	margin: 0mm; 

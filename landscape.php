@@ -1312,7 +1312,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
 
 
             <!-- new dashboard -->
-            <div class="row reportbody section1 dashboard2" style="width:29.7cm;height:21cm;background-color:#f9f9f9;">
+            <div class="row reportbody section1 dashboard2" style="width:28.1cm;height:21cm;background-color:#f9f9f9;">
                 <div class="col-md-4">
                     <h5 class="sectiontitle">Finance</h5>
                     <?php
@@ -1346,7 +1346,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                     ?>
                     <div class="row summarystatistics pb-20">
                         <div class="col metric1">
-                            <p class="metricvalue"><?php echo $totalgrants_count; ?></p>
+                            <p class="metricvalue"><?php echo number_format($totalgrants_count,0); ?></p>
                             <p class="metricdesc">Total Grants</p>
                         </div>
                         <div class="col metric1">
@@ -1359,7 +1359,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                     </div>
                     <div class="row summarystatistics pb-20">
                         <div class="col metric2">
-                            <p class="metricvalue"><?php echo $sixmonthexpiry_count; ?></p>
+                            <p class="metricvalue"><?php echo number_format($sixmonthexpiry_count,0); ?></p>
                             <p class="metricdesc">Grants Expiring in 6 Months</p>
                         </div>
                         <div class="col metric2">
@@ -1367,13 +1367,13 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                             <p class="metricdesc">Amount of Grants Expiring in 6 Months</p>
                         </div>
                         <div class="col metric2">
-                            <p class="metricvalue"><?php echo number_format(($sixmonthexpiry_count*100/$totalgrants_count),0,".",","); ?>%</p>
+                            <p class="metricvalue"><?php echo number_format(($sixmonthexpiry_count*100/max($totalgrants_count,1)),0,".",","); ?>%</p>
                             <p class="metricdesc">% of Grants Expiring in 6 Months</p>
                         </div>
                     </div>
                     <div class="row summarystatistics pb-20">
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo $totalexpired_count; ?></p>
+                            <p class="metricvalue"><?php echo number_format($totalexpired_count,0); ?></p>
                             <p class="metricdesc">Expired Grants</p>
                         </div>
                         <div class="col metric4">
@@ -1381,21 +1381,21 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                             <p class="metricdesc">Amount of Expired Grants</p>
                         </div>
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo number_format(($totalexpired_count*100/$totalgrants_count),0,".",","); ?>%</p>
+                            <p class="metricvalue"><?php echo number_format(($totalexpired_count*100/max($totalgrants_count,1)),0,".",","); ?>%</p>
                             <p class="metricdesc">% of Expired Grants</p>
                         </div>
                     </div>
                     <div class="row summarystatistics pb-20">
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo $totalnegative_count; ?></p>
+                            <p class="metricvalue"><?php echo number_format($totalnegative_count,0); ?></p>
                             <p class="metricdesc">Negative Grants</p>
                         </div>
                         <div class="col metric4">
-                            <p class="metricvalue">$ <?php echo number_format(abs($totalnegative_amount),0,".",","); ?></p>
+                            <p class="metricvalue">$ (<?php echo number_format(abs($totalnegative_amount),0,".",","); ?>)</p>
                             <p class="metricdesc">Amount of Negative Grants</p>
                         </div>
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo number_format(($totalnegative_count*100/$totalgrants_count),0,".",","); ?>%</p>
+                            <p class="metricvalue"><?php echo number_format(($totalnegative_count*100/max($totalgrants_count,1)),0,".",","); ?>%</p>
                             <p class="metricdesc">% of Negative Grants</p>
                         </div>
                     </div>
@@ -1629,6 +1629,9 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                         </script>
                     </div>
 
+
+
+
                     <!--
                         Project risks
 
@@ -1648,6 +1651,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                         $seniorstaffretiring_count = 0;
                         $expiringstaffcontracts_count = 0;
                         $hrfilledpositionsfundingtypes_categories = [];
+                        $hrfilledpositionsfundingtypes_data = [];
                         $hrfilledpositionsfundingtypes_categories_xaxis = [];
                         $hrfilledpositionsfundingtypes_categories_series = [];
 
@@ -1665,8 +1669,16 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                             }
                         }
                         foreach (array_count_values($hrfilledpositionsfundingtypes_categories) as $key => $value) {
-                            $hrfilledpositionsfundingtypes_categories_xaxis[] = $key;
-                            $hrfilledpositionsfundingtypes_categories_series[] = $value;
+                            $hrfilledpositionsfundingtypes_data[] = [
+                                "name" => $key,
+                                "count" => $value
+                            ];
+                        }
+                        array_multisort(array_column($hrfilledpositionsfundingtypes_data, 'count'), SORT_DESC,$hrfilledpositionsfundingtypes_data);
+
+                        foreach ($hrfilledpositionsfundingtypes_data as $key => $value) {
+                            $hrfilledpositionsfundingtypes_categories_xaxis[] = $value["name"];
+                            $hrfilledpositionsfundingtypes_categories_series[] = $value["count"];
                         }
                         $consultantsmorethan11months_count = 0;
                         foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $value) {
@@ -1677,13 +1689,13 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                     ?>
 
                     <div class="row summarystatistics pb-20">
-                        <div class="col metric4">
+                        <div class="col metric1">
                             <p class="metricvalue"><?php echo number_format($seniorstaffretiring_count,0,".",","); ?></p>
-                            <p class="metricdesc">Senior Positions<br/>Retiring in 1yr</p>
+                            <p class="metricdesc">Senior Positions<br/>Retiring in 1 Year<br/>(D2, D1, P5)</p>
                         </div>
                         <div class="col metric4">
                             <p class="metricvalue"><?php echo number_format($expiringstaffcontracts_count,0,".",","); ?></p>
-                            <p class="metricdesc">Expiring Staff<br/>Contracts</p>
+                            <p class="metricdesc">Expiring Staff<br/>Contracts in 6 Months</p>
                         </div>
                         <div class="col metric1">
                             <p class="metricvalue"><?php echo number_format($consultantsmorethan11months_count,0,".",","); ?></p>
@@ -1700,7 +1712,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                             },
                             chart: {
                                 backgroundColor: 'transparent',
-                                type: 'column',
+                                type: 'bar',
                                 height: 250
                             },
                             title: {
@@ -1763,7 +1775,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                 enabled: false
                             },
                             plotOptions: {
-                                column: {
+                                bar: {
                                     pointPadding: 0.2,
                                     borderWidth: 0,
                                     dataLabels: {
@@ -1966,7 +1978,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                     } else {
                                         echo '<td class="text-center">'.$value["contract_expiry"].'</td>';
                                     }
-                                    if ($value["retirement_date"] <= date("Y-m-d", strtotime("+12 month")) ) {
+                                    if ($value["retirement_date"] <= date("Y-m-d", strtotime("+24 month")) ) {
                                         echo '<td class="text-center text-red">'.$value["retirement_date"].'</td>';
                                     } else {
                                         echo '<td class="text-center">'.$value["retirement_date"].'</td>';
@@ -2220,7 +2232,14 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                 foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
                                     echo '<tr>';
                                     echo '<td class="text-right">'.($j + 1).'.</td>';
-                                    echo '<td class="text-left" style="max-width: 300px;">'.ltrim(stristr($value["recommendation"], '. '), '. ').'</td>';
+                                    if (is_numeric(substr($value["recommendation"], 0, 1))) {
+                                        //echo "Numeric sentence: ".substr($var, (strpos($var, '.')+1));
+                                        echo '<td class="text-left" style="max-width: 300px;">'.substr($value["recommendation"], (strpos($value["recommendation"], '.')+1)).'</td>';
+                                    } else if (substr($value["recommendation"], 0, 1) == "(" ) {
+                                        echo '<td class="text-left" style="max-width: 300px;">'.substr($value["recommendation"], (strpos($value["recommendation"], ')')+1)).'</td>';
+                                    } else {
+                                        echo '<td class="text-left" style="max-width: 300px;">'.$value["recommendation"].'</td>';
+                                    }
                                     echo '<td class="text-left">'.$value["projectcode"].'</td>';
                                     echo '<td class="text-center">'.$value["recommendation_update"].'</td>';
                                     echo '<td class="text-center">'.$value["issue_date"].'</td>';

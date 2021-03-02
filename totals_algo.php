@@ -13,6 +13,7 @@ $proj_activity_url = $page_link . 'div_practivitycount_data' . $urlsuffix;
 $grant_data_url = $page_link . 'grant_data' . $urlsuffix;
 $grant_details_url = $page_link . 'grantdetails_data' . $urlsuffix;
 $consultants_url = $page_link . 'consultants_data' . $urlsuffix;
+$risks_url = $page_link . 'divisionrisk_data' . $urlsuffix;
 $boa_url = $page_link . 'boa_data' . $urlsuffix;
 $oios_url = $page_link . 'oios_data' . $urlsuffix;
 
@@ -139,6 +140,7 @@ $hr_data_uf = getdataobjectfromurl($hr_url);
 $all_grants_data = getdataobjectfromurl($grant_data_url);
 $all_grants_details = getdataobjectfromurl($grant_details_url);
 $consultants_data = getdataobjectfromurl($consultants_url);
+$risks_data = getdataobjectfromurl($risks_url);
 $boa_data = getdataobjectfromurl($boa_url);
 $oios_data = getdataobjectfromurl($oios_url);
 
@@ -153,10 +155,20 @@ foreach ($hr_data_uf as $h) {
 }
 
 $activeconsultants = 0;
+$overall_consultants = [];
 foreach ($consultants_data as $consultancy) {
     if (checkexpired($consultancy->latest_contract_end_date) == "NO") {
         $activeconsultants++;
     }
+    $overall_consultants[] = [
+        'names' => $consultancy->supplier_full_name,
+        'startdate' => $consultancy->latest_contract_start_date,
+        'enddate' => $consultancy->latest_contract_end_date,
+        'renewals' => $consultancy->no_of_contract_renewals,
+        'expired' => checkexpired($consultancy->latest_contract_end_date),
+        'duration' => getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date),
+        'morethan11months' => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'Yes' : 'No')
+    ];
 }
 
 // var_dump($unique_posids);
@@ -334,7 +346,6 @@ foreach ($hr_data as $key => $value) {
 }
 
 // var_dump($unique_posts_data);
-
 foreach ($hr_data as $key => $value) {
     if ($value->pers_no > 0) {
         $overall_filled_posts[] = $value;
@@ -370,6 +381,7 @@ $overall_grant_amounts = [];
 $overall_grant_start = [];
 $overall_grant_end = [];
 $overall_grant_aging = [];
+$overall_grant_unique_keys = [];
 
 $t_filled_posts = 0;
 $t_vacant_posts = 0;
@@ -384,6 +396,25 @@ foreach ($all_grants_data as $gkey => $gvalue) {
     $overall_grant_start[] = $gvalue->grant_valid_from;
     $overall_grant_end[] = $gvalue->grant_valid_to;
     $overall_grant_aging[] = ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30);
+}
+
+// Overall Grant Information
+$overall_grantsdata = [];
+foreach ($all_grants_details as $detkey => $detvalue) {
+    if (!in_array($detvalue->grant_key, $overall_grant_unique_keys)) {
+        foreach ($all_grants_data as $gkey => $gvalue) {
+            if ($gvalue->grant_key == $detvalue->grant_key) {
+                $overall_grant_unique_keys[] = $gvalue->grant_key;
+                $overall_grantsdata[] = ["office"=> $detvalue->office,"grantkey" => $gvalue->grant_key, "grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+            }
+        }
+    }
+}
+
+// Overall Risks Information
+$overall_risksdata = [];
+foreach ($risks_data as $rkey => $rvalue) {
+    $overall_risksdata[] = ["office" => $rvalue->managing_division, "riskname" => $rvalue->risk, "projectcount" => $rvalue->number_of_projects, "year" => $rvalue->year];
 }
 
 foreach ($unique_posts_data as $pkey => $pvalue) {
@@ -607,24 +638,35 @@ foreach ($division_data as $prkey => $prvalue) {
 
 //OVERALL STAFF INFORMATION
 $overall_staff_information = [];
+$p_status = '';
 foreach ($hr_data as $hkey => $hvalue) {
     if ($hvalue->pers_no > 0) {
         $filled = true;
+        $p_status = 'FILLED';
     } else {
         $filled = false;
+        $p_status = 'VACANT';
     }
     $overall_staff_information[] = [
-        'grade' => $hvalue->pos_ps_group,
+        'grade' => (substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group,
         'position_title' => $hvalue->pos_title,
         'position_number' => $hvalue->pos_id,
         'duty_station' => $hvalue->duty_station,
-        'filled' => $filled,
+        'position_status' => $p_status,
         'staff_name' => $hvalue->first_name . ' ' . $hvalue->last_name,
+        'contract_type' => $hvalue->contract_type,
         'fund_key' => $hvalue->fund_key,
         'fund_description' => $hvalue->fund_description,
         'category' => $hvalue->category,
         'org_code' => $hvalue->org_unit,
         'org_unit_description' => $hvalue->org_unit_desc,
+        'order' => array_search((substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group, $staff_order_array_all),
+        'final_status' => $hvalue->document_final_status,
+        'stage' => $hvalue->document_stage,
+        'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
+        'all_training' => $hvalue->no_of_total_courses_done,
+        'contract_expiry' => $hvalue->appt_exp,
+        'retirement_date' => $hvalue->retirement_date
     ];
 }
 
@@ -1321,7 +1363,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'red_projects' => $d_red_projects,
             'yellow_projects' => $d_yellow_projects,
             'green_projects' => $d_green_projects,
-            'total_projects' => $total_projects,
+            'total_projects' => $d_projects,//$total_projects,
             'o_ratings' => $d_final_ratings,
             'total_health' => $total_project_health,
             'final_rating' => $d_total_average_final_rating,
@@ -1352,7 +1394,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'red_projects' => $d_red_projects,
             'yellow_projects' => $d_yellow_projects,
             'green_projects' => $d_green_projects,
-            'total_projects' => $total_projects,
+            'total_projects' => $d_projects,//$total_projects,
             'total_health' => $total_final_rating,
             'final_rating' => $d_total_average_final_rating,
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
@@ -1390,7 +1432,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
     $o_oiosdata = [];
     foreach ($oios_data as $key => $value) {
         $o_oiosdata[] = [
-            "office" => $bvalue->departments_responsible,
+            "office" => $value->client_responsible_office,
+            "title" => $value->audit_title,
             "projectcode" => $value->project_code,
             "recommendation_no" => $value->recommendation_no,
             "division" => $value->division,
@@ -1995,6 +2038,10 @@ $processed_divisiondata['Unep'] = array(
     , "mandatory_training_completion" => $pctg_mc_completion
     , "epass_compliance" => $pctg_epass_compliance
     , "activeconsultants" => $activeconsultants
+    , "grantsdata" => $overall_grantsdata
+    , "risks_data" => $overall_risksdata
+    , "stafflisting" => $overall_staff_information
+    , "consultants_data" => $overall_consultants
 
     /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled

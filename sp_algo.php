@@ -1120,9 +1120,9 @@ foreach ($processed_spdata as $sp) {
 
     //echo '--------------------------------------------------------------<br />';
 }
-
+/*
 var_dump($unique_managers);
 echo '<br />' . count($unique_managers) . ' total managers <br />';
 echo '<br />---------------------------------------------------------------<br />';
 echo $total_projects . ' total projects';
-echo '<br />' . $total_projects / count($unique_managers) . ' average projects per manager';
+echo '<br />' . $total_projects / count($unique_managers) . ' average projects per manager';*/
