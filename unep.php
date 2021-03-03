@@ -9,7 +9,7 @@ include_once 'totals_algo.php';
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo strtoupper($division);?> | PIMS+ Report</title>
+	<title><?php echo strtoupper($division); ?> | PIMS+ Report</title>
 	<!-- Vendor CSS -->
     <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/highcharts.css">
@@ -79,7 +79,7 @@ include_once 'totals_algo.php';
                         <h6>Programme Delivery Report</h6>
                     </div>
                     <div class="col-md-2 health">
-                        <p class="reportdate"><?php $month; ?></p>
+                        <p class="reportdate"><?php $month;?></p>
                         <p class="healthrating_box" style="background-color:<?php echo $processed_divisiondata[$division]["healthcolor"]; ?>;">&nbsp;</p>
                         <p class="healthratingdesc">Project Portfolio Rating</p>
                     </div>
@@ -776,23 +776,23 @@ include_once 'totals_algo.php';
                             <div class="col-md-12 hrfilled">
                                 <div class="row hrstatistics">
                                     <?php
-                                    $totalposts = 0;
-                                    $filledposts = 0;
-                                    $vacantposts = 0;
-                                    $maleposts = 0;
-                                    $femaleposts = 0;
-                                    for ($i = 0; $i < count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
-                                        $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
-                                        $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
-                                        $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
-                                        $maleposts += $processed_divisiondata[$division]["hrpostsmale"][$i];
-                                        $femaleposts += $processed_divisiondata[$division]["hrpostsfemale"][$i];
-                                    }
-                                    ?>
+$totalposts = 0;
+$filledposts = 0;
+$vacantposts = 0;
+$maleposts = 0;
+$femaleposts = 0;
+for ($i = 0; $i < count($processed_divisiondata[$division]["hrpostsvacant"]); $i++) {
+    $vacantposts += $processed_divisiondata[$division]["hrpostsvacant"][$i];
+    $filledposts += $processed_divisiondata[$division]["hrpostsfilled"][$i];
+    $totalposts += ($processed_divisiondata[$division]["hrpostsvacant"][$i] + $processed_divisiondata[$division]["hrpostsfilled"][$i]);
+    $maleposts += $processed_divisiondata[$division]["hrpostsmale"][$i];
+    $femaleposts += $processed_divisiondata[$division]["hrpostsfemale"][$i];
+}
+?>
 
                                     <div class="col metric1">
                                         <p class="metricvalue">
-                                            <?php echo number_format($processed_divisiondata[$division]["activeconsultants"],0); ?>
+                                            <?php echo number_format($processed_divisiondata[$division]["activeconsultants"], 0); ?>
                                         </p>
                                         <p class="metricdesc">Active<br/>Consultants</p>
                                     </div>
@@ -828,13 +828,13 @@ include_once 'totals_algo.php';
                                     </div>-->
                                      <div class="col metric6">
                                         <p class="metricvalue">
-                                            <?php echo number_format($processed_divisiondata[$division]["epass_compliance"],0); ?>%
+                                            <?php echo number_format($processed_divisiondata[$division]["epass_compliance"], 0); ?>%
                                         </p>
                                         <p class="metricdesc">ePAS<br/>Compliance</p>
                                     </div>
                                      <div class="col metric6">
                                         <p class="metricvalue">
-                                            <?php echo number_format($processed_divisiondata[$division]["mandatory_training_completion"],0); ?>%
+                                            <?php echo number_format($processed_divisiondata[$division]["mandatory_training_completion"], 0); ?>%
                                         </p>
                                         <p class="metricdesc">Mandatory<br/>Training</p>
                                     </div>
@@ -1046,13 +1046,13 @@ include_once 'totals_algo.php';
                                         }]
                                     }, function(chart){
                                         //setTimeout(savedashboard(), 10000);
-                                        chart.renderer.text('<p style="text-align:center; font-weight:600;"><?php echo number_format((($femaleposts/max($filledposts,1))*100),0); ?>%</p>', 30, 227).css({
+                                        chart.renderer.text('<p style="text-align:center; font-weight:600;"><?php echo number_format((($femaleposts / max($filledposts, 1)) * 100), 0); ?>%</p>', 30, 227).css({
                                             color: '#d59442',
                                             textAlign: 'center'
                                         })
                                         .add();
 
-                                        chart.renderer.text('<p style="text-align:center; font-weight:600;"><?php echo number_format((($maleposts/max($filledposts,1))*100),0); ?>%</p>', 270, 227).css({
+                                        chart.renderer.text('<p style="text-align:center; font-weight:600;"><?php echo number_format((($maleposts / max($filledposts, 1)) * 100), 0); ?>%</p>', 270, 227).css({
                                             color: '#17a2b8',
                                             textAlign: 'center'
                                         })
@@ -1065,7 +1065,7 @@ include_once 'totals_algo.php';
                     <p class="quote">Do the difficult things while they are easy and do the great things while they are small. — LAO TZU</p>
                 </div>
             </div><!-- End of #dashboardcanvas -->
-            
+
             <div id="dashboardimg" style="display:none;">
                 <img src="" id="newimg" class="top" />
             </div>
@@ -1076,41 +1076,41 @@ include_once 'totals_algo.php';
                 <div class="col-md-4">
                     <h5 class="sectiontitle">Finance</h5>
                     <?php
-                        array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdata"]);
-                        $totalgrants_count = 0;
-                        $totalexpired_count = 0;
-                        $totalnegative_count = 0;
-                        $sixmonthexpiry_count = 0;
-                        $totalgrants_amount = 0;
-                        $totalexpired_amount = 0;
-                        $totalnegative_amount = 0;
-                        $sixmonthexpiry_amount = 0;
-                        foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
-                            if (number_format($value["grantamount"],0,".",",") != "0") {
-                                $totalgrants_count++; // count the grant
-                                $totalgrants_amount += $value["grantamount"]; // count the grant
-                                if ($value["grantexpired"] == "YES") {
-                                    $totalexpired_count++; // count as expired
-                                    $totalexpired_amount += $value["grantamount"]; // add to the dollar value
-                                }
-                                if ($value["grantamount"] < 0) {
-                                    $totalnegative_count++;  // count as negative
-                                    $totalnegative_amount += $value["grantamount"]; // add to the dollar
-                                }
-                                if ($value["grantenddate"] > date("Y-m-d", strtotime("now")) && $value["grantenddate"] <= date("Y-m-d", strtotime("+6 month"))) {
-                                    $sixmonthexpiry_count++;  // count as 6months to expiry
-                                    $sixmonthexpiry_amount += $value["grantamount"]; // add to the dollar
-                                }
-                            }
-                        }
-                    ?>
+array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC, $processed_divisiondata[$division]["grantsdata"]);
+$totalgrants_count = 0;
+$totalexpired_count = 0;
+$totalnegative_count = 0;
+$sixmonthexpiry_count = 0;
+$totalgrants_amount = 0;
+$totalexpired_amount = 0;
+$totalnegative_amount = 0;
+$sixmonthexpiry_amount = 0;
+foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
+    if (number_format($value["grantamount"], 0, ".", ",") != "0") {
+        $totalgrants_count++; // count the grant
+        $totalgrants_amount += $value["grantamount"]; // count the grant
+        if ($value["grantexpired"] == "YES") {
+            $totalexpired_count++; // count as expired
+            $totalexpired_amount += $value["grantamount"]; // add to the dollar value
+        }
+        if ($value["grantamount"] < 0) {
+            $totalnegative_count++; // count as negative
+            $totalnegative_amount += $value["grantamount"]; // add to the dollar
+        }
+        if ($value["grantenddate"] > date("Y-m-d", strtotime("now")) && $value["grantenddate"] <= date("Y-m-d", strtotime("+6 month"))) {
+            $sixmonthexpiry_count++; // count as 6months to expiry
+            $sixmonthexpiry_amount += $value["grantamount"]; // add to the dollar
+        }
+    }
+}
+?>
                     <div class="row summarystatistics pb-20">
                         <div class="col metric1">
-                            <p class="metricvalue"><?php echo number_format($totalgrants_count,0); ?></p>
+                            <p class="metricvalue"><?php echo number_format($totalgrants_count, 0); ?></p>
                             <p class="metricdesc">Total Grants</p>
                         </div>
                         <div class="col metric1">
-                            <p class="metricvalue">$ <?php echo number_format( ($totalgrants_amount/1000000),1,".",","); ?>M</p>
+                            <p class="metricvalue">$ <?php echo number_format(($totalgrants_amount / 1000000), 1, ".", ","); ?>M</p>
                             <p class="metricdesc">Total Grant Amount</p>
                         </div>
                         <div class="col metric1">
@@ -1119,43 +1119,43 @@ include_once 'totals_algo.php';
                     </div>
                     <div class="row summarystatistics pb-20">
                         <div class="col metric2">
-                            <p class="metricvalue"><?php echo number_format($sixmonthexpiry_count);?></p>
+                            <p class="metricvalue"><?php echo number_format($sixmonthexpiry_count); ?></p>
                             <p class="metricdesc">Grants Expiring in 6 Months</p>
                         </div>
                         <div class="col metric2">
-                            <p class="metricvalue">$ <?php echo number_format(($sixmonthexpiry_amount/1000000),1,".",","); ?>M</p>
+                            <p class="metricvalue">$ <?php echo number_format(($sixmonthexpiry_amount / 1000000), 1, ".", ","); ?>M</p>
                             <p class="metricdesc">Amount of Grants Expiring in 6 Months</p>
                         </div>
                         <div class="col metric2">
-                            <p class="metricvalue"><?php echo number_format(($sixmonthexpiry_count*100/max($totalgrants_count,1)),0,".",","); ?>%</p>
+                            <p class="metricvalue"><?php echo number_format(($sixmonthexpiry_count * 100 / max($totalgrants_count, 1)), 0, ".", ","); ?>%</p>
                             <p class="metricdesc">% of Grants Expiring in 6 Months</p>
                         </div>
                     </div>
                     <div class="row summarystatistics pb-20">
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo number_format($totalexpired_count,0); ?></p>
+                            <p class="metricvalue"><?php echo number_format($totalexpired_count, 0); ?></p>
                             <p class="metricdesc">Expired Grants</p>
                         </div>
                         <div class="col metric4">
-                            <p class="metricvalue">$ <?php echo number_format(($totalexpired_amount/1000000),1,".",","); ?>M</p>
+                            <p class="metricvalue">$ <?php echo number_format(($totalexpired_amount / 1000000), 1, ".", ","); ?>M</p>
                             <p class="metricdesc">Amount of Expired Grants</p>
                         </div>
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo number_format(($totalexpired_count*100/max($totalgrants_count,1)),0,".",","); ?>%</p>
+                            <p class="metricvalue"><?php echo number_format(($totalexpired_count * 100 / max($totalgrants_count, 1)), 0, ".", ","); ?>%</p>
                             <p class="metricdesc">% of Expired Grants</p>
                         </div>
                     </div>
                     <div class="row summarystatistics pb-20">
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo number_format($totalnegative_count,0); ?></p>
+                            <p class="metricvalue"><?php echo number_format($totalnegative_count, 0); ?></p>
                             <p class="metricdesc">Negative Grants</p>
                         </div>
                         <div class="col metric4">
-                            <p class="metricvalue">$ (<?php echo number_format((abs($totalnegative_amount)/1000000),1,".",","); ?>)M</p>
+                            <p class="metricvalue">$ (<?php echo number_format((abs($totalnegative_amount) / 1000000), 1, ".", ","); ?>)M</p>
                             <p class="metricdesc">Amount of Negative Grants</p>
                         </div>
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo number_format(($totalnegative_count*100/max($totalgrants_count,1)),0,".",","); ?>%</p>
+                            <p class="metricvalue"><?php echo number_format(($totalnegative_count * 100 / max($totalgrants_count, 1)), 0, ".", ","); ?>%</p>
                             <p class="metricdesc">% of Negative Grants</p>
                         </div>
                     </div>
@@ -1164,8 +1164,8 @@ include_once 'totals_algo.php';
 
                 </div>
                 <div class="col-md-4">
-                    
-                    
+
+
                 </div>
             </div>
             <!-- end of new dashboard: Finance -->
@@ -1188,55 +1188,56 @@ include_once 'totals_algo.php';
                     <h5 class="sectiontitle">Human Resource</h5>
 
                     <?php
-                        $seniorstaffretiring_count = 0;
-                        $expiringstaffcontracts_count = 0;
-                        $hrfilledpositionsfundingtypes_categories = [];
-                        $hrfilledpositionsfundingtypes_data = [];
-                        $hrfilledpositionsfundingtypes_categories_xaxis = [];
-                        $hrfilledpositionsfundingtypes_categories_series = [];
+$seniorstaffretiring_count = 0;
+$expiringstaffcontracts_count = 0;
+$hrfilledpositionsfundingtypes_categories = [];
+$hrfilledpositionsfundingtypes_data = [];
+$hrfilledpositionsfundingtypes_categories_xaxis = [];
+$hrfilledpositionsfundingtypes_categories_series = [];
 
-                        foreach ($processed_divisiondata[$division]["stafflisting"] as $key => $value) {
-                            if ($value["position_status"] == "FILLED") {
-                                $hrfilledpositionsfundingtypes_categories[] = $value["category"];
-                                $seniorposts = ['USG', 'ASG', 'D-2', 'D-1', 'P-5'];
-                                if ( in_array($value["grade"], $seniorposts) && $value["retirement_date"] <= date("Y-m-d", strtotime("+24 month")) ) {
-                                    $seniorstaffretiring_count++;
-                                }
-                                if ( $value["contract_expiry"] <= date("Y-m-d", strtotime("+6 month")) ) {
-                                    $expiringstaffcontracts_count++;
-                                }
-                            }
-                        }foreach (array_count_values($hrfilledpositionsfundingtypes_categories) as $key => $value) {
-                            $hrfilledpositionsfundingtypes_data[] = [
-                                "name" => $key,
-                                "count" => $value
-                            ];
-                        }
-                        array_multisort(array_column($hrfilledpositionsfundingtypes_data, 'count'), SORT_DESC,$hrfilledpositionsfundingtypes_data);
+foreach ($processed_divisiondata[$division]["stafflisting"] as $key => $value) {
+    if ($value["position_status"] == "FILLED") {
+        $hrfilledpositionsfundingtypes_categories[] = $value["category"];
+        $seniorposts = ['USG', 'ASG', 'D-2', 'D-1', 'P-5'];
+        if (in_array($value["grade"], $seniorposts) && $value["retirement_date"] <= date("Y-m-d", strtotime("+24 month"))) {
+            $seniorstaffretiring_count++;
+        }
+        if ($value["contract_expiry"] <= date("Y-m-d", strtotime("+6 month"))) {
+            $expiringstaffcontracts_count++;
+        }
+    }
+}
+foreach (array_count_values($hrfilledpositionsfundingtypes_categories) as $key => $value) {
+    $hrfilledpositionsfundingtypes_data[] = [
+        "name" => $key,
+        "count" => $value,
+    ];
+}
+array_multisort(array_column($hrfilledpositionsfundingtypes_data, 'count'), SORT_DESC, $hrfilledpositionsfundingtypes_data);
 
-                        foreach ($hrfilledpositionsfundingtypes_data as $key => $value) {
-                            $hrfilledpositionsfundingtypes_categories_xaxis[] = $value["name"];
-                            $hrfilledpositionsfundingtypes_categories_series[] = $value["count"];
-                        }
-                        $consultantsmorethan11months_count = 0;
-                        foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $value) {
-                            if ($value["expired"] == "NO" && $value["morethan11months"] == "Yes") {
-                                $consultantsmorethan11months_count++;
-                            }
-                        }
-                    ?>
+foreach ($hrfilledpositionsfundingtypes_data as $key => $value) {
+    $hrfilledpositionsfundingtypes_categories_xaxis[] = $value["name"];
+    $hrfilledpositionsfundingtypes_categories_series[] = $value["count"];
+}
+$consultantsmorethan11months_count = 0;
+foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $value) {
+    if ($value["expired"] == "NO" && $value["morethan11months"] == "Yes") {
+        $consultantsmorethan11months_count++;
+    }
+}
+?>
 
                     <div class="row summarystatistics pb-20">
                         <div class="col metric1">
-                            <p class="metricvalue"><?php echo number_format($seniorstaffretiring_count,0,".",","); ?></p>
+                            <p class="metricvalue"><?php echo number_format($seniorstaffretiring_count, 0, ".", ","); ?></p>
                             <p class="metricdesc">Senior Positions<br/>Retiring in 2 Years<br/>(D2, D1, P5)</p>
                         </div>
                         <div class="col metric4">
-                            <p class="metricvalue"><?php echo number_format($expiringstaffcontracts_count,0,".",","); ?></p>
+                            <p class="metricvalue"><?php echo number_format($expiringstaffcontracts_count, 0, ".", ","); ?></p>
                             <p class="metricdesc">Expiring Staff<br/>Contracts in 6 Months</p>
                         </div>
                         <div class="col metric1">
-                            <p class="metricvalue"><?php echo number_format($consultantsmorethan11months_count,0,".",","); ?></p>
+                            <p class="metricvalue"><?php echo number_format($consultantsmorethan11months_count, 0, ".", ","); ?></p>
                             <p class="metricdesc">Consultancies More<br/>Than 11 Months</p>
                         </div>
                     </div>
@@ -1371,28 +1372,28 @@ include_once 'totals_algo.php';
 
                     <!-- Start of Top Risks -->
                     <?php
-                        $toprisks_categories_xaxis = [];
-                        $toprisks_categories_series = [];
-                        array_multisort(array_column($processed_divisiondata[$division]["risks_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["risks_data"]);
+$toprisks_categories_xaxis = [];
+$toprisks_categories_series = [];
+array_multisort(array_column($processed_divisiondata[$division]["risks_data"], 'year'), SORT_ASC, $processed_divisiondata[$division]["risks_data"]);
 
-                        foreach ($processed_divisiondata[$division]["risks_data"] as $key => $value) {
-                            if ($value["year"] == date("Y", strtotime("now"))) {
-                                /* If current year risk has not been captured before, add it to the array */
-                                if (!in_array($value["riskname"], $toprisks_categories_xaxis)) {
-                                    $toprisks_categories_xaxis[] = $value["riskname"];
-                                    $toprisks_categories_series[] = (int)$value["projectcount"];
-                                } else {
-                                    /* Get key where the risk is in the array, and add the project count */
-                                    $riskkey = array_search ($value["riskname"], $toprisks_categories_xaxis);
-                                    $toprisks_categories_series[$riskkey] += (int)$value["projectcount"];
-                                }
-                            }
-                            /*if ($value["year"] == date("Y", strtotime("now"))) {
-                                $toprisks_categories_xaxis[] = $value["riskname"];
-                                $toprisks_categories_series[] = (int)$value["projectcount"];
-                            }*/
-                        }
-                    ?>
+foreach ($processed_divisiondata[$division]["risks_data"] as $key => $value) {
+    if ($value["year"] == date("Y", strtotime("now"))) {
+        /* If current year risk has not been captured before, add it to the array */
+        if (!in_array($value["riskname"], $toprisks_categories_xaxis)) {
+            $toprisks_categories_xaxis[] = $value["riskname"];
+            $toprisks_categories_series[] = (int) $value["projectcount"];
+        } else {
+            /* Get key where the risk is in the array, and add the project count */
+            $riskkey = array_search($value["riskname"], $toprisks_categories_xaxis);
+            $toprisks_categories_series[$riskkey] += (int) $value["projectcount"];
+        }
+    }
+    /*if ($value["year"] == date("Y", strtotime("now"))) {
+$toprisks_categories_xaxis[] = $value["riskname"];
+$toprisks_categories_series[] = (int)$value["projectcount"];
+}*/
+}
+?>
                     <div class="col-md-12 toprisks pb-20">
                         <div id="toprisks_chart"></div>
                         <script type="text/javascript">
@@ -1497,149 +1498,147 @@ include_once 'totals_algo.php';
 
 
                     <?php
-                        $boa_priorities_xaxis = [];
-                        $boa_priorities_elapsed = [];
-                        $boa_priorities_current = [];
-                        $boa_priorities_total = [];
-                        $boa_elapsedpriorities_seriesdata;
-                        $boa_currentpriorities_seriesdata;
-                        $boa_totalpriorities_seriesdata;
+$boa_priorities_xaxis = [];
+$boa_priorities_elapsed = [];
+$boa_priorities_current = [];
+$boa_priorities_total = [];
+$boa_elapsedpriorities_seriesdata;
+$boa_currentpriorities_seriesdata;
+$boa_totalpriorities_seriesdata;
 
-                        // BOAs by Office
-                        $boa_offices = [];
-                        $boa_offices_xaxis = [];
-                        $boa_offices_series = [];
+// BOAs by Office
+$boa_offices = [];
+$boa_offices_xaxis = [];
+$boa_offices_series = [];
 
-                        // BOAs by Audit Year
-                        $boa_audityear = [];
-                        $boa_audityear_xaxis = [];
-                        $boa_audityear_series = [];
+// BOAs by Audit Year
+$boa_audityear = [];
+$boa_audityear_xaxis = [];
+$boa_audityear_series = [];
 
-                        // BOA by TargetDate
-                        $boa_targetdate_3months = 0;
-                        $boa_targetdate_6months = 0;
-                        $boa_targetdate_9months = 0;
-                        $boa_targetdate_12months = 0;
-                        $boa_targetdate_over12 = 0;
-                        $boa_targetdate_elapsed = 0;
+// BOA by TargetDate
+$boa_targetdate_3months = 0;
+$boa_targetdate_6months = 0;
+$boa_targetdate_9months = 0;
+$boa_targetdate_12months = 0;
+$boa_targetdate_over12 = 0;
+$boa_targetdate_elapsed = 0;
 
-                        // BOAs by Status
-                        $boa_status_red = 0;
-                        $boa_status_yellow = 0;
-                        $boa_status_green = 0;
+// BOAs by Status
+$boa_status_red = 0;
+$boa_status_yellow = 0;
+$boa_status_green = 0;
 
-                        // BOAs by Category
-                        $boa_category = [];
-                        $boa_category_xaxis = [];
-                        $boa_category_series = [];
+// BOAs by Category
+$boa_category = [];
+$boa_category_xaxis = [];
+$boa_category_series = [];
 
-                        // BOAs by Suggested Status
-                        $boa_suggestedstatus = [];
-                        $boa_suggestedstatus_xaxis = [];
-                        $boa_suggestedstatus_series = [];
-                        $selectedboastatus = array("Under Implementation", "Not Implemented");
-                        foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
-                            if (in_array($value["suggestedstatusverified"], $selectedboastatus)) {
-                                $priority = (rtrim(ltrim($value["priority"])) == "" ) ? "Not Defined" : rtrim(ltrim($value["priority"]));
-                                if (!in_array($priority, $boa_priorities_xaxis)) {
-                                    $boa_priorities_xaxis[] = $priority;
-                                }
-                                if (date("Y-m-d",time()) <= $value["targetdate"]) {
-                                    $boa_priorities_current[] = $priority;
-                                } else {
-                                    $boa_priorities_elapsed[] = $priority;
-                                }
-                                $boa_priorities_total[] = $priority;
-                                $boa_offices[] = ltrim(rtrim($value["office"]));
-                                $boa_audityear[] = ltrim(rtrim($value["year"]));
-                                $boa_category[] = ltrim(rtrim($value["category"]));
-                                $boa_suggestedstatus[] = ltrim(rtrim($value["suggestedstatus"]));
+// BOAs by Suggested Status
+$boa_suggestedstatus = [];
+$boa_suggestedstatus_xaxis = [];
+$boa_suggestedstatus_series = [];
+$selectedboastatus = array("Under Implementation", "Not Implemented");
+foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
+    if (in_array($value["suggestedstatusverified"], $selectedboastatus)) {
+        $priority = (rtrim(ltrim($value["priority"])) == "") ? "Not Defined" : rtrim(ltrim($value["priority"]));
+        if (!in_array($priority, $boa_priorities_xaxis)) {
+            $boa_priorities_xaxis[] = $priority;
+        }
+        if (date("Y-m-d", time()) <= $value["targetdate"]) {
+            $boa_priorities_current[] = $priority;
+        } else {
+            $boa_priorities_elapsed[] = $priority;
+        }
+        $boa_priorities_total[] = $priority;
+        $boa_offices[] = ltrim(rtrim($value["office"]));
+        $boa_audityear[] = ltrim(rtrim($value["year"]));
+        $boa_category[] = ltrim(rtrim($value["category"]));
+        $boa_suggestedstatus[] = ltrim(rtrim($value["suggestedstatus"]));
 
-                                // BOAs by Status
-                                $elapsed = floor(getdaysbetween($value["year"]."/01/01",min(date("Y-m-d",time()),$value["targetdate"])));
-                                $duration = ceil(getdaysbetween($value["year"]."/01/01",$value["targetdate"]));
-                                $score = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
-                                if ($score >= 0 && $score < 75) {
-                                    $boa_status_green++;
-                                } else if ($score >= 75 && $score < 100) {
-                                    $boa_status_yellow++;
-                                } else {
-                                    $boa_status_red++;
-                                }
+        // BOAs by Status
+        $elapsed = floor(getdaysbetween($value["year"] . "/01/01", min(date("Y-m-d", time()), $value["targetdate"])));
+        $duration = ceil(getdaysbetween($value["year"] . "/01/01", $value["targetdate"]));
+        $score = number_format(($elapsed * 100 / max($duration, 1)), 0, '.', ',');
+        if ($score >= 0 && $score < 75) {
+            $boa_status_green++;
+        } else if ($score >= 75 && $score < 100) {
+            $boa_status_yellow++;
+        } else {
+            $boa_status_red++;
+        }
 
+        // BOAs by TargetDate
+        $td = $value["targetdate"];
+        if ($td >= date("Y-m-d", strtotime("now"))) {
+            // Current
+            if ($td <= date("Y-m-d", strtotime("+3 month"))) {
+                $boa_targetdate_3months++;
+            } else if ($td > date("Y-m-d", strtotime("+3 month")) && $td <= date("Y-m-d", strtotime("+6 month"))) {
+                $boa_targetdate_6months++;
+            } else if ($td > date("Y-m-d", strtotime("+6 month")) && $td <= date("Y-m-d", strtotime("+9 month"))) {
+                $boa_targetdate_9months++;
+            } else if ($td > date("Y-m-d", strtotime("+9 month")) && $td <= date("Y-m-d", strtotime("+12 month"))) {
+                $boa_targetdate_12months++;
+            } else {
+                $boa_targetdate_over12++;
+            }
+        } else {
+            // Elapsed
+            $boa_targetdate_elapsed++;
+        }
+    }
+}
+// initialize everything to zero
+foreach ($boa_priorities_xaxis as $key => $value) {
+    $boa_currentpriorities_seriesdata[$value] = 0;
+    $boa_elapsedpriorities_seriesdata[$value] = 0;
+    $boa_totalpriorities_seriesdata[$value] = 0;
 
-                                // BOAs by TargetDate
-                                $td = $value["targetdate"];
-                                if ($td >= date("Y-m-d", strtotime("now"))) {
-                                    // Current
-                                    if ($td <= date("Y-m-d", strtotime("+3 month"))) {
-                                        $boa_targetdate_3months++;
-                                    } else if ($td > date("Y-m-d", strtotime("+3 month")) && $td <= date("Y-m-d", strtotime("+6 month"))) {
-                                        $boa_targetdate_6months++;
-                                    } else if ($td > date("Y-m-d", strtotime("+6 month")) && $td <= date("Y-m-d", strtotime("+9 month"))) {
-                                        $boa_targetdate_9months++;
-                                    } else if ($td > date("Y-m-d", strtotime("+9 month")) && $td <= date("Y-m-d", strtotime("+12 month"))) {
-                                        $boa_targetdate_12months++;
-                                    } else {
-                                        $boa_targetdate_over12++;
-                                    }
-                                } else {
-                                    // Elapsed
-                                    $boa_targetdate_elapsed++;
-                                }
-                            }
-                        }
-                        // initialize everything to zero
-                        foreach ($boa_priorities_xaxis as $key => $value) {
-                            $boa_currentpriorities_seriesdata[$value] = 0;
-                            $boa_elapsedpriorities_seriesdata[$value] = 0;
-                            $boa_totalpriorities_seriesdata[$value] = 0;
+}
+// Assign values to respective series data
+foreach (array_count_values($boa_priorities_current) as $key => $value) {
+    $boa_currentpriorities_seriesdata[$key] = $value;
+}
+foreach (array_count_values($boa_priorities_elapsed) as $key => $value) {
+    $boa_elapsedpriorities_seriesdata[$key] = $value;
+}
+foreach (array_count_values($boa_priorities_total) as $key => $value) {
+    $boa_totalpriorities_seriesdata[$key] = $value;
+}
 
-                        }
-                        // Assign values to respective series data
-                        foreach (array_count_values($boa_priorities_current) as $key => $value) {
-                            $boa_currentpriorities_seriesdata[$key] = $value;
-                        }
-                        foreach (array_count_values($boa_priorities_elapsed) as $key => $value) {
-                            $boa_elapsedpriorities_seriesdata[$key] = $value;
-                        }
-                        foreach (array_count_values($boa_priorities_total) as $key => $value) {
-                            $boa_totalpriorities_seriesdata[$key] = $value;
-                        }
+// BOA by Offices
+$boa_offices = array_count_values($boa_offices);
+arsort($boa_offices);
+foreach ($boa_offices as $key => $value) {
+    $boa_offices_xaxis[] = $key;
+    $boa_offices_series[] = $value;
+}
 
-                        // BOA by Offices
-                        $boa_offices = array_count_values($boa_offices);
-                        arsort($boa_offices);
-                        foreach ($boa_offices as $key => $value) {
-                            $boa_offices_xaxis[] = $key;
-                            $boa_offices_series[] = $value;
-                        }
+// BOA by Audit Year
+$boa_audityear = array_count_values($boa_audityear);
+ksort($boa_audityear);
+foreach ($boa_audityear as $key => $value) {
+    $boa_audityear_xaxis[] = $key;
+    $boa_audityear_series[] = $value;
+}
 
-                        // BOA by Audit Year
-                        $boa_audityear = array_count_values($boa_audityear);
-                        ksort($boa_audityear);
-                        foreach ($boa_audityear as $key => $value) {
-                            $boa_audityear_xaxis[] = $key;
-                            $boa_audityear_series[] = $value;
-                        }
+// BOA by Category
+$boa_category = array_count_values($boa_category);
+arsort($boa_category);
+foreach ($boa_category as $key => $value) {
+    $boa_category_xaxis[] = $key;
+    $boa_category_series[] = $value;
+}
 
-                        // BOA by Category
-                        $boa_category = array_count_values($boa_category);
-                        arsort($boa_category);
-                        foreach ($boa_category as $key => $value) {
-                            $boa_category_xaxis[] = $key;
-                            $boa_category_series[] = $value;
-                        }
-
-
-                        // BOA by Suggested Status
-                        $boa_suggestedstatus = array_count_values($boa_suggestedstatus);
-                        arsort($boa_suggestedstatus);
-                        foreach ($boa_suggestedstatus as $key => $value) {
-                            $boa_suggestedstatus_xaxis[] = $key;
-                            $boa_suggestedstatus_series[] = $value;
-                        }
-                    ?>
+// BOA by Suggested Status
+$boa_suggestedstatus = array_count_values($boa_suggestedstatus);
+arsort($boa_suggestedstatus);
+foreach ($boa_suggestedstatus as $key => $value) {
+    $boa_suggestedstatus_xaxis[] = $key;
+    $boa_suggestedstatus_series[] = $value;
+}
+?>
 
                     <div class="col-md-12 boapriorities pb-20">
                         <div id="boapriorities_chart"></div>
@@ -1768,99 +1767,99 @@ include_once 'totals_algo.php';
 
 
                     <?php
-                        $oios_categories_xaxis = [];
-                        $oios_categories_series_elapsed = [];
-                        $oios_categories_series_current = [];
-                        $oios_categories_series_total = [];
-                        $oios_elapsedseriesdata;
-                        $oios_currentseriesdata;
-                        $oios_totalseriesdata;
+$oios_categories_xaxis = [];
+$oios_categories_series_elapsed = [];
+$oios_categories_series_current = [];
+$oios_categories_series_total = [];
+$oios_elapsedseriesdata;
+$oios_currentseriesdata;
+$oios_totalseriesdata;
 
-                        // OIOS by Office
-                        $oios_offices = [];
-                        $oios_offices_xaxis = [];
-                        $oios_offices_series = [];
+// OIOS by Office
+$oios_offices = [];
+$oios_offices_xaxis = [];
+$oios_offices_series = [];
 
-                        // OIOS by Audit Year
-                        $oios_audityear = [];
-                        $oios_audityear_xaxis = [];
-                        $oios_audityear_series = [];
+// OIOS by Audit Year
+$oios_audityear = [];
+$oios_audityear_xaxis = [];
+$oios_audityear_series = [];
 
-                        // OIOS by TargetDate
-                        $oios_targetdate_3months = 0;
-                        $oios_targetdate_6months = 0;
-                        $oios_targetdate_9months = 0;
-                        $oios_targetdate_12months = 0;
-                        $oios_targetdate_over12 = 0;
-                        $oios_targetdate_elapsed = 0;
+// OIOS by TargetDate
+$oios_targetdate_3months = 0;
+$oios_targetdate_6months = 0;
+$oios_targetdate_9months = 0;
+$oios_targetdate_12months = 0;
+$oios_targetdate_over12 = 0;
+$oios_targetdate_elapsed = 0;
 
-                        foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
-                            $priority = (rtrim(ltrim($value["recommendation_update"])) == "" ) ? "Not Defined" : rtrim(ltrim($value["recommendation_update"]));
-                            if (!in_array($priority, $oios_categories_xaxis)) {
-                                $oios_categories_xaxis[] = $priority;
-                            }
-                            if (date("Y-m-d",time()) <= $value["implementation_date"]) {
-                                $oios_categories_series_current[] = $priority;
-                            } else {
-                                $oios_categories_series_elapsed[] = $priority;
-                            }
-                            $oios_categories_series_total[] = $priority;
-                            $oios_offices[] = ltrim(rtrim($value["office"]));
-                            $oios_audityear[] = ltrim(rtrim(date('Y', strtotime($value["issue_date"]))));
+foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
+    $priority = (rtrim(ltrim($value["recommendation_update"])) == "") ? "Not Defined" : rtrim(ltrim($value["recommendation_update"]));
+    if (!in_array($priority, $oios_categories_xaxis)) {
+        $oios_categories_xaxis[] = $priority;
+    }
+    if (date("Y-m-d", time()) <= $value["implementation_date"]) {
+        $oios_categories_series_current[] = $priority;
+    } else {
+        $oios_categories_series_elapsed[] = $priority;
+    }
+    $oios_categories_series_total[] = $priority;
+    $oios_offices[] = ltrim(rtrim($value["office"]));
+    $oios_audityear[] = ltrim(rtrim(date('Y', strtotime($value["issue_date"]))));
 
-                            // BOAs by TargetDate
-                            $td = $value["implementation_date"];
-                            if ($td >= date("Y-m-d", strtotime("now"))) {
-                                // Current
-                                if ($td <= date("Y-m-d", strtotime("+3 month"))) {
-                                    $oios_targetdate_3months++;
-                                } else if ($td > date("Y-m-d", strtotime("+3 month")) && $td <= date("Y-m-d", strtotime("+6 month"))) {
-                                    $oios_targetdate_6months++;
-                                } else if ($td > date("Y-m-d", strtotime("+6 month")) && $td <= date("Y-m-d", strtotime("+9 month"))) {
-                                    $oios_targetdate_9months++;
-                                } else if ($td > date("Y-m-d", strtotime("+9 month")) && $td <= date("Y-m-d", strtotime("+12 month"))) {
-                                    $oios_targetdate_12months++;
-                                } else {
-                                    $oios_targetdate_over12++;
-                                }
-                            } else {
-                                // Elapsed
-                                $oios_targetdate_elapsed++;
-                            }
-                        }
+    // BOAs by TargetDate
+    $td = $value["implementation_date"];
+    if ($td >= date("Y-m-d", strtotime("now"))) {
+        // Current
+        if ($td <= date("Y-m-d", strtotime("+3 month"))) {
+            $oios_targetdate_3months++;
+        } else if ($td > date("Y-m-d", strtotime("+3 month")) && $td <= date("Y-m-d", strtotime("+6 month"))) {
+            $oios_targetdate_6months++;
+        } else if ($td > date("Y-m-d", strtotime("+6 month")) && $td <= date("Y-m-d", strtotime("+9 month"))) {
+            $oios_targetdate_9months++;
+        } else if ($td > date("Y-m-d", strtotime("+9 month")) && $td <= date("Y-m-d", strtotime("+12 month"))) {
+            $oios_targetdate_12months++;
+        } else {
+            $oios_targetdate_over12++;
+        }
+    } else {
+        // Elapsed
+        $oios_targetdate_elapsed++;
+    }
+}
 
-                        // initialize everything to zero
-                        foreach ($oios_categories_xaxis as $key => $value) {
-                            $oios_currentseriesdata[$value] = 0;
-                            $oios_elapsedseriesdata[$value] = 0;
-                        }
-                        // Assign values to respective series data
-                        foreach (array_count_values($oios_categories_series_current) as $key => $value) {
-                            $oios_currentseriesdata[$key] = $value;
-                        }
-                        foreach (array_count_values($oios_categories_series_elapsed) as $key => $value) {
-                            $oios_elapsedseriesdata[$key] = $value;
-                        }
-                        foreach (array_count_values($oios_categories_series_total) as $key => $value) {
-                            $oios_totalseriesdata[$key] = $value;
-                        }
+// initialize everything to zero
+foreach ($oios_categories_xaxis as $key => $value) {
+    $oios_currentseriesdata[$value] = 0;
+    $oios_elapsedseriesdata[$value] = 0;
+}
+// Assign values to respective series data
+foreach (array_count_values($oios_categories_series_current) as $key => $value) {
+    $oios_currentseriesdata[$key] = $value;
+}
+foreach (array_count_values($oios_categories_series_elapsed) as $key => $value) {
+    $oios_elapsedseriesdata[$key] = $value;
+}
+foreach (array_count_values($oios_categories_series_total) as $key => $value) {
+    $oios_totalseriesdata[$key] = $value;
+}
 
-                        // OIOS by Offices
-                        $oios_offices = array_count_values($oios_offices);
-                        arsort($oios_offices);
-                        foreach ($oios_offices as $key => $value) {
-                            $oios_offices_xaxis[] = $key;
-                            $oios_offices_series[] = $value;
-                        }
+// OIOS by Offices
+$oios_offices = array_count_values($oios_offices);
+arsort($oios_offices);
+foreach ($oios_offices as $key => $value) {
+    $oios_offices_xaxis[] = $key;
+    $oios_offices_series[] = $value;
+}
 
-                        // OIOS by Audit Year
-                        $oios_audityear = array_count_values($oios_audityear);
-                        ksort($oios_audityear);
-                        foreach ($oios_audityear as $key => $value) {
-                            $oios_audityear_xaxis[] = $key;
-                            $oios_audityear_series[] = $value;
-                        }
-                    ?>
+// OIOS by Audit Year
+$oios_audityear = array_count_values($oios_audityear);
+ksort($oios_audityear);
+foreach ($oios_audityear as $key => $value) {
+    $oios_audityear_xaxis[] = $key;
+    $oios_audityear_series[] = $value;
+}
+?>
 
 
                     <div class="col-md-12 oioscategories pb-20">
@@ -1987,7 +1986,7 @@ include_once 'totals_algo.php';
                         </script>
                     </div>
 
-                    
+
 
                     <!--
                         Project risks
@@ -2661,286 +2660,261 @@ include_once 'totals_algo.php';
                                 <th class="center">Reporting<br/>Compliance</th>
                                 <th class="center">Total<br/>Outputs</th>
                                 <th class="center">Completed<br/>Activities</th>
-                                
+
                                 <!--<th class="right">Short<br/>Projects %</th>-->
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            
-                            $counterlast;
-                            $office_totalconsumable = 0;
-                            $office_totalconsumed = 0;
-                            $office_totalbalance = 0;
-                            $office_totalposts = 0;
-                            $office_totalfilledposts = 0;
-                            $office_totalvacantposts = 0;
-                            $office_totalvacancy = 0;
-                            $office_totalsenior = 0;
-                            $office_totalbudget= 0;
-                            $office_totalprojects = 0;
-                            $office_totalredprojects = 0;
-                            $office_totalyellowprojects = 0;
-                            $office_totalgreenprojects = 0;
-                            $office_totalreportingcompliance = 0;
-                            $office_totalexpired = 0;
-                            $office_totalmonthspastdue = 0;
-                            $office_count = count($processed_divisiondata[$division]["divisionlisting_office"]);
-                            $office_totaloutputs = 0;
-                            $office_totalactivities = 0;
-                            $office_completedactivities = 0;
 
-                            for ($i = 0; $i < $office_count; $i++) {
-                                echo '<tr>';
-                                echo '<td class="right">'.($i + 1).'.</td>';
-                                echo '<td class="left">'.$processed_divisiondata[$division]["divisionlisting_office"][$i]['office'].'</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable']/1000000,1,'.',',').' M</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed']/1000000,1,'.',',').' M</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['balance']/1000000,1,'.',',').' M</td>';
-                                echo '<td class="right">$ '.number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable']/$processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'])/1000000,1,'.',',').' M</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'],0,'.',',').'</td>';
+$counterlast;
+$office_totalconsumable = 0;
+$office_totalconsumed = 0;
+$office_totalbalance = 0;
+$office_totalposts = 0;
+$office_totalfilledposts = 0;
+$office_totalvacantposts = 0;
+$office_totalvacancy = 0;
+$office_totalsenior = 0;
+$office_totalbudget = 0;
+$office_totalprojects = 0;
+$office_totalredprojects = 0;
+$office_totalyellowprojects = 0;
+$office_totalgreenprojects = 0;
+$office_totalreportingcompliance = 0;
+$office_totalexpired = 0;
+$office_totalmonthspastdue = 0;
+$office_count = count($processed_divisiondata[$division]["divisionlisting_office"]);
+$office_totaloutputs = 0;
+$office_totalactivities = 0;
+$office_completedactivities = 0;
 
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['vacant_posts'],0,'.',',').'</td>';
+for ($i = 0; $i < $office_count; $i++) {
+    echo '<tr>';
+    echo '<td class="right">' . ($i + 1) . '.</td>';
+    echo '<td class="left">' . $processed_divisiondata[$division]["divisionlisting_office"][$i]['office'] . '</td>';
+    echo '<td class="right">$ ' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable'] / 1000000, 1, '.', ',') . ' M</td>';
+    echo '<td class="right">$ ' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed'] / 1000000, 1, '.', ',') . ' M</td>';
+    echo '<td class="right">$ ' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['balance'] / 1000000, 1, '.', ',') . ' M</td>';
+    echo '<td class="right">$ ' . number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable'] / $processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts']) / 1000000, 1, '.', ',') . ' M</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'], 0, '.', ',') . '</td>';
 
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
-                                //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
-                                //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_post_budget'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects']*100/$processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects']),0,'.',',').'%</td>';
-                                echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due']),0,'.',',').'</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['vacant_posts'], 0, '.', ',') . '</td>';
 
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['red_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['yellow_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['green_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'],0,'.',',').'%</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_outputs'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'],0,'.',',').' / '.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'],0,'.',',').'</td>';
-                                
-                                //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
-                                echo '</tr>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'], 0, '.', ',') . '%</td>';
+    //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
+    //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_post_budget'],0,'.',',').'</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format(($processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'] * 100 / $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects']), 0, '.', ',') . '%</td>';
+    echo '<td class="center">' . number_format(abs($processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due']), 0, '.', ',') . '</td>';
 
-                                $office_totalconsumable += $processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable'];
-                                $office_totalconsumed += $processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed'];
-                                $office_totalbalance += $processed_divisiondata[$division]["divisionlisting_office"][$i]['balance'];
-                                $office_totalposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'];
-                                $office_totalfilledposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'];
-                                $office_totalvacantposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['vacant_posts'];
-                                $office_totalvacancy += $processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'];
-                                $office_totalsenior += $processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_senior_posts'];
-                                $office_totalbudget += $processed_divisiondata[$division]["divisionlisting_office"][$i]['average_post_budget'];
-                                $office_totalprojects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects'];
-                                $office_totalredprojects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['red_projects'];
-                                $office_totalyellowprojects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['yellow_projects'];
-                                $office_totalgreenprojects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['green_projects'];
-                                $office_totalreportingcompliance += $processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'];
-                                $office_totalexpired += $processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'];
-                                $office_totalmonthspastdue += $processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due'];
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['red_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['yellow_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['green_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'], 0, '.', ',') . '%</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_outputs'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'], 0, '.', ',') . ' / ' . number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'], 0, '.', ',') . '</td>';
 
-                                $office_totaloutputs += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_outputs'];
-                                $office_totalactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'];
-                                $office_completedactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'];
+    //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+    echo '</tr>';
 
-                                $counterlast = $i;
-                            }
+    $office_totalconsumable += $processed_divisiondata[$division]["divisionlisting_office"][$i]['consumable'];
+    $office_totalconsumed += $processed_divisiondata[$division]["divisionlisting_office"][$i]['consumed'];
+    $office_totalbalance += $processed_divisiondata[$division]["divisionlisting_office"][$i]['balance'];
+    $office_totalposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_posts'];
+    $office_totalfilledposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['filled_posts'];
+    $office_totalvacantposts += $processed_divisiondata[$division]["divisionlisting_office"][$i]['vacant_posts'];
+    $office_totalvacancy += $processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_vacancy'];
+    $office_totalsenior += $processed_divisiondata[$division]["divisionlisting_office"][$i]['percentage_senior_posts'];
+    $office_totalbudget += $processed_divisiondata[$division]["divisionlisting_office"][$i]['average_post_budget'];
+    $office_totalprojects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_projects'];
+    $office_totalredprojects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['red_projects'];
+    $office_totalyellowprojects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['yellow_projects'];
+    $office_totalgreenprojects += $processed_divisiondata[$division]["divisionlisting_office"][$i]['green_projects'];
+    $office_totalreportingcompliance += $processed_divisiondata[$division]["divisionlisting_office"][$i]['reporting_compliance'];
+    $office_totalexpired += $processed_divisiondata[$division]["divisionlisting_office"][$i]['expired_projects'];
+    $office_totalmonthspastdue += $processed_divisiondata[$division]["divisionlisting_office"][$i]['average_months_past_due'];
 
-                            echo '<tr style="font-style:italic; font-weight:500;" class="summary">';
-                            echo '<td class="right">&nbsp;</td>';
-                            echo '<td class="left">Office Summary</td>';
-                            echo '<td class="right">$ '.number_format($office_totalconsumable/1000000,1,'.',',').' M</td>';
-                            echo '<td class="right">$ '.number_format($office_totalconsumed/1000000,1,'.',',').' M</td>';
-                            echo '<td class="right">$ '.number_format($office_totalbalance/1000000,1,'.',',').' M</td>';
+    $office_totaloutputs += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_outputs'];
+    $office_totalactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['total_activities'];
+    $office_completedactivities += $processed_divisiondata[$division]["divisionlisting_office"][$i]['completed_activities'];
 
-                            echo '<td class="right">$ '.number_format(($office_totalconsumable/$office_totalfilledposts)/1000000,1,'.',',').' M</td>';
+    $counterlast = $i;
+}
 
-                            echo '<td class="center">'.number_format($office_totalposts,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($office_totalfilledposts,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($office_totalvacantposts,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_totalvacancy/$office_count),0,'.',',').'%</td>';
-                            //echo '<td class="right">'.number_format(($office_totalsenior/$office_count),0,'.',',').'%</td>';
-                            //echo '<td class="right">'.number_format($office_totalbudget,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($office_totalprojects,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($office_totalexpired,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_totalexpired*100/$office_totalprojects),0,'.',',').'%</td>';
-                            echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_division"]), 0, '.', ',').'</td>';
+echo '<tr style="font-style:italic; font-weight:500;" class="summary">';
+echo '<td class="right">&nbsp;</td>';
+echo '<td class="left">Office Summary</td>';
+echo '<td class="right">$ ' . number_format($office_totalconsumable / 1000000, 1, '.', ',') . ' M</td>';
+echo '<td class="right">$ ' . number_format($office_totalconsumed / 1000000, 1, '.', ',') . ' M</td>';
+echo '<td class="right">$ ' . number_format($office_totalbalance / 1000000, 1, '.', ',') . ' M</td>';
 
-                            echo '<td class="center">'.number_format($office_totalredprojects,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($office_totalyellowprojects,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($office_totalgreenprojects,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_totalreportingcompliance/$office_count),0,'.',',').'%</td>';
+echo '<td class="right">$ ' . number_format(($office_totalconsumable / $office_totalfilledposts) / 1000000, 1, '.', ',') . ' M</td>';
 
-                            echo '<td class="center">'.number_format($office_totaloutputs,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($office_completedactivities,0,'.',',').' / '.number_format($office_totalactivities,0,'.',',').'</td>';
-                            
-                            //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
-                            echo '</tr>';
+echo '<td class="center">' . number_format($office_totalposts, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($office_totalfilledposts, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($office_totalvacantposts, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($office_totalvacancy / $office_count), 0, '.', ',') . '%</td>';
+//echo '<td class="right">'.number_format(($office_totalsenior/$office_count),0,'.',',').'%</td>';
+//echo '<td class="right">'.number_format($office_totalbudget,0,'.',',').'</td>';
+echo '<td class="center">' . number_format($office_totalprojects, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($office_totalexpired, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($office_totalexpired * 100 / $office_totalprojects), 0, '.', ',') . '%</td>';
+echo '<td class="center">' . number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_division"]), 0, '.', ',') . '</td>';
 
+echo '<td class="center">' . number_format($office_totalredprojects, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($office_totalyellowprojects, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($office_totalgreenprojects, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($office_totalreportingcompliance / $office_count), 0, '.', ',') . '%</td>';
 
+echo '<td class="center">' . number_format($office_totaloutputs, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($office_completedactivities, 0, '.', ',') . ' / ' . number_format($office_totalactivities, 0, '.', ',') . '</td>';
 
-                            $region_totalconsumable = 0;
-                            $region_totalconsumed = 0;
-                            $region_totalbalance = 0;
-                            $region_totalposts = 0;
-                            $region_totalfilledposts = 0;
-                            $region_totalvacantposts = 0;
-                            $region_totalvacancy = 0;
-                            $region_totalsenior = 0;
-                            $region_totalbudget= 0;
-                            $region_totalprojects = 0;
-                            $region_totalredprojects = 0;
-                            $region_totalyellowprojects = 0;
-                            $region_totalgreenprojects = 0;
-                            $region_totalreportingcompliance = 0;
-                            $region_totalexpired = 0;
-                            $region_totalmonthspastdue = 0;
-                            $region_count = count($processed_divisiondata[$division]["divisionlisting_region"]);
-                            $region_totaloutputs = 0;
-                            $region_totalactivities = 0;
-                            $region_completedactivities = 0;
+//echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+echo '</tr>';
 
+$region_totalconsumable = 0;
+$region_totalconsumed = 0;
+$region_totalbalance = 0;
+$region_totalposts = 0;
+$region_totalfilledposts = 0;
+$region_totalvacantposts = 0;
+$region_totalvacancy = 0;
+$region_totalsenior = 0;
+$region_totalbudget = 0;
+$region_totalprojects = 0;
+$region_totalredprojects = 0;
+$region_totalyellowprojects = 0;
+$region_totalgreenprojects = 0;
+$region_totalreportingcompliance = 0;
+$region_totalexpired = 0;
+$region_totalmonthspastdue = 0;
+$region_count = count($processed_divisiondata[$division]["divisionlisting_region"]);
+$region_totaloutputs = 0;
+$region_totalactivities = 0;
+$region_completedactivities = 0;
 
-                            
+for ($i = 0; $i < count($processed_divisiondata[$division]["divisionlisting_region"]); $i++) {
+    echo '<tr>';
+    echo '<td class="right">' . ($i + $counterlast + 2) . '.</td>';
+    echo '<td class="left">' . $processed_divisiondata[$division]["divisionlisting_region"][$i]['office'] . '</td>';
+    echo '<td class="right">$ ' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable'] / 1000000, 1, '.', ',') . ' M</td>';
+    echo '<td class="right">$ ' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed'] / 1000000, 1, '.', ',') . ' M</td>';
+    echo '<td class="right">$ ' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['balance'] / 1000000, 1, '.', ',') . ' M</td>';
 
-                            for ($i=0; $i < count($processed_divisiondata[$division]["divisionlisting_region"]); $i++) {
-                                echo '<tr>';
-                                echo '<td class="right">'.($i + $counterlast + 2).'.</td>';
-                                echo '<td class="left">'.$processed_divisiondata[$division]["divisionlisting_region"][$i]['office'].'</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable']/1000000,1,'.',',').' M</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed']/1000000,1,'.',',').' M</td>';
-                                echo '<td class="right">$ '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['balance']/1000000,1,'.',',').' M</td>';
+    echo '<td class="right">$ ' . number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable'] / $processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts']) / 1000000, 1, '.', ',') . ' M</td>';
 
-                                echo '<td class="right">$ '.number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable']/$processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'])/1000000,1,'.',',').' M</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['vacant_posts'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'], 0, '.', ',') . '%</td>';
+    //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
+    //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_post_budget'],0,'.',',').'</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'] * 100 / $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects']), 0, '.', ',') . '%</td>';
+    echo '<td class="center">' . number_format(abs($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due']), 0, '.', ',') . '</td>';
 
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['red_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['yellow_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['green_projects'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'], 0, '.', ',') . '%</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'], 0, '.', ',') . '</td>';
+    echo '<td class="center">' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'], 0, '.', ',') . ' / ' . number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'], 0, '.', ',') . '</td>';
 
+    //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+    echo '</tr>';
 
+    $region_totalconsumable += $processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable'];
+    $region_totalconsumed += $processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed'];
+    $region_totalbalance += $processed_divisiondata[$division]["divisionlisting_region"][$i]['balance'];
+    $region_totalposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'];
 
+    $region_totalfilledposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'];
+    $region_totalvacantposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['vacant_posts'];
 
+    $region_totalvacancy += $processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'];
+    $region_totalsenior += $processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_senior_posts'];
+    $region_totalbudget += $processed_divisiondata[$division]["divisionlisting_region"][$i]['average_post_budget'];
+    $region_totalprojects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects'];
+    $region_totalredprojects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['red_projects'];
+    $region_totalyellowprojects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['yellow_projects'];
+    $region_totalgreenprojects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['green_projects'];
+    $region_totalreportingcompliance += $processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'];
+    $region_totalexpired += $processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'];
+    $region_totalmonthspastdue += $processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due'];
+    $region_totaloutputs += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'];
+    $region_totalactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'];
+    $region_completedactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'];
+}
 
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['vacant_posts'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'],0,'.',',').'%</td>';
-                                //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_senior_posts'],0,'.',',').'%</td>';
-                                //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_post_budget'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format(($processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects']*100/$processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects']),0,'.',',').'%</td>';
-                                echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due']),0,'.',',').'</td>';
+echo '<tr style="font-style:italic; font-weight:500;" class="summary">';
+echo '<td class="right">&nbsp;</td>';
+echo '<td class="left">Regional Summary</td>';
+echo '<td class="right">$ ' . number_format($region_totalconsumable / 1000000, 1, '.', ',') . ' M</td>';
+echo '<td class="right">$ ' . number_format($region_totalconsumed / 1000000, 1, '.', ',') . ' M</td>';
+echo '<td class="right">$ ' . number_format($region_totalbalance / 1000000, 1, '.', ',') . ' M</td>';
 
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['red_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['yellow_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['green_projects'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'],0,'.',',').'%</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'],0,'.',',').'</td>';
-                                echo '<td class="center">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'],0,'.',',').' / '.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'],0,'.',',').'</td>';
-                                
-                                //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_region"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
-                                echo '</tr>';
+echo '<td class="right">$ ' . number_format(($region_totalconsumable / $region_totalfilledposts) / 1000000, 1, '.', ',') . ' M</td>';
 
-                                $region_totalconsumable += $processed_divisiondata[$division]["divisionlisting_region"][$i]['consumable'];
-                                $region_totalconsumed += $processed_divisiondata[$division]["divisionlisting_region"][$i]['consumed'];
-                                $region_totalbalance += $processed_divisiondata[$division]["divisionlisting_region"][$i]['balance'];
-                                $region_totalposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_posts'];
+echo '<td class="center">' . number_format($region_totalposts, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($region_totalfilledposts, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($region_totalvacantposts, 0, '.', ',') . '</td>';
 
-                                $region_totalfilledposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['filled_posts'];
-                                $region_totalvacantposts += $processed_divisiondata[$division]["divisionlisting_region"][$i]['vacant_posts'];
+echo '<td class="center">' . number_format(($region_totalvacancy / $region_count), 0, '.', ',') . '%</td>';
+//echo '<td class="right">'.number_format(($region_totalsenior/$region_count),0,'.',',').'%</td>';
+//echo '<td class="right">'.number_format($region_totalbudget,0,'.',',').'</td>';
+echo '<td class="center">' . number_format($region_totalprojects, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($region_totalexpired, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($region_totalexpired * 100 / $region_totalprojects), 0, '.', ',') . '%</td>';
+echo '<td class="center">' . number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_region"]), 0, '.', ',') . '</td>';
 
-                                $region_totalvacancy += $processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_vacancy'];
-                                $region_totalsenior += $processed_divisiondata[$division]["divisionlisting_region"][$i]['percentage_senior_posts'];
-                                $region_totalbudget += $processed_divisiondata[$division]["divisionlisting_region"][$i]['average_post_budget'];
-                                $region_totalprojects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_projects'];
-                                $region_totalredprojects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['red_projects'];
-                                $region_totalyellowprojects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['yellow_projects'];
-                                $region_totalgreenprojects += $processed_divisiondata[$division]["divisionlisting_region"][$i]['green_projects'];
-                                $region_totalreportingcompliance += $processed_divisiondata[$division]["divisionlisting_region"][$i]['reporting_compliance'];
-                                $region_totalexpired += $processed_divisiondata[$division]["divisionlisting_region"][$i]['expired_projects'];
-                                $region_totalmonthspastdue += $processed_divisiondata[$division]["divisionlisting_region"][$i]['average_months_past_due'];
-                                $region_totaloutputs += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_outputs'];
-                                $region_totalactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['total_activities'];
-                                $region_completedactivities += $processed_divisiondata[$division]["divisionlisting_region"][$i]['completed_activities'];
-                            }
+echo '<td class="center">' . number_format($region_totalredprojects, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($region_totalyellowprojects, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($region_totalgreenprojects, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($region_totalreportingcompliance / $region_count), 0, '.', ',') . '%</td>';
+echo '<td class="center">' . number_format($region_totaloutputs, 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format($region_completedactivities, 0, '.', ',') . ' / ' . number_format($region_totalactivities, 0, '.', ',') . '</td>';
 
-                            echo '<tr style="font-style:italic; font-weight:500;" class="summary">';
-                            echo '<td class="right">&nbsp;</td>';
-                            echo '<td class="left">Regional Summary</td>';
-                            echo '<td class="right">$ '.number_format($region_totalconsumable/1000000,1,'.',',').' M</td>';
-                            echo '<td class="right">$ '.number_format($region_totalconsumed/1000000,1,'.',',').' M</td>';
-                            echo '<td class="right">$ '.number_format($region_totalbalance/1000000,1,'.',',').' M</td>';
+//echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+echo '</tr>';
 
-                            echo '<td class="right">$ '.number_format(($region_totalconsumable/$region_totalfilledposts)/1000000,1,'.',',').' M</td>';
+echo '<tr style="font-style:italic; font-weight:500;" class="summarytotal">';
+echo '<td class="right">&nbsp;</td>';
+echo '<td class="left">Total UNEP Summary</td>';
+echo '<td class="right">$ ' . number_format(($office_totalconsumable + $region_totalconsumable) / 1000000, 1, '.', ',') . ' M</td>';
+echo '<td class="right">$ ' . number_format(($office_totalconsumed + $region_totalconsumed) / 1000000, 1, '.', ',') . ' M</td>';
+echo '<td class="right">$ ' . number_format(($office_totalbalance + $region_totalbalance) / 1000000, 1, '.', ',') . ' M</td>';
+echo '<td class="right">$ ' . number_format((($office_totalconsumable + $region_totalconsumable) / ($office_totalfilledposts + $region_totalfilledposts)) / 1000000, 1, '.', ',') . ' M</td>';
 
+echo '<td class="center">' . number_format(($office_totalposts + $region_totalposts), 0, '.', ',') . '</td>';
 
+echo '<td class="center">' . number_format(($office_totalfilledposts + $region_totalfilledposts), 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($office_totalvacantposts + $region_totalvacantposts), 0, '.', ',') . '</td>';
 
-                            echo '<td class="center">'.number_format($region_totalposts,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($region_totalfilledposts,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($region_totalvacantposts,0,'.',',').'</td>';
+echo '<td class="center">' . number_format(((($office_totalvacancy / $office_count) + ($region_totalvacancy / $region_count)) / 2), 0, '.', ',') . '%</td>';
+//echo '<td class="right">'.number_format(((($office_totalsenior/$office_count) + ($region_totalsenior/$region_count))/2),0,'.',',').'%</td>';
+//echo '<td class="right">'.number_format(($office_totalbudget+$region_totalbudget),0,'.',',').'</td>';
+echo '<td class="center">' . number_format(($office_totalprojects + $region_totalprojects), 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($office_totalexpired + $region_totalexpired), 0, '.', ',') . '</td>';
 
-                            echo '<td class="center">'.number_format(($region_totalvacancy/$region_count),0,'.',',').'%</td>';
-                            //echo '<td class="right">'.number_format(($region_totalsenior/$region_count),0,'.',',').'%</td>';
-                            //echo '<td class="right">'.number_format($region_totalbudget,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($region_totalprojects,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($region_totalexpired,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($region_totalexpired*100/$region_totalprojects),0,'.',',').'%</td>';
-                            echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue_region"]), 0, '.', ',').'</td>';
+echo '<td class="center">' . number_format((($office_totalexpired + $region_totalexpired) * 100 / ($office_totalprojects + $region_totalprojects)), 0, '.', ',') . '%</td>';
 
-                            echo '<td class="center">'.number_format($region_totalredprojects,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($region_totalyellowprojects,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($region_totalgreenprojects,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($region_totalreportingcompliance/$region_count),0,'.',',').'%</td>';
-                            echo '<td class="center">'.number_format($region_totaloutputs,0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format($region_completedactivities,0,'.',',').' / '.number_format($region_totalactivities,0,'.',',').'</td>';
-                            
-                            //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
-                            echo '</tr>';
+echo '<td class="center">' . number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]), 0, '.', ',') . '</td>';
 
-                            echo '<tr style="font-style:italic; font-weight:500;" class="summarytotal">';
-                            echo '<td class="right">&nbsp;</td>';
-                            echo '<td class="left">Total UNEP Summary</td>';
-                            echo '<td class="right">$ '.number_format(($office_totalconsumable+$region_totalconsumable)/1000000,1,'.',',').' M</td>';
-                            echo '<td class="right">$ '.number_format(($office_totalconsumed+$region_totalconsumed)/1000000,1,'.',',').' M</td>';
-                            echo '<td class="right">$ '.number_format(($office_totalbalance+$region_totalbalance)/1000000,1,'.',',').' M</td>';
-                            echo '<td class="right">$ '.number_format((($office_totalconsumable+$region_totalconsumable) / ($office_totalfilledposts+$region_totalfilledposts))/1000000,1,'.',',').' M</td>';
+echo '<td class="center">' . number_format(($office_totalredprojects + $region_totalredprojects), 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($office_totalyellowprojects + $region_totalyellowprojects), 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($office_totalgreenprojects + $region_totalgreenprojects), 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(((($office_totalreportingcompliance / $office_count) + ($region_totalreportingcompliance / $region_count)) / 2), 0, '.', ',') . '%</td>';
 
+echo '<td class="center">' . number_format(($office_totaloutputs + $region_totaloutputs), 0, '.', ',') . '</td>';
+echo '<td class="center">' . number_format(($office_completedactivities + $region_completedactivities), 0, '.', ',') . ' / ' . number_format(($office_totalactivities + $region_totalactivities), 0, '.', ',') . '</td>';
 
-
-
-
-                            echo '<td class="center">'.number_format(($office_totalposts+$region_totalposts),0,'.',',').'</td>';
-
-                            echo '<td class="center">'.number_format(($office_totalfilledposts+$region_totalfilledposts),0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_totalvacantposts+$region_totalvacantposts),0,'.',',').'</td>';
-
-
-                            echo '<td class="center">'.number_format(( (($office_totalvacancy/$office_count) + ($region_totalvacancy/$region_count)) / 2),0,'.',',').'%</td>';
-                            //echo '<td class="right">'.number_format(((($office_totalsenior/$office_count) + ($region_totalsenior/$region_count))/2),0,'.',',').'%</td>';
-                            //echo '<td class="right">'.number_format(($office_totalbudget+$region_totalbudget),0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_totalprojects+$region_totalprojects),0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_totalexpired+$region_totalexpired),0,'.',',').'</td>';
-
-                            echo '<td class="center">'.number_format((($office_totalexpired+$region_totalexpired)*100/($office_totalprojects+$region_totalprojects)),0,'.',',').'%</td>';
-
-
-
-
-
-
-                            echo '<td class="center">'.number_format(abs($processed_divisiondata[$division]["avgmonthspastdue"]), 0, '.', ',').'</td>';
-
-
-
-                            echo '<td class="center">'.number_format(($office_totalredprojects+$region_totalredprojects),0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_totalyellowprojects+$region_totalyellowprojects),0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_totalgreenprojects+$region_totalgreenprojects),0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(((($office_totalreportingcompliance/$office_count)+($region_totalreportingcompliance/$region_count))/2),0,'.',',').'%</td>';
-
-                            echo '<td class="center">'.number_format(($office_totaloutputs+$region_totaloutputs),0,'.',',').'</td>';
-                            echo '<td class="center">'.number_format(($office_completedactivities+$region_completedactivities),0,'.',',').' / '.number_format(($office_totalactivities+$region_totalactivities),0,'.',',').'</td>';
-
-                            
-                            //echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
-                            echo '</tr>';
-                            ?>
+//echo '<td class="right">'.number_format($processed_divisiondata[$division]["divisionlisting_office"][$i]['short_projects_percentage'],0,'.',',').'%</td>';
+echo '</tr>';
+?>
                         </tbody>
                     </table>
                 </div>
@@ -2966,36 +2940,36 @@ include_once 'totals_algo.php';
                         </thead>
                         <tbody>
                             <?php
-                                array_multisort(array_column($processed_divisiondata[$division]["boa_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["boa_data"]);
+array_multisort(array_column($processed_divisiondata[$division]["boa_data"], 'year'), SORT_ASC, $processed_divisiondata[$division]["boa_data"]);
 
-                                $j = 0;
-                                foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
-                                    if (in_array($value["suggestedstatusverified"], $selectedboastatus)) {
-                                        echo '<tr>';
-                                        echo '<td class="text-right">'.($j + 1).'.</td>';
-                                        echo '<td class="text-left" style="max-width: 100px;">'.$value["office"].'</td>';
-                                        echo '<td class="text-left" style="max-width: 300px;">'.$value["summaryrecommendation"].'</td>';
-                                        echo '<td class="text-left" style="max-width: 70px;">'.$value["reportreference"].'</td>';
-                                        echo '<td class="text-center">'.$value["priority"].'</td>';
-                                        echo '<td class="text-center">'.$value["year"].'</td>';
-                                        echo '<td class="text-center">'.$value["targetdate"].'</td>';
-                                        $elapsed = floor(getdaysbetween($value["year"]."/01/01",min(date("Y-m-d",time()),$value["targetdate"])));
-                                        $duration = ceil(getdaysbetween($value["year"]."/01/01",$value["targetdate"]));
-                                        $score = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
-                                        if ($score >= 0 && $score < 75) {
-                                            $scorecolor = '#28a745 !important'; //green
-                                        } else if ($score >= 75 && $score < 100) {
-                                            $scorecolor = '#ffc107 !important'; // yellow
-                                        } else {
-                                            $scorecolor = '#dc3545 !important'; //red
-                                        }
-                                        echo '<td><p class="projectlistinghealth" style="background-color:'.$scorecolor.'">&nbsp;</p></td>';
-                                        echo '<td class="text-center">'.$value["category"].'</td>';
-                                        echo '</tr>';
-                                        $j++;
-                                    }
-                                }
-                            ?>
+$j = 0;
+foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
+    if (in_array($value["suggestedstatusverified"], $selectedboastatus)) {
+        echo '<tr>';
+        echo '<td class="text-right">' . ($j + 1) . '.</td>';
+        echo '<td class="text-left" style="max-width: 100px;">' . $value["office"] . '</td>';
+        echo '<td class="text-left" style="max-width: 300px;">' . $value["summaryrecommendation"] . '</td>';
+        echo '<td class="text-left" style="max-width: 70px;">' . $value["reportreference"] . '</td>';
+        echo '<td class="text-center">' . $value["priority"] . '</td>';
+        echo '<td class="text-center">' . $value["year"] . '</td>';
+        echo '<td class="text-center">' . $value["targetdate"] . '</td>';
+        $elapsed = floor(getdaysbetween($value["year"] . "/01/01", min(date("Y-m-d", time()), $value["targetdate"])));
+        $duration = ceil(getdaysbetween($value["year"] . "/01/01", $value["targetdate"]));
+        $score = number_format(($elapsed * 100 / max($duration, 1)), 0, '.', ',');
+        if ($score >= 0 && $score < 75) {
+            $scorecolor = '#28a745 !important'; //green
+        } else if ($score >= 75 && $score < 100) {
+            $scorecolor = '#ffc107 !important'; // yellow
+        } else {
+            $scorecolor = '#dc3545 !important'; //red
+        }
+        echo '<td><p class="projectlistinghealth" style="background-color:' . $scorecolor . '">&nbsp;</p></td>';
+        echo '<td class="text-center">' . $value["category"] . '</td>';
+        echo '</tr>';
+        $j++;
+    }
+}
+?>
                         </tbody>
                     </table>
                 </div>
@@ -3022,61 +2996,60 @@ include_once 'totals_algo.php';
                         </thead>
                         <tbody>
                             <?php
-                                array_multisort(array_column($processed_divisiondata[$division]["oios_data"], 'issue_date'), SORT_ASC,$processed_divisiondata[$division]["oios_data"]);
+array_multisort(array_column($processed_divisiondata[$division]["oios_data"], 'issue_date'), SORT_ASC, $processed_divisiondata[$division]["oios_data"]);
 
-                                $j = 0;
-                                foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
-                                    echo '<tr>';
-                                    echo '<td class="text-right">'.($j + 1).'.</td>';
-                                    echo '<td class="text-left">'.$value["office"].'</td>';
-                                    echo '<td class="text-left">'.$value["title"].'</td>';
-                                    if (is_numeric(substr($value["recommendation"], 0, 1))) {
-                                        //echo "Numeric sentence: ".substr($var, (strpos($var, '.')+1));
-                                        echo '<td class="text-left" style="max-width: 300px;">'.substr($value["recommendation"], (strpos($value["recommendation"], '.')+1)).'</td>';
-                                    } else if (substr($value["recommendation"], 0, 1) == "(" ) {
-                                        echo '<td class="text-left" style="max-width: 300px;">'.substr($value["recommendation"], (strpos($value["recommendation"], ')')+1)).'</td>';
-                                    } else {
-                                        echo '<td class="text-left" style="max-width: 300px;">'.$value["recommendation"].'</td>';
-                                    }
-                                    echo '<td class="text-left">'.$value["projectcode"].'</td>';
-                                    echo '<td class="text-center">'.$value["recommendation_update"].'</td>';
-                                    echo '<td class="text-center">'.$value["issue_date"].'</td>';
-                                    echo '<td class="text-center">'.$value["implementation_date"].'</td>';
+$j = 0;
+foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
+    echo '<tr>';
+    echo '<td class="text-right">' . ($j + 1) . '.</td>';
+    echo '<td class="text-left">' . $value["office"] . '</td>';
+    echo '<td class="text-left">' . $value["title"] . '</td>';
+    if (is_numeric(substr($value["recommendation"], 0, 1))) {
+        //echo "Numeric sentence: ".substr($var, (strpos($var, '.')+1));
+        echo '<td class="text-left" style="max-width: 300px;">' . substr($value["recommendation"], (strpos($value["recommendation"], '.') + 1)) . '</td>';
+    } else if (substr($value["recommendation"], 0, 1) == "(") {
+        echo '<td class="text-left" style="max-width: 300px;">' . substr($value["recommendation"], (strpos($value["recommendation"], ')') + 1)) . '</td>';
+    } else {
+        echo '<td class="text-left" style="max-width: 300px;">' . $value["recommendation"] . '</td>';
+    }
+    echo '<td class="text-left">' . $value["projectcode"] . '</td>';
+    echo '<td class="text-center">' . $value["recommendation_update"] . '</td>';
+    echo '<td class="text-center">' . $value["issue_date"] . '</td>';
+    echo '<td class="text-center">' . $value["implementation_date"] . '</td>';
 
+    $elapsed = floor(getdaysbetween($value["issue_date"], min(date("Y-m-d", time()), $value["implementation_date"])));
+    $duration = ceil(getdaysbetween($value["issue_date"], $value["implementation_date"]));
+    $score = number_format(($elapsed * 100 / max($duration, 1)), 0, '.', ',');
+    if ($score >= 0 && $score < 75) {
+        $scorecolor = '#28a745 !important'; //green
+    } else if ($score >= 75 && $score < 100) {
+        $scorecolor = '#ffc107 !important'; // yellow
+    } else {
+        $scorecolor = '#dc3545 !important'; //red
+    }
 
-                                    $elapsed = floor(getdaysbetween($value["issue_date"],min(date("Y-m-d",time()),$value["implementation_date"])));
-                                    $duration = ceil(getdaysbetween($value["issue_date"],$value["implementation_date"]));
-                                    $score = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
-                                    if ($score >= 0 && $score < 75) {
-                                        $scorecolor = '#28a745 !important'; //green
-                                    } else if ($score >= 75 && $score < 100) {
-                                        $scorecolor = '#ffc107 !important'; // yellow
-                                    } else {
-                                        $scorecolor = '#dc3545 !important'; //red
-                                    }
-
-                                    echo '<td><p class="projectlistinghealth" style="background-color:'.$scorecolor.'">&nbsp;</p></td>';
-                                    /*if ($elapsed != 0 && $duration != 0) {
-                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
-                                        if ($elapsedtime >= 0 && $elapsedtime < 100) {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
-                                        } else if ($elapsedtime >= 100) {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
-                                        } else {
-                                            $elapsedtime = 'N/A';
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-                                        }
-                                    } else {
-                                        $elapsedtime = 'N/A';
-                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-                                    }
-                                    echo '<td class="text-center">'.$value["age_months"].'</td>';
-                                    */
-                                    echo '<td class="text-center">'.$value["category"].'</td>';
-                                    echo '</tr>';
-                                    $j++;
-                                }
-                            ?>
+    echo '<td><p class="projectlistinghealth" style="background-color:' . $scorecolor . '">&nbsp;</p></td>';
+    /*if ($elapsed != 0 && $duration != 0) {
+    $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+    if ($elapsedtime >= 0 && $elapsedtime < 100) {
+    echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+    } else if ($elapsedtime >= 100) {
+    echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+    } else {
+    $elapsedtime = 'N/A';
+    echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+    }
+    } else {
+    $elapsedtime = 'N/A';
+    echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+    }
+    echo '<td class="text-center">'.$value["age_months"].'</td>';
+     */
+    echo '<td class="text-center">' . $value["category"] . '</td>';
+    echo '</tr>';
+    $j++;
+}
+?>
                         </tbody>
                     </table>
                 </div>
@@ -3127,10 +3100,17 @@ include_once 'totals_algo.php';
             });
         }
 
+
+window.addEventListener('load', function () {
+            $('html, body').animate({scrollTop: $("#dashboardcanvas").offset().top}, 0);
+            setTimeout(()=>{screencapture("#dashboardcanvas","")},4000);
+            setTimeout(()=>{screencapture("#dashboard2","2")},4000);
+})
+
+
         $(function() {
             // on page load, scroll to div#dashboardcanvas, wait 3s for chart rendering to complete then grab screen
-            $('html, body').animate({scrollTop: $("#dashboardcanvas").offset().top}, 0);
-            setTimeout(screencapture("#dashboardcanvas",""),6000);
+
             //setTimeout(screencapture("#dashboard2","2"),8000);
         });
     </script>
