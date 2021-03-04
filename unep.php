@@ -1177,6 +1177,14 @@ foreach ($processed_divisiondata[$division]["grantsdata"] as $key => $value) {
 
 
 
+            <?php
+            echo "<pre>";
+            var_dump($processed_divisiondata[$division]["hrdashboard"]["contracttypes"]);
+            echo "</pre>";
+            ?>
+
+
+
 
 
 
@@ -1331,7 +1339,7 @@ foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $valu
                                 }
                             },
                             series: [{
-                                name: 'Subprogramme',
+                                name: 'Funding Types',
                                 data: <?php echo json_encode($hrfilledpositionsfundingtypes_categories_series); ?>,
                                 showInLegend: false
 
@@ -1346,6 +1354,119 @@ foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $valu
                     -->
                 </div>
                 <div class="col-md-4">
+                    <?php
+
+                    $staffdutystations_data = [];
+                    $staffdutystations_xaxis = [];
+                    $staffdutystations_series = [];
+                    foreach (array_count_values($processed_divisiondata[$division]["hrdashboard"]["dutystations"]) as $key => $value) {
+                        $staffdutystations_data[] = [
+                            "name" => $key,
+                            "count" => $value,
+                        ];
+                    }
+                    array_multisort(array_column($staffdutystations_data, 'count'), SORT_DESC, $staffdutystations_data);
+                    foreach ($staffdutystations_data as $key => $value) {
+                        $staffdutystations_xaxis[] = $value["name"];
+                        $staffdutystations_series[] = $value["count"];
+                    }
+                    ?>
+                    <div id="staffdutystations_chart"></div>
+                    <script type="text/javascript">
+                        Highcharts.chart('staffdutystations_chart', {
+                            colors: ['#0077b6'],
+                            credits: {
+                                text: ''
+                            },
+                            chart: {
+                                backgroundColor: 'transparent',
+                                type: 'bar',
+                                height: 800
+                            },
+                            title: {
+                                text: 'Figure n: Staff by Duty Stations',
+                                floating: false,
+                                align: 'left',
+                                verticalAlign: 'top',
+                                margin: 20,
+                                style: {
+                                    color: '#707070',
+                                    fontSize: '10px',
+                                    fontWeight: '900',
+                                    textTransform: 'none',
+                                    textDecoration: 'underline'
+
+                                },
+                                x: 0,
+                                y: 0
+                            },
+                            xAxis: {
+                                categories: <?php echo json_encode($staffdutystations_xaxis); ?>,
+                                labels: {
+                                    style: {
+                                        fontSize: '0.25cm',
+                                        fontWeight: 700
+                                    },
+                                    formatter: function() {
+                                        var ret = this.value,
+                                            len = ret.length;
+                                        //console.log(len);
+                                        /*if (len > 10) {
+                                            ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                        }
+                                        if (len > 25) {
+                                            ret = ret.slice(0, 25) + '...';
+                                        }*/
+                                        return ret;
+                                    }
+                                },
+                                crosshair: true
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: ''
+                                },
+                                labels: {
+                                    style: {
+                                        fontSize: '0.2cm'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true,
+                                enabled: false
+                            },
+                            plotOptions: {
+                                bar: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: true,
+                                        formatter: function() {
+                                            return '' + Highcharts.numberFormat(this.y,0) + '';
+                                        }
+                                    }
+                                },
+                                series: {
+                                    groupPadding: 0,
+                                    pointPadding: 0.1,
+                                    borderWidth: 0
+                                }
+                            },
+                            series: [{
+                                name: 'Duty Stations',
+                                data: <?php echo json_encode($staffdutystations_series); ?>,
+                                showInLegend: false
+
+                            }]
+                        });
+                    </script>
                 </div>
                 <div class="col-md-4">
                 </div>

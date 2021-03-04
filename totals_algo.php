@@ -171,6 +171,7 @@ foreach ($consultants_data as $consultancy) {
     ];
 }
 
+
 // var_dump($unique_posids);
 
 // GET PROJECT ACTIVITIES DATA
@@ -282,18 +283,60 @@ foreach ($division_data as $key => $value) {
 rsort($unique_final_ratings);
 
 //USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
+$staff_dutystations = [];
+$staff_contracttypes_usg = [];
+$staff_contracttypes_asg = [];
+$staff_contracttypes_d2 = [];
+$staff_contracttypes_d1 = [];
+$staff_contracttypes_p5 = [];
+$staff_contracttypes_p4 = [];
+$staff_contracttypes_p3 = [];
+$staff_contracttypes_p2 = [];
+$staff_contracttypes_p1 = [];
+$staff_contracttypes_gs = [];
+$staff_contracttypes_no = [];
+$staff_contracttypes_others = [];
+$staff_nationality = [];
+$staff_regionality = [];
 foreach ($hr_data as $key => $value) {
-
-    $position = (substr($value->pos_ps_group, 1, 1) !== "-") ? substr($value->pos_ps_group, 0, 1) . "-" . substr($value->pos_ps_group, 1, 1) : $value->pos_ps_group;
-
-    if (!in_array($position, $unique_post_groups)) {
-
-        if ($value->gender == 'male') {
-
+    //$position = (substr($value->pos_ps_group, 1, 1) !== "-") ? substr($value->pos_ps_group, 0, 1) . "-" . substr($value->pos_ps_group, 1, 1) : $value->pos_ps_group;
+    if (substr($value->pos_ps_group, 0, 1) == "P" && substr($value->pos_ps_group, 1, 1) !== "-") {
+        $position = substr($value->pos_ps_group, 0, 1) . "-" . substr($value->pos_ps_group, 1, 1);
+    } else {
+        $position = $value->pos_ps_group;
+    }
+    if ($value->pers_no > 0) {
+        $staff_dutystations[] = ltrim(rtrim($value->duty_station));
+        
+        if ($position == "USG") {
+            $staff_contracttypes_usg[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "ASG") {
+            $staff_contracttypes_asg[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "D-2") {
+            $staff_contracttypes_d2[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "D-1") {
+            $staff_contracttypes_d1[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "P-5") {
+            $staff_contracttypes_p5[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "P-4") {
+            $staff_contracttypes_p4[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "P-3") {
+            $staff_contracttypes_p3[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "P-2") {
+            $staff_contracttypes_p2[] = ltrim(rtrim($value->contract_type));
+        } else if (substr($value->pos_ps_group, 0, 1) == "G") {
+            $staff_contracttypes_gs[] = ltrim(rtrim($value->contract_type));
+        } else if (substr($value->pos_ps_group, 0, 2) == "NO") {
+            $staff_contracttypes_no[] = ltrim(rtrim($value->contract_type));
         } else {
-
+            $staff_contracttypes_others[] = ltrim(rtrim($value->contract_type));
         }
-
+        $staff_contracttypes[$key] = ltrim(rtrim($value->contract_type));
+        //array_push($staff_contracttypes, ltrim(rtrim($value->contract_type)));
+        $staff_nationality[] = ltrim(rtrim($value->nationality));
+        //$staff_regionality = $value->duty_station;
+    }
+    if (!in_array($position, $unique_post_groups)) {
         if ($value->pers_no > 0) {
             if ($value->gender == 'Male') {
                 $male = 1;
@@ -302,18 +345,14 @@ foreach ($hr_data as $key => $value) {
                 $male = 0;
                 $female = 1;
             }
-
             $unique_posts_data[] = ["post" => $position, "vacant" => 0, "filled" => 1, "filled_male" => $male, "filled_female" => $female, "offices_post_vacant" => [], "offices_post_filled" => [$value->office]];
             $total_filled_posts += 1;
             $overall_filled_posts[array_search($position, $staff_order_array)] = $position;
-
         } else {
             $unique_posts_data[] = ["post" => $position, "vacant" => 1, "filled" => 0, "filled_male" => 0, "filled_female" => 0, "offices_post_vacant" => [$value->office], "offices_post_filled" => []];
             $total_vacant_posts += 1;
             $overall_vacant_posts[array_search($position, $staff_order_array)] = $position;
-
         }
-
         $unique_post_groups[] = $position;
     } else {
         foreach ($unique_posts_data as $pkey => $pvalue) {
@@ -336,17 +375,28 @@ foreach ($hr_data as $key => $value) {
                     $unique_posts_data[$pkey]['offices_post_vacant'][] = $value->office;
                     $total_vacant_posts += 1;
                     $overall_vacant_posts[] = $position;
-
                 }
             }
         }
     }
     $total_posts += 1;
 
+    if ($value->document_stage === 'SM Self & FRO Evaluation' || $value->document_stage === 'COMPLETED') {
+        $epass_compliant_staff++;
+    }
+    if ($value->no_of_mandatory_courses_done === '9' || $value->no_of_mandatory_courses_done === 9) {
+        $mc_completed_staff++;
+    }
 }
 
+//var_dump(array_count_values($staff_contracttypes_gs));
+//exit;
+$pctg_mc_completion = round(($mc_completed_staff / $total_filled_posts) * 100);
+$pctg_epass_compliance = round(($epass_compliant_staff / $total_filled_posts) * 100);
+
+//$total_filled_posts = 0;
 // var_dump($unique_posts_data);
-foreach ($hr_data as $key => $value) {
+/*foreach ($hr_data as $key => $value) {
     if ($value->pers_no > 0) {
         $overall_filled_posts[] = $value;
         $total_filled_posts += 1;
@@ -356,19 +406,8 @@ foreach ($hr_data as $key => $value) {
         $total_vacant_posts += 1;
     }
     $total_posts += 1;
+}*/
 
-    if ($value->document_stage === 'SM Self & FRO Evaluation' || $value->document_stage === 'COMPLETED') {
-        // echo $value->first_name2 . ' <br />';
-        $epass_compliant_staff++;
-    }
-
-    if ($value->no_of_mandatory_courses_done === '9' || $value->no_of_mandatory_courses_done === 9) {
-        $mc_completed_staff++;
-    }
-
-}
-$pctg_mc_completion = round(($mc_completed_staff / $total_filled_posts) * 100);
-$pctg_epass_compliance = round(($epass_compliant_staff / $total_filled_posts) * 100);
 
 
 
@@ -660,7 +699,7 @@ foreach ($hr_data as $hkey => $hvalue) {
         'category' => $hvalue->category,
         'org_code' => $hvalue->org_unit,
         'org_unit_description' => $hvalue->org_unit_desc,
-        'order' => array_search((substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group, $staff_order_array_all),
+        'order' => array_search((substr($hvalue->pos_ps_group, 0, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group, $staff_order_array_all),
         'final_status' => $hvalue->document_final_status,
         'stage' => $hvalue->document_stage,
         'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
@@ -2042,7 +2081,7 @@ $processed_divisiondata['Unep'] = array(
     , "risks_data" => $overall_risksdata
     , "stafflisting" => $overall_staff_information
     , "consultants_data" => $overall_consultants
-
+    , "hrdashboard" => ["dutystations" => $staff_dutystations, "contracttypes" => $staff_contracttypes, "nationality" => $staff_nationality, "regionality" => $staff_regionality]
     /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled
     , "hrpostsvacant" => $hrpostsvacant
