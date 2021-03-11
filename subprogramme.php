@@ -1,5 +1,5 @@
 <?php
-$month = Date("M") . ' ' . Date("Y");
+$month = Date("M", strtotime("-1 months")).' '.Date("Y");
 $subprogramme = array('environmental governance', 'climate change', 'resource efficiency', 'resilience to disasters and conflicts', 'chemicals, waste and air quality', 'healthy and productive ecosystems', 'environment under review', 'corporate projects - executive direction and management');
 $spid = (isset($_GET['id'])) ? $_GET['id'] : 0;
 $division = $subprogramme[$spid];
@@ -95,7 +95,7 @@ include_once 'sp_algo.php';
                         <h6>Programme Delivery Report</h6>
                     </div>
                     <div class="col-md-2 health">
-                        <p class="reportdate">Jan 2021</p>
+                        <p class="reportdate"><?php echo $month; ?></p>
                         <p class="healthrating_box" style="background-color:<?php echo $processed_spdata[$division]["healthcolor"]; ?>;">&nbsp;</p>
                         <p class="healthratingdesc">Project Portfolio Rating</p>
                     </div>

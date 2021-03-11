@@ -123,6 +123,13 @@ function count_array_values($my_array, $match)
     }
     return $count;
 }
+function checknotdefined($var) {
+    if (ltrim(rtrim($var)) == "" || ltrim(rtrim($var)) == null) {
+        return "Undefined";
+    } else {
+        return ltrim(rtrim($var));
+    }
+}
 // GET PROJECTS DATA
 $division_data = getdataobjectfromurl($url);
 
@@ -266,8 +273,12 @@ rsort($unique_final_ratings);
 
 //USE DATA FROM API TO FEED THE UNIQUE POST POSITIONS ARRAY
 foreach ($hr_data as $key => $value) {
-
-    $position = (substr($value->pos_ps_group, 1, 1) !== "-") ? substr($value->pos_ps_group, 0, 1) . "-" . substr($value->pos_ps_group, 1, 1) : $value->pos_ps_group;
+    $positionexceptions = array('USG','ASG','NO-A','NO-B','NO-C','NO-D');
+    if (!in_array($value->pos_ps_group, $positionexceptions)) {
+        $position = (substr($value->pos_ps_group, 1, 1) !== "-") ? substr($value->pos_ps_group, 0, 1) . "-" . substr($value->pos_ps_group, 1, 1) : $value->pos_ps_group;
+    } else {
+        $position = $value->pos_ps_group;
+    }
 
     if (!in_array($position, $unique_post_groups)) {
 
@@ -1009,8 +1020,14 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             } else {
                 $p_status = 'VACANT';
             }
+            $gradeexceptions = array('USG','ASG','NO-A','NO-B','NO-C','NO-D');
+            if (!in_array($hvalue->pos_ps_group, $gradeexceptions)) {
+                $grade = (substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group;
+            } else {
+                $grade = $hvalue->pos_ps_group;
+            }
             $d_staff_information[] = [
-                'grade' => (substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group,
+                'grade' => $grade,
                 'position_title' => $hvalue->pos_title,
                 'position_number' => $hvalue->pos_id,
                 'duty_station' => $hvalue->duty_station,
@@ -1022,7 +1039,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'category' => $hvalue->category,
                 'org_code' => $hvalue->org_unit,
                 'org_unit_description' => $hvalue->org_unit_desc,
-                'order' => array_search((substr($hvalue->pos_ps_group, 1, 1) !== "-") ? substr($hvalue->pos_ps_group, 0, 1) . "-" . substr($hvalue->pos_ps_group, 1, 1) : $hvalue->pos_ps_group, $staff_order_array_all),
+                'order' => array_search($grade, $staff_order_array_all),
                 'final_status' => $hvalue->document_final_status,
                 'stage' => $hvalue->document_stage,
                 'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
@@ -1055,7 +1072,8 @@ foreach ($unique_divisions as $dkey => $dvalue) {
                 'renewals' => $consultancy->no_of_contract_renewals,
                 'expired' => checkexpired($consultancy->latest_contract_end_date),
                 'duration' => getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date),
-                'morethan11months' => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'Yes' : 'No')
+                'morethan11months' => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'Yes' : 'No'),
+                'contract_type' => $consultancy->product_name
             ];
 
             /*$d_consultancy_names[] = $consultancy->supplier_full_name;

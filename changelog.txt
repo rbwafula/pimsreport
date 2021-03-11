@@ -1,0 +1,59 @@
+26 Feb 2020
+-----------
+* Annex2 BOA - Priority High marked bold red
+* Annex3 OIOS - Priority Important marked bold red
+* All reports - change from elapsed scale to (red,yellow,green) dots
+
+1 Mar 2020
+----------
+* UNEP Corporate -> Dashboard2: Calculate HR staff retiring to 2 yrs from 1yr
+* UNEP Corporate -> Dashboard2: Rename BOA by Category to BOA by Priority
+* UNEP Corporate: Break Dashboard 2 into 3 individual dashboard pages (Finance, Audit & Risks, Human Resource)
+* UNEP Corporate: Change orientation of BOA chart to bar graph
+* UNEP Corporate: Change orientation of OIOS chart to bar graph
+* UNEP Corporate -> Audits by Office: chart out BOA by Office, AuditYr, by TargetDate (3, 6, 9, 12 month, Over 12, elapsed categories), by Status, by Category
+* Move HR Dashboard before Audit Risks
+* Office report: Change staff listing filled positions to highlight staff retiring in 2 years from 1 year
+* BOA by priority: Don't show grouping by elapsed and current
+* OIOS by category: Don't show grouping by elapsed and current
+* OIOS Annex: Add title column
+* OIS Annex: Use 'client_responsible_office' for office
+
+4 Mar 2020
+----------
+* New Annex for HR data
+* Corporate HR Dashboard: Chart on regional representation
+* Corporate HR Dashboard: Staff contract type on stacked chart like figure 5 (Fixed Term, Continuing, Permanent)
+* Corporate HR Dashboard: Chart staff by duty station (bar chart)
+* Corporate HR Dashboard: Staff to consultant ratio UNEP-wide
+* Corporate HR Dashboard: Staff to consultant ratio by office
+
+5 Mar 2020
+----------
+* Staff to consultant: add numbers to bar
+* Staff to consultant: reduce space above chart
+* Staff by region: make vertical
+* Staff by contract type: change colors
+* HR Dashboard: make the last column smaller, and middle column bigger
+* Office report-Human Resource: add new chart of 
+* Annex 3: Add note that the epas & mandatory is under review
+* Annex 4: Remove elapsed, add contract type, duration add suffix days
+* Annex 5: Replace elapsed with dot notation
+* Annex 7: Replace elapsed with dot notation
+* When annex is blank, show text "Nothing to report"
+
+8 Mar 2020
+----------
+* Check where name is comiing as SP only
+* 2nd dashboard: Finance -> Finance & Grants
+* 2nd dashboard: Additional finance dashboard coming soon
+
+* Executive Direction & Management
+* Programme Support
+
+
+9 Mar 2020
+----------
+Secondary dashboard: When BOA and OIOS data missing, put "No BOA/OIOS audit open"
+Secondary dashboard: Add OIOS chart similar to BOA
+Annex 3: N-O showing at the top of list instead of bottom

@@ -1,5 +1,5 @@
 <?php
-$month = Date("M") . ' ' . Date("Y");
+$month = Date("M", strtotime("-1 months")).' '.Date("Y");
 $office = array('Europe', 'Economy', 'Disasters and Conflicts', 'Latin America', 'Asia Pacific', 'Law', 'Communication', 'Ecosystems', 'Science', 'Africa', 'West Asia');
 $officeid = (isset($_GET['office'])) ? $_GET['office'] : 0;
 $division = $office[$officeid];
@@ -1312,9 +1312,9 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
 
 
             <!-- new dashboard -->
-            <div class="row reportbody section1 dashboard2" style="width:28.1cm;height:21cm;background-color:#f9f9f9;">
+            <div id="dashboard2"  class="row reportbody section1 dashboard2" style="width:28.1cm;height:21cm;background-color:#f9f9f9;">
                 <div class="col-md-4">
-                    <h5 class="sectiontitle">Finance</h5>
+                    <h5 class="sectiontitle">Finance &amp; Grants</h5>
                     <?php
                         array_multisort(array_column($processed_divisiondata[$division]["grantsdata"], 'grantenddate'), SORT_ASC,$processed_divisiondata[$division]["grantsdata"]);
                         $totalgrants_count = 0;
@@ -1399,6 +1399,9 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                             <p class="metricdesc">% of Negative Grants</p>
                         </div>
                     </div>
+                    <div class="row summarystatistics pt-40">
+                        <p><b>New financial chart coming ...</b></p>
+                    </div>
                 </div>
                 <div class="col-md-4" style="background-color: #fff">
                     <h5 class="sectiontitle">Audits &amp; Risks</h5>
@@ -1429,7 +1432,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                     height: 250
                                 },
                                 title: {
-                                    text: 'Figure n: Top Risks Current Year',
+                                    text: 'Figure 7: Top Risks Current Year',
                                     floating: false,
                                     align: 'left',
                                     verticalAlign: 'top',
@@ -1456,12 +1459,12 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                             var ret = this.value,
                                                 len = ret.length;
                                             //console.log(len);
-                                            if (len > 10) {
+                                            /*if (len > 10) {
                                                 ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
                                             }
                                             if (len > 25) {
                                                 ret = ret.slice(0, 25) + '...';
-                                            }
+                                            }*/
                                             return ret;
                                         }
                                     },
@@ -1531,118 +1534,240 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                     ?>
 
                     <div class="col-md-12 boacategories pb-20">
-                        <div id="boacategories_chart"></div>
+                        <div id="boacategories_chart">
+                            <?php
+                                $showboa = 1;
+                                if (empty($processed_divisiondata[$division]["boa_data"])) {
+                                    echo "<p style='font-size: 10px;font-weight: bold;padding: 40px 10px 0 10px;text-decoration: underline;margin-bottom: 0;'>Figure 8: BOA by Category</p>";
+                                    echo "<p style='font-size: 10px;padding: 5px 10px 40px 10px;'>No BOA audit open</p>";
+                                    $showboa = 0;
+                                }
+                            ?>
+                        </div>
                         <script type="text/javascript">
-                            Highcharts.chart('boacategories_chart', {
-                                colors: ['#0077b6'],
-                                credits: {
-                                    text: ''
-                                },
-                                chart: {
-                                    backgroundColor: 'transparent',
-                                    type: 'column',
-                                    height: 250
-                                },
-                                title: {
-                                    text: 'Figure n: BOA by Category',
-                                    floating: false,
-                                    align: 'left',
-                                    verticalAlign: 'top',
-                                    margin: 20,
-                                    style: {
-                                        color: '#707070',
-                                        fontSize: '10px',
-                                        fontWeight: '900',
-                                        textTransform: 'none',
-                                        textDecoration: 'underline'
-
-                                    },
-                                    x: 0,
-                                    y: 0
-                                },
-                                xAxis: {
-                                    categories: <?php echo json_encode($boa_categories_xaxis); ?>,
-                                    labels: {
-                                        style: {
-                                            fontSize: '0.25cm',
-                                            fontWeight: 700
-                                        },
-                                        formatter: function() {
-                                            var ret = this.value,
-                                                len = ret.length;
-                                            //console.log(len);
-                                            if (len > 10) {
-                                                ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
-                                            }
-                                            if (len > 25) {
-                                                ret = ret.slice(0, 25) + '...';
-                                            }
-                                            return ret;
-                                        }
-                                    },
-                                    crosshair: true
-                                },
-                                yAxis: {
-                                    min: 0,
-                                    title: {
+                            var showboa = <?php echo $showboa; ?>;
+                            if (showboa != false) {
+                                Highcharts.chart('boacategories_chart', {
+                                    colors: ['#0077b6'],
+                                    credits: {
                                         text: ''
                                     },
-                                    labels: {
+                                    chart: {
+                                        backgroundColor: 'transparent',
+                                        type: 'column',
+                                        height: 250
+                                    },
+                                    title: {
+                                        text: 'Figure 8: BOA by Category',
+                                        floating: false,
+                                        align: 'left',
+                                        verticalAlign: 'top',
+                                        margin: 20,
                                         style: {
-                                            fontSize: '0.2cm'
-                                        }
-                                    }
-                                },
-                                tooltip: {
-                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                        '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
-                                    footerFormat: '</table>',
-                                    shared: true,
-                                    useHTML: true,
-                                    enabled: false
-                                },
-                                plotOptions: {
-                                    column: {
-                                        pointPadding: 0.2,
-                                        borderWidth: 0,
-                                        dataLabels: {
-                                            enabled: true,
+                                            color: '#707070',
+                                            fontSize: '10px',
+                                            fontWeight: '900',
+                                            textTransform: 'none',
+                                            textDecoration: 'underline'
+
+                                        },
+                                        x: 0,
+                                        y: 0
+                                    },
+                                    xAxis: {
+                                        categories: <?php echo json_encode($boa_categories_xaxis); ?>,
+                                        labels: {
+                                            style: {
+                                                fontSize: '0.25cm',
+                                                fontWeight: 700
+                                            },
                                             formatter: function() {
-                                                return '' + Highcharts.numberFormat(this.y,0) + '';
+                                                var ret = this.value,
+                                                    len = ret.length;
+                                                //console.log(len);
+                                                if (len > 10) {
+                                                    ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                                }
+                                                if (len > 25) {
+                                                    ret = ret.slice(0, 25) + '...';
+                                                }
+                                                return ret;
+                                            }
+                                        },
+                                        crosshair: true
+                                    },
+                                    yAxis: {
+                                        min: 0,
+                                        title: {
+                                            text: ''
+                                        },
+                                        labels: {
+                                            style: {
+                                                fontSize: '0.2cm'
                                             }
                                         }
                                     },
-                                    series: {
-                                        groupPadding: 0,
-                                        pointPadding: 0.1,
-                                        borderWidth: 0
-                                    }
-                                },
-                                series: [{
-                                    name: 'Subprogramme',
-                                    data: <?php echo json_encode($boa_categories_series); ?>,
-                                    showInLegend: false
+                                    tooltip: {
+                                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                            '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                        footerFormat: '</table>',
+                                        shared: true,
+                                        useHTML: true,
+                                        enabled: false
+                                    },
+                                    plotOptions: {
+                                        column: {
+                                            pointPadding: 0.2,
+                                            borderWidth: 0,
+                                            dataLabels: {
+                                                enabled: true,
+                                                formatter: function() {
+                                                    return '' + Highcharts.numberFormat(this.y,0) + '';
+                                                }
+                                            }
+                                        },
+                                        series: {
+                                            groupPadding: 0,
+                                            pointPadding: 0.1,
+                                            borderWidth: 0
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'Subprogramme',
+                                        data: <?php echo json_encode($boa_categories_series); ?>,
+                                        showInLegend: false
 
-                                }]
-                            });
+                                    }]
+                                });
+                            }
                         </script>
                     </div>
 
 
+                    <?php
+                        $oios_categories = [];
+                        $oios_categories_xaxis = [];
+                        $oios_categories_series = [];
+                        foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
+                            $oios_categories[] = $value["category"];
+                        }
+                        foreach (array_count_values($oios_categories) as $key => $value) {
+                            $oios_categories_xaxis[] = $key;
+                            $oios_categories_series[] = $value;
+                        }
+                    ?>
 
+                    <div class="col-md-12 oioscategories pb-20">
+                        <div id="oioscategories_chart">
+                            <?php
+                                $showoios = 1;
+                                if (empty($processed_divisiondata[$division]["oios_data"])) {
+                                    echo "<p style='font-size: 10px;font-weight: bold;padding: 40px 10px 0 10px;text-decoration: underline;margin-bottom: 0;'>Figure 8: OIOS by Category</p>";
+                                    echo "<p style='font-size: 10px;padding: 5px 10px 40px 10px;'>No OIOS audit open</p>";
+                                    $showoios = 0;
+                                }
+                            ?>
+                        </div>
+                        <script type="text/javascript">
+                            var showoios = <?php echo $showoios; ?>;
+                            if (showoios != false) {
+                                Highcharts.chart('oioscategories_chart', {
+                                    colors: ['#0077b6'],
+                                    credits: {
+                                        text: ''
+                                    },
+                                    chart: {
+                                        backgroundColor: 'transparent',
+                                        type: 'column',
+                                        height: 250
+                                    },
+                                    title: {
+                                        text: 'Figure 9: OIOS by Category',
+                                        floating: false,
+                                        align: 'left',
+                                        verticalAlign: 'top',
+                                        margin: 20,
+                                        style: {
+                                            color: '#707070',
+                                            fontSize: '10px',
+                                            fontWeight: '900',
+                                            textTransform: 'none',
+                                            textDecoration: 'underline'
 
-                    <!--
-                        Project risks
+                                        },
+                                        x: 0,
+                                        y: 0
+                                    },
+                                    xAxis: {
+                                        categories: <?php echo json_encode($oios_categories_xaxis); ?>,
+                                        labels: {
+                                            style: {
+                                                fontSize: '0.25cm',
+                                                fontWeight: 700
+                                            },
+                                            formatter: function() {
+                                                var ret = this.value,
+                                                    len = ret.length;
+                                                //console.log(len);
+                                                if (len > 10) {
+                                                    ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                                }
+                                                if (len > 25) {
+                                                    ret = ret.slice(0, 25) + '...';
+                                                }
+                                                return ret;
+                                            }
+                                        },
+                                        crosshair: true
+                                    },
+                                    yAxis: {
+                                        min: 0,
+                                        title: {
+                                            text: ''
+                                        },
+                                        labels: {
+                                            style: {
+                                                fontSize: '0.2cm'
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                            '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                        footerFormat: '</table>',
+                                        shared: true,
+                                        useHTML: true,
+                                        enabled: false
+                                    },
+                                    plotOptions: {
+                                        column: {
+                                            pointPadding: 0.2,
+                                            borderWidth: 0,
+                                            dataLabels: {
+                                                enabled: true,
+                                                formatter: function() {
+                                                    return '' + Highcharts.numberFormat(this.y,0) + '';
+                                                }
+                                            }
+                                        },
+                                        series: {
+                                            groupPadding: 0,
+                                            pointPadding: 0.1,
+                                            borderWidth: 0
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'Subprogramme',
+                                        data: <?php echo json_encode($oios_categories_series); ?>,
+                                        showInLegend: false
 
-                        -    top risks
-                        -    BOA , OIOS
-
-                        -    recommendation categories
-                        -    priority
-                        -    aging
-                    -->
-
+                                    }]
+                                });
+                            }
+                        </script>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <h5 class="sectiontitle">Human Resource</h5>
@@ -1652,13 +1777,18 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                         $expiringstaffcontracts_count = 0;
                         $hrfilledpositionsfundingtypes_categories = [];
                         $hrfilledpositionsfundingtypes_data = [];
-                        $hrfilledpositionsfundingtypes_categories_xaxis = [];
-                        $hrfilledpositionsfundingtypes_categories_series = [];
-
+                        $hrfilledpositionscontracttype_categories = [];
+                        $hrfilledpositionscontracttype_data = [];
 
                         foreach ($processed_divisiondata[$division]["stafflisting"] as $key => $value) {
                             if ($value["position_status"] == "FILLED") {
-                                $hrfilledpositionsfundingtypes_categories[] = $value["category"];
+                                $hrfilledpositionsfundingtypes_categories[] = checknotdefined($value["category"]);
+                                
+                                if (checknotdefined($value["contract_type"]) == "Undefined") {
+                                    $hrfilledpositionscontracttype_categories[] = "Fixed Term";
+                                } else {
+                                    $hrfilledpositionscontracttype_categories[] = checknotdefined($value["contract_type"]);
+                                }
                                 $seniorposts = ['USG', 'ASG', 'D-2', 'D-1', 'P-5'];
                                 if ( in_array($value["grade"], $seniorposts) && $value["retirement_date"] <= date("Y-m-d", strtotime("+12 month")) ) {
                                     $seniorstaffretiring_count++;
@@ -1676,10 +1806,30 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                         }
                         array_multisort(array_column($hrfilledpositionsfundingtypes_data, 'count'), SORT_DESC,$hrfilledpositionsfundingtypes_data);
 
+                        $hrfilledpositionsfundingtypes_categories_xaxis = [];
+                        $hrfilledpositionsfundingtypes_categories_series = [];
                         foreach ($hrfilledpositionsfundingtypes_data as $key => $value) {
                             $hrfilledpositionsfundingtypes_categories_xaxis[] = $value["name"];
                             $hrfilledpositionsfundingtypes_categories_series[] = $value["count"];
                         }
+
+                        foreach (array_count_values($hrfilledpositionscontracttype_categories) as $key => $value) {
+                            $hrfilledpositionscontracttype_data[] = [
+                                "name" => $key,
+                                "count" => $value
+                            ];
+                        }
+                        array_multisort(array_column($hrfilledpositionscontracttype_data, 'count'), SORT_DESC,$hrfilledpositionscontracttype_data);
+
+                        $hrfilledpositionscontracttype_xaxis = [];
+                        $hrfilledpositionscontracttype_series = [];
+                        foreach ($hrfilledpositionscontracttype_data as $key => $value) {
+                            $hrfilledpositionscontracttype_xaxis[] = $value["name"];
+                            $hrfilledpositionscontracttype_series[] = $value["count"];
+                        }
+
+
+
                         $consultantsmorethan11months_count = 0;
                         foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $value) {
                             if ($value["expired"] == "NO" && $value["morethan11months"] == "Yes") {
@@ -1716,7 +1866,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                 height: 250
                             },
                             title: {
-                                text: 'Figure n: Filled Positions by Funding Type',
+                                text: 'Figure 10: Filled Positions by Funding Type',
                                 floating: false,
                                 align: 'left',
                                 verticalAlign: 'top',
@@ -1792,8 +1942,105 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                                 }
                             },
                             series: [{
-                                name: 'Subprogramme',
+                                name: 'Funding Type',
                                 data: <?php echo json_encode($hrfilledpositionsfundingtypes_categories_series); ?>,
+                                showInLegend: false
+
+                            }]
+                        });
+                    </script>
+
+                    <div class="pt-20" id="hrfilledpositionscontracttype_chart"></div>
+                    <script type="text/javascript">
+                        Highcharts.chart('hrfilledpositionscontracttype_chart', {
+                            colors: ['#0077b6'],
+                            credits: {
+                                text: ''
+                            },
+                            chart: {
+                                backgroundColor: 'transparent',
+                                type: 'bar',
+                                height: 220
+                            },
+                            title: {
+                                text: 'Figure 11: Filled Positions by Contract Type',
+                                floating: false,
+                                align: 'left',
+                                verticalAlign: 'top',
+                                margin: 20,
+                                style: {
+                                    color: '#707070',
+                                    fontSize: '10px',
+                                    fontWeight: '900',
+                                    textTransform: 'none',
+                                    textDecoration: 'underline'
+
+                                },
+                                x: 0,
+                                y: 0
+                            },
+                            xAxis: {
+                                categories: <?php echo json_encode($hrfilledpositionscontracttype_xaxis); ?>,
+                                labels: {
+                                    style: {
+                                        fontSize: '0.25cm',
+                                        fontWeight: 700
+                                    },
+                                    formatter: function() {
+                                        var ret = this.value,
+                                            len = ret.length;
+                                        //console.log(len);
+                                        /*if (len > 10) {
+                                            ret = ret.split(' ')[0] + '<br/>' +ret.split(' ')[1]
+                                        }
+                                        if (len > 25) {
+                                            ret = ret.slice(0, 25) + '...';
+                                        }*/
+                                        return ret;
+                                    }
+                                },
+                                crosshair: true
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: ''
+                                },
+                                labels: {
+                                    style: {
+                                        fontSize: '0.2cm'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>USD {point.y:.1f} M</b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true,
+                                enabled: false
+                            },
+                            plotOptions: {
+                                bar: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: true,
+                                        formatter: function() {
+                                            return '' + Highcharts.numberFormat(this.y,0) + '';
+                                        }
+                                    }
+                                },
+                                series: {
+                                    groupPadding: 0,
+                                    pointPadding: 0.1,
+                                    borderWidth: 0
+                                }
+                            },
+                            series: [{
+                                name: 'Contract Type',
+                                data: <?php echo json_encode($hrfilledpositionscontracttype_series); ?>,
                                 showInLegend: false
 
                             }]
@@ -1805,10 +2052,9 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i+
                         funding type for filled positions
                         senior positions retiring in 2 years
                     -->
-                    
                 </div>
-            </div>
-            <!-- end of new dashboard -->
+            </div><!-- End of #dashboard2 -->
+            <div class="pagebreak"></div>
 
 
 
@@ -2003,12 +2249,12 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th>Name</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Elapsed</th>
-                                <th>Duration</th>
-                                <th>More than 11 months</th>
+                                <th class="text-left">Name</th>
+                                <th class="text-center">Start Date</th>
+                                <th class="text-center">End Date</th>
+                                <!--<th class="text-right">Contract Type</th>-->
+                                <th class="text-right">Duration</th>
+                                <th class="text-center">More than 11 months</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2018,27 +2264,12 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                 if ($value["expired"] == "NO") {
                                     echo '<tr>';
                                     echo '<td class="text-right">'.($j + 1).'.</td>';
-                                    echo '<td>'.$value["names"].'</td>';
-                                    echo '<td>'.$value["startdate"].'</td>';
-                                    echo '<td>'.$value["enddate"].'</td>';
-                                    $elapsed = floor(getdaysbetween($value["startdate"],min(date("Y-m-d",time()),$value["enddate"])));
-                                    $duration = ceil(getdaysbetween($value["startdate"],$value["enddate"]));
-                                    if ($elapsed != 0 && $duration != 0) {
-                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
-                                        if ($elapsedtime >= 0 && $elapsedtime < 100) {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
-                                        } else if ($elapsedtime >= 100) {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
-                                        } else {
-                                            $elapsedtime = 'N/A';
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-                                        }
-                                    } else {
-                                        $elapsedtime = 'N/A';
-                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-                                    }
-                                    echo '<td>'.$value["duration"].'</td>';
-                                    echo '<td>'.$value["morethan11months"].'</td>';
+                                    echo '<td class="text-left">'.$value["names"].'</td>';
+                                    echo '<td class="text-center">'.$value["startdate"].'</td>';
+                                    echo '<td class="text-center">'.$value["enddate"].'</td>';
+                                    //echo '<td class="text-center">'.checknotdefined($value["contract_type"]).'</td>';
+                                    echo '<td class="text-right">'.number_format($value["duration"],0,".",",").' days</td>';
+                                    echo '<td class="text-center">'.$value["morethan11months"].'</td>';
                                     $j++;
                                 }
                             }
@@ -2049,7 +2280,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
             </div>
 
 
-<div class="row reportbody section3">
+<div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 5: Umoja Grants Data</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm budgetclass">
@@ -2084,7 +2315,17 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
 
                                     $elapsed = floor(getdaysbetween($value["grantstartdate"],min(date("Y-m-d",time()),$value["grantenddate"])));
                                     $duration = ceil(getdaysbetween($value["grantstartdate"],$value["grantenddate"]));
-                                    if ($elapsed != 0 && $duration != 0) {
+                                    $score = number_format(($elapsed * 100 / max($duration, 1)), 0, '.', ',');
+                                    if ($score >= 0 && $score < 75) {
+                                        $scorecolor = '#28a745 !important'; //green
+                                    } else if ($score >= 75 && $score < 100) {
+                                        $scorecolor = '#ffc107 !important'; // yellow
+                                    } else {
+                                        $scorecolor = '#dc3545 !important'; //red
+                                    }
+
+                                    echo '<td><p class="projectlistinghealth" style="background-color:' . $scorecolor . '">&nbsp;</p></td>';
+                                    /*if ($elapsed != 0 && $duration != 0) {
                                         $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
                                         if ($elapsedtime >= 0 && $elapsedtime < 100) {
                                             echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
@@ -2097,16 +2338,13 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                     } else {
                                         $elapsedtime = 'N/A';
                                         echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-                                    }
-
+                                    }*/
                                     echo '<td class="text-center">'.$value["grantexpired"].'</td>';
                                     echo '<td class="text-center">'.$value["grantaging"].'</td>';
                                     $j++;
                                 }
                             }
                             ?>
-                            <tr>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -2115,6 +2353,11 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
             <div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 6: Project Risks</h2>
                 <div class="table-responsive">
+                <?php 
+                    if (empty($processed_divisiondata[$division]["risks_data"])) {
+                        echo "<p><b>Nothing to report</b></p>";
+                    } else {
+                    ?>
                     <table class="table table-striped table-sm">
                         <thead>
                             <tr>
@@ -2143,12 +2386,20 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                             ?>
                         </tbody>
                     </table>
+                    <?php
+                    }
+                ?>  
                 </div>
             </div>
 
-            <div class="row reportbody section3">
+            <div class="row reportbody section2">
                 <h2 class="sectiontitle">Annex 7: Board of Auditors</h2>
                 <div class="table-responsive">
+                <?php 
+                    if (empty($processed_divisiondata[$division]["boa_data"])) {
+                        echo "<p><b>Nothing to report</b></p>";
+                    } else {
+                    ?>
                     <table class="table table-striped table-sm">
                         <thead>
                             <tr>
@@ -2158,7 +2409,7 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                 <th class="text-center">Priority</th>
                                 <th class="text-center">Audit Year</th>
                                 <th class="text-center">Target Date</th>
-                                <th class="text-center" style="width: 100px">Elapsed</th>
+                                <th class="text-center">Elapsed</th>
                                 <!--<th class="text-center">Age <br><span>(Months)</span></th>-->
                                 <th class="text-center">Category</th>
                             </tr>
@@ -2168,8 +2419,9 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                 array_multisort(array_column($processed_divisiondata[$division]["boa_data"], 'year'), SORT_ASC,$processed_divisiondata[$division]["boa_data"]);
 
                                 $j = 0;
+                                $selectedboastatus = array("Pending");
                                 foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
-                                    if ($value["year"] == $value["year"]/* date("Y", strtotime("now")) */) {
+                                    if (in_array($value["suggestedstatus"], $selectedboastatus)) {
                                         echo '<tr>';
                                         echo '<td class="text-right">'.($j + 1).'.</td>';
                                         echo '<td class="text-left" style="max-width: 300px;">'.$value["summaryrecommendation"].'</td>';
@@ -2181,6 +2433,90 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
 
                                         $elapsed = floor(getdaysbetween($value["year"]."/01/01",min(date("Y-m-d",time()),$value["targetdate"])));
                                         $duration = ceil(getdaysbetween($value["year"]."/01/01",$value["targetdate"]));
+                                        $score = number_format(($elapsed * 100 / max($duration, 1)), 0, '.', ',');
+                                        if ($score >= 0 && $score < 75) {
+                                            $scorecolor = '#28a745 !important'; //green
+                                        } else if ($score >= 75 && $score < 100) {
+                                            $scorecolor = '#ffc107 !important'; // yellow
+                                        } else {
+                                            $scorecolor = '#dc3545 !important'; //red
+                                        }
+
+                                        echo '<td><p class="projectlistinghealth" style="background-color:' . $scorecolor . '">&nbsp;</p></td>';
+                                        /*if ($elapsed != 0 && $duration != 0) {
+                                            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
+                                            if ($elapsedtime >= 0 && $elapsedtime < 100) {
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
+                                            } else if ($elapsedtime >= 100) {
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
+                                            } else {
+                                                $elapsedtime = 'N/A';
+                                                echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                            }
+                                        } else {
+                                            $elapsedtime = 'N/A';
+                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
+                                        }*/
+                                        //echo '<td class="text-center">'.$value["agemonths"].'</td>';
+                                        echo '<td class="text-center">'.$value["category"].'</td>';
+                                        echo '</tr>';
+                                        $j++;
+                                    }
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+                    <?php
+                    }
+                ?>  
+                </div>
+            </div>
+
+            <div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 8: OIOS</h2>
+                <div class="table-responsive">
+                <?php 
+                    if (empty($processed_divisiondata[$division]["oios_data"])) {
+                        echo "<p><b>Nothing to report</b></p>";
+                    } else {
+                        ?>
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th class="text-left">Recommendation</th>
+                                    <th class="text-left">Code</th>
+                                    <th class="text-left">Priority</th>
+                                    <th class="text-center">Start Date</th>
+                                    <th class="text-center">End Date</th>
+                                    <th class="text-center" style="width: 100px">Elapsed</th>
+                                    <th class="text-center">Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                    array_multisort(array_column($processed_divisiondata[$division]["oios_data"], 'issue_date'), SORT_ASC,$processed_divisiondata[$division]["oios_data"]);
+
+                                    $j = 0;
+                                    foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
+                                        echo '<tr>';
+                                        echo '<td class="text-right">'.($j + 1).'.</td>';
+                                        if (is_numeric(substr($value["recommendation"], 0, 1))) {
+                                            //echo "Numeric sentence: ".substr($var, (strpos($var, '.')+1));
+                                            echo '<td class="text-left" style="max-width: 300px;">'.substr($value["recommendation"], (strpos($value["recommendation"], '.')+1)).'</td>';
+                                        } else if (substr($value["recommendation"], 0, 1) == "(" ) {
+                                            echo '<td class="text-left" style="max-width: 300px;">'.substr($value["recommendation"], (strpos($value["recommendation"], ')')+1)).'</td>';
+                                        } else {
+                                            echo '<td class="text-left" style="max-width: 300px;">'.$value["recommendation"].'</td>';
+                                        }
+                                        echo '<td class="text-left">'.$value["projectcode"].'</td>';
+                                        echo '<td class="text-center">'.$value["recommendation_update"].'</td>';
+                                        echo '<td class="text-center">'.$value["issue_date"].'</td>';
+                                        echo '<td class="text-center">'.$value["implementation_date"].'</td>';
+
+
+                                        $elapsed = floor(getdaysbetween($value["issue_date"],min(date("Y-m-d",time()),$value["implementation_date"])));
+                                        $duration = ceil(getdaysbetween($value["issue_date"],$value["implementation_date"]));
                                         if ($elapsed != 0 && $duration != 0) {
                                             $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
                                             if ($elapsedtime >= 0 && $elapsedtime < 100) {
@@ -2195,105 +2531,27 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                                             $elapsedtime = 'N/A';
                                             echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
                                         }
-
-                                        //echo '<td class="text-center">'.$value["agemonths"].'</td>';
                                         echo '<td class="text-center">'.$value["category"].'</td>';
                                         echo '</tr>';
                                         $j++;
                                     }
-                                }
-                            ?>
-                        </tbody>
-                    </table>
+                                ?>
+                            </tbody>
+                        </table>
+                        <?php
+                    }
+                ?>
                 </div>
             </div>
-
-            <div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 8: OIOS</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th class="text-left">Recommendation</th>
-                                <th class="text-left">Code</th>
-                                <th class="text-left">Priority</th>
-                                <th class="text-center">Start Date</th>
-                                <th class="text-center">End Date</th>
-                                <th class="text-center" style="width: 100px">Elapsed</th>
-                                <th class="text-center">Category</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                                array_multisort(array_column($processed_divisiondata[$division]["oios_data"], 'issue_date'), SORT_ASC,$processed_divisiondata[$division]["oios_data"]);
-
-                                $j = 0;
-                                foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
-                                    echo '<tr>';
-                                    echo '<td class="text-right">'.($j + 1).'.</td>';
-                                    if (is_numeric(substr($value["recommendation"], 0, 1))) {
-                                        //echo "Numeric sentence: ".substr($var, (strpos($var, '.')+1));
-                                        echo '<td class="text-left" style="max-width: 300px;">'.substr($value["recommendation"], (strpos($value["recommendation"], '.')+1)).'</td>';
-                                    } else if (substr($value["recommendation"], 0, 1) == "(" ) {
-                                        echo '<td class="text-left" style="max-width: 300px;">'.substr($value["recommendation"], (strpos($value["recommendation"], ')')+1)).'</td>';
-                                    } else {
-                                        echo '<td class="text-left" style="max-width: 300px;">'.$value["recommendation"].'</td>';
-                                    }
-                                    echo '<td class="text-left">'.$value["projectcode"].'</td>';
-                                    echo '<td class="text-center">'.$value["recommendation_update"].'</td>';
-                                    echo '<td class="text-center">'.$value["issue_date"].'</td>';
-                                    echo '<td class="text-center">'.$value["implementation_date"].'</td>';
-
-
-                                    $elapsed = floor(getdaysbetween($value["issue_date"],min(date("Y-m-d",time()),$value["implementation_date"])));
-                                    $duration = ceil(getdaysbetween($value["issue_date"],$value["implementation_date"]));
-                                    if ($elapsed != 0 && $duration != 0) {
-                                        $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
-                                        if ($elapsedtime >= 0 && $elapsedtime < 100) {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
-                                        } else if ($elapsedtime >= 100) {
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
-                                        } else {
-                                            $elapsedtime = 'N/A';
-                                            echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-                                        }
-                                    } else {
-                                        $elapsedtime = 'N/A';
-                                        echo '<td class="center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-                                    }
-                                    echo '<td class="text-center">'.$value["category"].'</td>';
-                                    echo '</tr>';
-                                    $j++;
-                                }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div><!-- End of .toprint -->
     </div><!-- End of .container-fluid -->
     </div><!-- End of #to_export -->
 
     <script type="text/javascript">
-        $container = $("#dashboardcanvas");
-        function screencapture() {
+        //$container = $("#dashboardcanvas");
+        $container = '';
+        function screencapture(container,number) {
+            $container = $(container);
             var svgElements= $container.find('svg');
             //replace all svgs with a temp canvas
             svgElements.each(function () {
@@ -2307,11 +2565,12 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
                 this.className = "tempHide"; //hide the SVG element
                 $(this).hide();
             });
-            savedashboard();
+            savedashboard(container,number);
         }
 
-        function savedashboard() {
-            var entityname = '<?php echo $division; ?>';
+        function savedashboard(container,number) {
+            $container = $(container);
+            var entityname = '<?php echo $division; ?>' + number;
             html2canvas($container[0],{scale:2}).then(function(canvas) {
                 var imgsrc = canvas.toDataURL("image/png");
                 $("#newimg").attr('src', imgsrc);
@@ -2329,12 +2588,18 @@ for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $
             });
         }
 
+
+        window.addEventListener('load', function () {
+            $('html, body').animate({scrollTop: $("#dashboardcanvas").offset().top}, 0);
+            setTimeout(()=>{screencapture("#dashboardcanvas","")},4000);
+            setTimeout(()=>{screencapture("#dashboard2","2")},4000);
+        })
+
+
         $(function() {
             // on page load, scroll to div#dashboardcanvas, wait 3s for chart rendering to complete then grab screen
-            $('html, body').animate({
-                scrollTop: $("#dashboardcanvas").offset().top
-            }, 0);
-            setTimeout(screencapture,3000);
+
+            //setTimeout(screencapture("#dashboard2","2"),8000);
         });
     </script>
 </body>

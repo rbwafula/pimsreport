@@ -49,8 +49,11 @@ $header = '<!DOCTYPE html>
 	        </div>';*/
 
 $pageheader = '<div class="row reportbody section1" style="width:100%;">
-	        	<img src="assets/images/'.strtolower(str_replace(' ', '_', $division)).'.png" style="width:100%;">
+	        	<img src="assets/images/'.strtolower(str_replace(' ', '_', $division)).'.png" alt="Dashboard 1 Missing" style="width:100%;">
 	        </div>';
+$pageheader .= '<div class="row reportbody section1" style="width:100%;">
+                <img src="assets/images/'.strtolower(str_replace(' ', '_', $division)).'2.png" alt="Dashboard 2 Missing" style="width:100%;">
+            </div>';
 
 $annex1table = '';
 for ($i = 0; $i < count($processed_divisiondata[$division]["projectlisting"]); $i++) {
@@ -155,35 +158,56 @@ $annex2 = '<div class="row reportbody section3">
 
 $annex3table = '';
 $j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["stafflisting"]); $i++) {
-    if ($processed_divisiondata[$division]["stafflisting"][$i]['position_status'] == 'FILLED') {
+foreach ($processed_divisiondata[$division]["stafflisting"] as $key => $value) {
+    if ($value["position_status"] == "FILLED") {
         $annex3table .= '<tr>';
-        $annex3table .= '<td>' . ($j + 1) . '.</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['grade'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_title'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['position_number'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['duty_station'] . '</td>';
-        $annex3table .= '<td>' . $processed_divisiondata[$division]["stafflisting"][$i]['staff_name'] . '</td>';
-        $annex3table .= '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['stage'] . '</td>';
-        $annex3table .= '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['mandatory_training'] . '/9</td>';
-        $annex3table .= '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['contract_expiry'] . '</td>';
-        $annex3table .= '<td class="text-center">' . $processed_divisiondata[$division]["stafflisting"][$i]['retirement_date'] . '</td>'; 
+        $annex3table .= '<td class="text-right">'.($j+1).'.</td>';
+        $annex3table .= '<td class="text-center">'.$value["grade"].'</td>';
+        $annex3table .= '<td class="text-left">'.$value["position_title"].'</td>';
+        $annex3table .= '<td class="text-center">'.$value["position_number"].'</td>';
+        $annex3table .= '<td class="text-left">'.$value["duty_station"].'</td>';
+        $annex3table .= '<td class="text-left">'.$value["staff_name"].'</td>';
+        $annex3table .= '<td class="text-center">'.$value["category"].'</td>';
+        $annex3table .= '<td class="text-center">'.$value["contract_type"].'</td>';
+        if ($value["stage"] != "" && $value["stage"] != null) {
+            $annex3table .= '<td class="text-center">'.$value["stage"].'</td>';
+        } else {
+            $annex3table .= '<td class="text-center">-N/A-</td>';
+        }
+        if ($value["mandatory_training"] != "" && $value["mandatory_training"] != null) {
+            $annex3table .= '<td class="text-center">'.$value["mandatory_training"].' / 9</td>';
+        } else {
+            $annex3table .= '<td class="text-center">0 / 9</td>'; 
+        }
+        if ($value["contract_expiry"] <= date("Y-m-d", strtotime("+6 month")) ) {
+            $annex3table .= '<td class="text-center text-red">'.$value["contract_expiry"].'</td>';
+        } else {
+            $annex3table .= '<td class="text-center">'.$value["contract_expiry"].'</td>';
+        }
+        if ($value["retirement_date"] <= date("Y-m-d", strtotime("+24 month")) ) {
+            $annex3table .= '<td class="text-center text-red">'.$value["retirement_date"].'</td>';
+        } else {
+            $annex3table .= '<td class="text-center">'.$value["retirement_date"].'</td>';
+        }
+        $annex3table .= '</tr>';
         $j++;
     }
 }
 
 $annex3 = '<div class="row reportbody section3">
-                <h2 class="sectiontitle">Annex 3: Filled Positions Table</h2>
+                <h2 class="sectiontitle">Annex 3: Encumbered Positions Table</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th>Grade</th>
-                                <th>Position Title</th>
-                                <th>Position Number</th>
-                                <th>Duty Station</th>
-                                <th>Staff Name</th>
+                                <th class="text-center">Grade</th>
+                                <th class="text-left">Position Title</th>
+                                <th class="text-center">Position Number</th>
+                                <th class="text-left">Duty Station</th>
+                                <th class="text-left">Staff Name</th>
+                                <th class="text-center">Fund</th>
+                                <th class="text-center">Contract Type</th>
                                 <th class="text-center">ePAS Status</th>
                                 <th class="text-center">Mandatory Training</th>
                                 <th class="text-center">Contract Expiration</th>
@@ -198,32 +222,16 @@ $annex3 = '<div class="row reportbody section3">
 
 $annex4table = '';
 $j = 0;
-for ($i = 0; $i < count($processed_divisiondata[$division]["consultants_data"]['names']); $i++) { 
-    if ($processed_divisiondata[$division]["consultants_data"]['expired'][$i] == "NO") {
+foreach ($processed_divisiondata[$division]["consultants_data"] as $key => $value) {
+    if ($value["expired"] == "NO") {
         $annex4table .= '<tr>';
         $annex4table .= '<td class="text-right">'.($j + 1).'.</td>';
-        $annex4table .= '<td class="text-left">'.$processed_divisiondata[$division]["consultants_data"]['names'][$i].'</td>';
-        $annex4table .= '<td class="text-center">'.$processed_divisiondata[$division]["consultants_data"]['start_dates'][$i].'</td>';
-        $annex4table .= '<td class="text-center">'.$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i].'</td>';
-        $elapsed = floor(getdaysbetween($processed_divisiondata[$division]["consultants_data"]['start_dates'][$i],min(date("Y-m-d",time()),$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i])));
-        $duration = ceil(getdaysbetween($processed_divisiondata[$division]["consultants_data"]['start_dates'][$i],$processed_divisiondata[$division]["consultants_data"]['end_dates'][$i]));
-        if ($elapsed != 0 && $duration != 0) {
-            $elapsedtime = number_format(($elapsed*100/max($duration,1) ),0,'.',',');
-            if ($elapsedtime >= 0 && $elapsedtime < 100) {
-                $annex4table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill green" style="width: '.$elapsedtime.'%;">'.$elapsedtime.'%</span></div></td>';
-            } else if ($elapsedtime >= 100) {
-                $annex4table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill red" style="width: 100%;">'.$elapsedtime.'%</span></div></td>';
-            } else {
-                $elapsedtime = 'N/A';
-                $annex4table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-            }
-        } else {
-            $elapsedtime = 'N/A';
-            $annex4table .= '<td class="text-center"><div class="progress-bar"><span class="progress-bar-fill gray" style="width:100%;">'.$elapsedtime.'</span></div></td>';
-        }
-        $annex4table .= '<td class="text-center">'.number_format($processed_divisiondata[$division]["consultants_data"]['durations'][$i],0,".",",").'</td>';
-        $annex4table .= '<td class="text-center">'.$processed_divisiondata[$division]["consultants_data"]['morethan11'][$i].'</td>';
-        $annex4table .= '</tr>';
+        $annex4table .= '<td class="text-left">'.$value["names"].'</td>';
+        $annex4table .= '<td class="text-center">'.$value["startdate"].'</td>';
+        $annex4table .= '<td class="text-center">'.$value["enddate"].'</td>';
+        //$annex4table .= '<td class="text-center">'.checknotdefined($value["contract_type"]).'</td>';
+        $annex4table .= '<td class="text-right">'.number_format($value["duration"],0,".",",").' days</td>';
+        $annex4table .= '<td class="text-center">'.$value["morethan11months"].'</td>';
         $j++;
     }
 }
@@ -238,8 +246,8 @@ $annex4 = '<div class="row reportbody section3">
                                 <th class="text-left">Name</th>
                                 <th class="text-center">Start Date</th>
                                 <th class="text-center">End Date</th>
-                                <th class="text-center">Elapsed</th>
-                                <th class="text-center">Duration</th>
+                                <!--<th class="text-right">Contract Type</th>-->
+                                <th class="text-right">Duration</th>
                                 <th class="text-center">More than 11 months</th>
                             </tr>
                         </thead>
@@ -346,7 +354,17 @@ foreach ($processed_divisiondata[$division]["risks_data"] as $key => $value) {
     }
 }
 
-$annex6 = '<div class="row reportbody section3">
+if (empty($processed_divisiondata[$division]["risks_data"])) {
+    $annex6 = '<div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 6: Project Risks</h2>
+                <div class="table-responsive">
+                    <p><b>Nothing to report</b></p>
+                </div>
+            </div>';
+
+    echo "<p><b>Nothing to report</b></p>";
+} else {
+    $annex6 = '<div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 6: Project Risks</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
@@ -363,7 +381,7 @@ $annex6 = '<div class="row reportbody section3">
                     </table>
                 </div>
             </div>';
-
+}
 
 
 
@@ -404,27 +422,39 @@ foreach ($processed_divisiondata[$division]["boa_data"] as $key => $value) {
     }
 }
 
-$annex7 = '<div class="row reportbody section3">
+
+if (empty($processed_divisiondata[$division]["boa_data"])) {
+    $annex7 = '<div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 7: Board of Auditors</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th class="text-left">Recommendation</th>
-                                <th class="text-left">Reference</th>
-                                <th class="text-center">Priority</th>
-                                <th class="text-center">Audit Year</th>
-                                <th class="text-center">Target Date</th>
-                                <th class="text-center" style="width: 100px">Elapsed</th>
-                                <th class="text-center">Category</th>
-                            </tr>
-                        </thead>
-                        <tbody>'.$annex7table.'
-                        </tbody>
-                    </table>
+                    <p><b>Nothing to report</b></p>
                 </div>
             </div>';
+
+    echo "<p><b>Nothing to report</b></p>";
+} else {
+    $annex7 = '<div class="row reportbody section3">
+                    <h2 class="sectiontitle">Annex 7: Board of Auditors</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th class="text-left">Recommendation</th>
+                                    <th class="text-left">Reference</th>
+                                    <th class="text-center">Priority</th>
+                                    <th class="text-center">Audit Year</th>
+                                    <th class="text-center">Target Date</th>
+                                    <th class="text-center" style="width: 100px">Elapsed</th>
+                                    <th class="text-center">Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>'.$annex7table.'
+                            </tbody>
+                        </table>
+                    </div>
+                </div>';
+}
 
 $annex8table = '';
 array_multisort(array_column($processed_divisiondata[$division]["oios_data"], 'issue_date'), SORT_ASC,$processed_divisiondata[$division]["oios_data"]);
@@ -458,7 +488,19 @@ foreach ($processed_divisiondata[$division]["oios_data"] as $key => $value) {
     $j++;
 }
 
-$annex8 = '<div class="row reportbody section3">
+
+
+if (empty($processed_divisiondata[$division]["oios_data"])) {
+    $annex8 = '<div class="row reportbody section3">
+                <h2 class="sectiontitle">Annex 8: OIOS</h2>
+                <div class="table-responsive">
+                    <p><b>Nothing to report</b></p>
+                </div>
+            </div>';
+
+    echo "<p><b>Nothing to report</b></p>";
+} else {
+    $annex8 = '<div class="row reportbody section3">
                 <h2 class="sectiontitle">Annex 8: OIOS</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
@@ -479,7 +521,7 @@ $annex8 = '<div class="row reportbody section3">
                     </table>
                 </div>
             </div>';
-
+}
 
 
 $footer = '</div><!-- End of .toprint -->
