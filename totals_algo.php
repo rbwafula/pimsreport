@@ -154,6 +154,22 @@ foreach ($hr_data_uf as $h) {
     }
 }
 
+$activeconsultants = 0;
+$overall_consultants = [];
+foreach ($consultants_data as $consultancy) {
+    if (checkexpired($consultancy->latest_contract_end_date) == "NO") {
+        $activeconsultants++;
+    }
+    $overall_consultants[] = [
+        'names' => $consultancy->supplier_full_name,
+        'startdate' => $consultancy->latest_contract_start_date,
+        'enddate' => $consultancy->latest_contract_end_date,
+        'renewals' => $consultancy->no_of_contract_renewals,
+        'expired' => checkexpired($consultancy->latest_contract_end_date),
+        'duration' => getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date),
+        'morethan11months' => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'Yes' : 'No'),
+    ];
+}
 
 // var_dump($unique_posids);
 
@@ -279,18 +295,8 @@ $staff_contracttypes_p1 = [];
 $staff_contracttypes_gs = [];
 $staff_contracttypes_no = [];
 $staff_contracttypes_others = [];
-
-$staff_contracttypes_continuing = [0,0,0,0,0,0,0];
-$staff_contracttypes_fixedterm = [0,0,0,0,0,0,0];
-$staff_contracttypes_permanent = [0,0,0,0,0,0,0];
-$staff_contracttypes_temporary = [0,0,0,0,0,0,0];
-$staff_contracttypes_undefined = [0,0,0,0,0,0,0];
-
-
 $staff_nationality = [];
 $staff_regionality = [];
-$staff_offices = [];
-
 foreach ($hr_data as $key => $value) {
     //$position = (substr($value->pos_ps_group, 1, 1) !== "-") ? substr($value->pos_ps_group, 0, 1) . "-" . substr($value->pos_ps_group, 1, 1) : $value->pos_ps_group;
     if (substr($value->pos_ps_group, 0, 1) == "P" && substr($value->pos_ps_group, 1, 1) !== "-") {
@@ -300,158 +306,34 @@ foreach ($hr_data as $key => $value) {
     }
     if ($value->pers_no > 0) {
         $staff_dutystations[] = ltrim(rtrim($value->duty_station));
-        if (ltrim(rtrim($value->contract_type)) == "Continuing") {
-            if ($position == "USG") {
-                //$staff_contracttypes_continuing[0]++;
-            } else if ($position == "ASG") {
-                //$staff_contracttypes_continuing[1]++;
-            } else if ($position == "D-2") {
-                $staff_contracttypes_continuing[0]++;
-            } else if ($position == "D-1") {
-                $staff_contracttypes_continuing[1]++;
-            } else if ($position == "P-5") {
-                $staff_contracttypes_continuing[2]++;
-            } else if ($position == "P-4") {
-                $staff_contracttypes_continuing[3]++;
-            } else if ($position == "P-3") {
-                $staff_contracttypes_continuing[4]++;
-            } else if ($position == "P-2") {
-                $staff_contracttypes_continuing[5]++;
-            } else if (substr($value->pos_ps_group, 0, 1) == "G") {
-                $staff_contracttypes_continuing[6]++;
-            } else if (substr($value->pos_ps_group, 0, 2) == "NO") {
-                //$staff_contracttypes_continuing[9]++;
-            } else {
-                //$staff_contracttypes_continuing[10]++;
-            }
-        } else if (ltrim(rtrim($value->contract_type)) == "Fixed Term") {
-            if ($position == "USG") {
-                //$staff_contracttypes_fixedterm[0]++;
-            } else if ($position == "ASG") {
-                //$staff_contracttypes_fixedterm[1]++;
-            } else if ($position == "D-2") {
-                $staff_contracttypes_fixedterm[0]++;
-            } else if ($position == "D-1") {
-                $staff_contracttypes_fixedterm[1]++;
-            } else if ($position == "P-5") {
-                $staff_contracttypes_fixedterm[2]++;
-            } else if ($position == "P-4") {
-                $staff_contracttypes_fixedterm[3]++;
-            } else if ($position == "P-3") {
-                $staff_contracttypes_fixedterm[4]++;
-            } else if ($position == "P-2") {
-                $staff_contracttypes_fixedterm[5]++;
-            } else if (substr($value->pos_ps_group, 0, 1) == "G") {
-                $staff_contracttypes_fixedterm[6]++;
-            } else if (substr($value->pos_ps_group, 0, 2) == "NO") {
-                //$staff_contracttypes_fixedterm[9]++;
-            } else {
-                //$staff_contracttypes_fixedterm[10]++;
-            }
-        } else if (ltrim(rtrim($value->contract_type)) == "Permanent") {
-            if ($position == "USG") {
-                //$staff_contracttypes_permanent[0]++;
-            } else if ($position == "ASG") {
-                //$staff_contracttypes_permanent[1]++;
-            } else if ($position == "D-2") {
-                $staff_contracttypes_permanent[0]++;
-            } else if ($position == "D-1") {
-                $staff_contracttypes_permanent[1]++;
-            } else if ($position == "P-5") {
-                $staff_contracttypes_permanent[2]++;
-            } else if ($position == "P-4") {
-                $staff_contracttypes_permanent[3]++;
-            } else if ($position == "P-3") {
-                $staff_contracttypes_permanent[4]++;
-            } else if ($position == "P-2") {
-                $staff_contracttypes_permanent[5]++;
-            } else if (substr($value->pos_ps_group, 0, 1) == "G") {
-                $staff_contracttypes_permanent[6]++;
-            } else if (substr($value->pos_ps_group, 0, 2) == "NO") {
-                //$staff_contracttypes_permanent[9]++;
-            } else {
-                //$staff_contracttypes_permanent[10]++;
-            }
-        } else if (ltrim(rtrim($value->contract_type)) == "Temporary") {
-            if ($position == "USG") {
-                //$staff_contracttypes_temporary[0]++;
-            } else if ($position == "ASG") {
-                //$staff_contracttypes_temporary[1]++;
-            } else if ($position == "D-2") {
-                $staff_contracttypes_temporary[0]++;
-            } else if ($position == "D-1") {
-                $staff_contracttypes_temporary[1]++;
-            } else if ($position == "P-5") {
-                $staff_contracttypes_temporary[2]++;
-            } else if ($position == "P-4") {
-                $staff_contracttypes_temporary[3]++;
-            } else if ($position == "P-3") {
-                $staff_contracttypes_temporary[4]++;
-            } else if ($position == "P-2") {
-                $staff_contracttypes_temporary[5]++;
-            } else if (substr($value->pos_ps_group, 0, 1) == "G") {
-                $staff_contracttypes_temporary[6]++;
-            } else if (substr($value->pos_ps_group, 0, 2) == "NO") {
-                //$staff_contracttypes_temporary[9]++;
-            } else {
-                //$staff_contracttypes_temporary[10]++;
-            }
-        } else {
-            /*if ($position == "USG") {
-                //$staff_contracttypes_undefined[0]++;
-            } else if ($position == "ASG") {
-                //$staff_contracttypes_undefined[1]++;
-            } else if ($position == "D-2") {
-                $staff_contracttypes_undefined[0]++;
-            } else if ($position == "D-1") {
-                $staff_contracttypes_undefined[1]++;
-            } else if ($position == "P-5") {
-                $staff_contracttypes_undefined[2]++;
-            } else if ($position == "P-4") {
-                $staff_contracttypes_undefined[3]++;
-            } else if ($position == "P-3") {
-                $staff_contracttypes_undefined[4]++;
-            } else if ($position == "P-2") {
-                $staff_contracttypes_undefined[5]++;
-            } else if (substr($value->pos_ps_group, 0, 1) == "G") {
-                $staff_contracttypes_undefined[6]++;
-            } else if (substr($value->pos_ps_group, 0, 2) == "NO") {
-                $staff_contracttypes_undefined[7]++;
-            } else {
-                $staff_contracttypes_undefined[8]++;
-            }*/
-            if ($position == "USG") {
-                //$staff_contracttypes_fixedterm[0]++;
-            } else if ($position == "ASG") {
-                //$staff_contracttypes_fixedterm[1]++;
-            } else if ($position == "D-2") {
-                $staff_contracttypes_fixedterm[0]++;
-            } else if ($position == "D-1") {
-                $staff_contracttypes_fixedterm[1]++;
-            } else if ($position == "P-5") {
-                $staff_contracttypes_fixedterm[2]++;
-            } else if ($position == "P-4") {
-                $staff_contracttypes_fixedterm[3]++;
-            } else if ($position == "P-3") {
-                $staff_contracttypes_fixedterm[4]++;
-            } else if ($position == "P-2") {
-                $staff_contracttypes_fixedterm[5]++;
-            } else if (substr($value->pos_ps_group, 0, 1) == "G") {
-                $staff_contracttypes_fixedterm[6]++;
-            } else if (substr($value->pos_ps_group, 0, 2) == "NO") {
-                //$staff_contracttypes_fixedterm[9]++;
-            } else {
-                //$staff_contracttypes_fixedterm[10]++;
-            }
-        }
 
-        $staff_contracttypes[] = ltrim(rtrim($value->contract_type));
+        if ($position == "USG") {
+            $staff_contracttypes_usg[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "ASG") {
+            $staff_contracttypes_asg[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "D-2") {
+            $staff_contracttypes_d2[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "D-1") {
+            $staff_contracttypes_d1[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "P-5") {
+            $staff_contracttypes_p5[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "P-4") {
+            $staff_contracttypes_p4[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "P-3") {
+            $staff_contracttypes_p3[] = ltrim(rtrim($value->contract_type));
+        } else if ($position == "P-2") {
+            $staff_contracttypes_p2[] = ltrim(rtrim($value->contract_type));
+        } else if (substr($value->pos_ps_group, 0, 1) == "G") {
+            $staff_contracttypes_gs[] = ltrim(rtrim($value->contract_type));
+        } else if (substr($value->pos_ps_group, 0, 2) == "NO") {
+            $staff_contracttypes_no[] = ltrim(rtrim($value->contract_type));
+        } else {
+            $staff_contracttypes_others[] = ltrim(rtrim($value->contract_type));
+        }
+        $staff_contracttypes[$key] = ltrim(rtrim($value->contract_type));
+        //array_push($staff_contracttypes, ltrim(rtrim($value->contract_type)));
         $staff_nationality[] = ltrim(rtrim($value->nationality));
-        $staff_offices[] = ltrim(rtrim($value->office));
-        $staff_regionality[] = ltrim(rtrim($value->region));
-        /*if (ltrim(rtrim($value->office)) == "") {
-            echo ltrim(rtrim($value->first_name))." ".ltrim(rtrim($value->last_name))."<br/>";
-        }*/
+        //$staff_regionality = $value->duty_station;
     }
     if (!in_array($position, $unique_post_groups)) {
         if ($value->pers_no > 0) {
@@ -506,91 +388,29 @@ foreach ($hr_data as $key => $value) {
     }
 }
 
-foreach (array_count_values($staff_offices) as $key => $value) {
-    $key = ($key == "") ? "Undefined" : $key;
-    $staffoffices_data[] = [
-        "name" => $key,
-        "count" => $value,
-    ];
-}
-
-array_multisort(array_column($staffoffices_data, 'count'), SORT_DESC, $staffoffices_data);
-$staffoffices_xaxis = [];
-$staffoffices_series = [];
-foreach ($staffoffices_data as $key => $value) {
-    $staffoffices_xaxis[] = $value["name"];
-    $staffoffices_series[] = (-1*$value["count"]);
-}
-
-
-
-    /*$staffoffices_xaxis[] = $key;
-    $staffoffices_series[] = (-1*$value);*/
-
-/*echo "<pre>";
-echo "Continuing: ".json_encode($staff_contracttypes_continuing)."<br/>";
-echo "Fixed Term: ".json_encode($staff_contracttypes_fixedterm)."<br/>";
-echo "</pre>";
-exit;*/
+//var_dump(array_count_values($staff_contracttypes_gs));
+//exit;
 $pctg_mc_completion = round(($mc_completed_staff / $total_filled_posts) * 100);
 $pctg_epass_compliance = round(($epass_compliant_staff / $total_filled_posts) * 100);
 
 //$total_filled_posts = 0;
 // var_dump($unique_posts_data);
 /*foreach ($hr_data as $key => $value) {
-    if ($value->pers_no > 0) {
-        $overall_filled_posts[] = $value;
-        $total_filled_posts += 1;
+if ($value->pers_no > 0) {
+$overall_filled_posts[] = $value;
+$total_filled_posts += 1;
 
-    } else {
-        $overall_vacant_posts[] = $value;
-        $total_vacant_posts += 1;
-    }
-    $total_posts += 1;
+} else {
+$overall_vacant_posts[] = $value;
+$total_vacant_posts += 1;
+}
+$total_posts += 1;
 }*/
-$consultantoffice_data = [];
-foreach ($staffoffices_xaxis as $key => $value) {
-    $consultantoffice_data[$value] = 0;
-}
-$activeconsultants = 0;
-$overall_consultants = [];
-foreach ($consultants_data as $consultancy) {
-    $office = ltrim(rtrim($consultancy->office));
-    if ($office == "Latin American Caribbean") {
-        $office = "Latin America";
-    } else if ($office == "New York") {
-        $office = "New York Office";
-    } else if ($office == "Executive") {
-        $office = "Executive Office";
-    }
-    if (checkexpired($consultancy->latest_contract_end_date) == "NO") {
-        if (in_array($office, $staffoffices_xaxis)) {
-            $activeconsultants++;
-            $consultantoffice_data[$office]++;
-        }
-    }
-    $overall_consultants[] = [
-        'names' => $consultancy->supplier_full_name,
-        'startdate' => $consultancy->latest_contract_start_date,
-        'enddate' => $consultancy->latest_contract_end_date,
-        'renewals' => $consultancy->no_of_contract_renewals,
-        'expired' => checkexpired($consultancy->latest_contract_end_date),
-        'duration' => getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date),
-        'morethan11months' => (getdaysbetween($consultancy->latest_contract_start_date, $consultancy->latest_contract_end_date) > 30 * 11 ? 'Yes' : 'No')
-    ];
-
-    
-}
-$consultantoffice_series = [];
-foreach ($consultantoffice_data as $key => $value) {
-    $consultantoffice_series[] = $value;
-}
 
 $overall_post_status_distribution = [];
 $overall_office_budget_distribution = [];
 $overall_office_budget_distribution_office = [];
 $overall_office_budget_distribution_region = [];
-$overall_office_budget_distribution_others = [];
 $overall_grant_keys = [];
 $overall_grant_amounts = [];
 $overall_grant_start = [];
@@ -620,7 +440,7 @@ foreach ($all_grants_details as $detkey => $detvalue) {
         foreach ($all_grants_data as $gkey => $gvalue) {
             if ($gvalue->grant_key == $detvalue->grant_key) {
                 $overall_grant_unique_keys[] = $gvalue->grant_key;
-                $overall_grantsdata[] = ["office"=> $detvalue->office,"grantkey" => $gvalue->grant_key, "grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
+                $overall_grantsdata[] = ["office" => $detvalue->office, "grantkey" => $gvalue->grant_key, "grantamount" => $gvalue->grant_cash_balance, "grantstartdate" => $gvalue->grant_valid_from, "grantenddate" => $gvalue->grant_valid_to, "grantexpired" => checkexpired($gvalue->grant_valid_to), "grantaging" => ceil(getdaysbetween(null, $gvalue->grant_valid_to) / 30)];
             }
         }
     }
@@ -881,7 +701,7 @@ foreach ($hr_data as $hkey => $hvalue) {
         'mandatory_training' => $hvalue->no_of_mandatory_courses_done,
         'all_training' => $hvalue->no_of_total_courses_done,
         'contract_expiry' => $hvalue->appt_exp,
-        'retirement_date' => $hvalue->retirement_date
+        'retirement_date' => $hvalue->retirement_date,
     ];
 }
 
@@ -1578,7 +1398,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'red_projects' => $d_red_projects,
             'yellow_projects' => $d_yellow_projects,
             'green_projects' => $d_green_projects,
-            'total_projects' => $d_projects,//$total_projects,
+            'total_projects' => $d_projects, //$total_projects,
             'o_ratings' => $d_final_ratings,
             'total_health' => $total_project_health,
             'final_rating' => $d_total_average_final_rating,
@@ -1590,7 +1410,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
             'officeorder' => $divisionorder,
         ];
-    } else if (in_array($dvalue, $officelist)) {
+    } else {
         $overall_office_budget_distribution_region[] = [
             'office' => $dvalue,
             'consumable' => $d_consumable_budget,
@@ -1609,37 +1429,7 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'red_projects' => $d_red_projects,
             'yellow_projects' => $d_yellow_projects,
             'green_projects' => $d_green_projects,
-            'total_projects' => $d_projects,//$total_projects,
-            'total_health' => $total_final_rating,
-            'final_rating' => $d_total_average_final_rating,
-            'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
-            'reporting_compliance' => $d_reporting_percentage,
-            'total_days_past_due' => $d_overan_days,
-            'expired_projects' => $d_past_due_projects,
-            'average_months_past_due' => $d_average_overan_monthsA,
-            'short_projects_percentage' => round($d_short_projects / $d_projects, 2) * 100,
-            'officeorder' => $divisionorder,
-        ];
-    } else {
-        $overall_office_budget_distribution_others[] = [
-            'office' => $dvalue,
-            'consumable' => $d_consumable_budget,
-            'consumed' => $d_consumed_budget,
-            'balance' => $d_consumable_budget - $d_consumed_budget,
-            'total_posts' => $d_posts,
-            'filled_posts' => ($d_posts - $d_vacant_posts),
-            'vacant_posts' => $d_vacant_posts,
-            'total_outputs' => $d_outputs,
-            'total_activities' => $d_activities,
-            'completed_activities' => $d_completed_activities,
-            'percentage_vacancy' => round($d_vacant_posts / $d_posts, 2) * 100,
-            'average_post_budget' => round($d_consumable_budget / $d_posts, 2),
-            'o_projects' => $d_projects,
-            'o_ratings' => $d_final_ratings,
-            'red_projects' => $d_red_projects,
-            'yellow_projects' => $d_yellow_projects,
-            'green_projects' => $d_green_projects,
-            'total_projects' => $d_projects,//$total_projects,
+            'total_projects' => $d_projects, //$total_projects,
             'total_health' => $total_final_rating,
             'final_rating' => $d_total_average_final_rating,
             'percentage_senior_posts' => round($d_senior_posts / $d_posts, 2) * 100,
@@ -1651,7 +1441,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             'officeorder' => $divisionorder,
         ];
     }
-
 
     $o_boadata = [];
     foreach ($boa_data as $bkey => $bvalue) {
@@ -1700,7 +1489,6 @@ foreach ($unique_divisions as $dkey => $dvalue) {
             "proposed_status_in_progress_implemented" => $value->proposed_status_in_progress_implemented,
         ];
     }
-
 
     //sort by budget
 
@@ -2223,7 +2011,6 @@ foreach ($o_subprogramme_projects_distribution as $key => $value) {
 usort($overall_office_budget_distribution, 'sortByConsumable');
 usort($overall_office_budget_distribution_office, 'sortByConsumable');
 usort($overall_office_budget_distribution_region, 'sortByConsumable');
-usort($overall_office_budget_distribution_others, 'sortByConsumable');
 
 //sort by consumable
 
@@ -2279,7 +2066,6 @@ $processed_divisiondata['Unep'] = array(
     , "divisionlisting" => $overall_office_budget_distribution
     , "divisionlisting_office" => $overall_office_budget_distribution_office
     , "divisionlisting_region" => $overall_office_budget_distribution_region
-    , "divisionlisting_others" => $overall_office_budget_distribution_others
     , "boa_data" => $o_boadata
     , "oios_data" => $o_oiosdata
     , "mandatory_training_completion" => $pctg_mc_completion
@@ -2289,7 +2075,7 @@ $processed_divisiondata['Unep'] = array(
     , "risks_data" => $overall_risksdata
     , "stafflisting" => $overall_staff_information
     , "consultants_data" => $overall_consultants
-    , "hrdashboard" => ["dutystations" => $staff_dutystations, "contracttypes" => $staff_contracttypes, "nationality" => $staff_nationality, "regionality" => $staff_regionality]
+    , "hrdashboard" => ["dutystations" => $staff_dutystations, "contracttypes" => $staff_contracttypes, "nationality" => $staff_nationality, "regionality" => $staff_regionality],
     /*, "hrpostscategories" => $hrpostscategories
     , "hrpostsfilled" => $hrpostsfilled
     , "hrpostsvacant" => $hrpostsvacant
